@@ -3,60 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InventPro - Barang Keluar</title>
-    <!-- Memuat Tailwind CSS CDN -->
+    <title>InventPro - Barang Keluar Multi-Unit</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Mengatur font utama ke Inter, fallback ke sans-serif */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            /* Menyembunyikan "Activate Windows" jika muncul di preview */
-            overflow: hidden;
-        }
-        /* Mengatur lebar sidebar agar responsif */
-        .sidebar {
-            width: 280px; /* Lebar default untuk desktop/tablet */
-            transition: transform 0.3s ease-in-out;
-            z-index: 50;
-        }
-        .main-content {
-            margin-left: 280px; /* Offset konten utama sama dengan lebar sidebar */
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar { width: 280px; transition: transform 0.3s ease-in-out; z-index: 50; }
+        .main-content { margin-left: 280px; }
         @media (max-width: 1024px) {
-            .sidebar {
-                /* Sembunyikan sidebar di mobile secara default */
-                transform: translateX(-280px);
-                position: fixed;
-                height: 100%;
-            }
-            .sidebar.open {
-                transform: translateX(0);
-            }
-            .main-content {
-                margin-left: 0;
-            }
+            .sidebar { transform: translateX(-280px); position: fixed; height: 100%; }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
         }
-        /* Mengatur warna kustom agar sesuai dengan gambar */
-        .bg-sidebar {
-            background-color: #171c26;
-        }
-        .text-sidebar-inactive {
-            color: #b0b4ba;
-        }
-        .text-sidebar-active {
-            color: #ffffff;
-        }
-        .bg-sidebar-active {
-            background-color: #272d3a;
-        }
-        .btn-primary {
-            background-color: #f76807;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #e05e00;
-        }
+        .bg-sidebar { background-color: #171c26; }
+        .bg-sidebar-active { background-color: #272d3a; }
+        .text-sidebar-inactive { color: #b0b4ba; }
+        .text-sidebar-active { color: #ffffff; }
+        .btn-primary { background-color: #f76807; color: white; }
+        .btn-primary:hover { background-color: #e05e00; }
+        /* Modal Backdrop */
+        .modal-backdrop { z-index: 99; background-color: rgba(0, 0, 0, 0.5); }
+        .modal-content { z-index: 100; }
     </style>
 </head>
 <body class="bg-gray-100 flex h-screen overflow-hidden">
@@ -66,52 +33,20 @@
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
     </button>
 
-    <!-- Sidebar / Panel Navigasi Kiri -->
+    <!-- Sidebar -->
     <div id="sidebar" class="sidebar bg-sidebar flex flex-col fixed h-full shadow-lg lg:relative lg:translate-x-0">
-        
-        <!-- Header Sidebar / Logo -->
         <div class="p-6 text-white border-b border-gray-700/50">
             <h1 class="text-xl font-bold">InventPro</h1>
             <p class="text-xs text-gray-400">Inventory Management</p>
         </div>
-
-        <!-- Menu Navigasi -->
         <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
             <p class="text-xs font-semibold uppercase text-gray-500/70 px-4 pt-4 pb-2">Menu Utama</p>
-            
-            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-sidebar-inactive hover:bg-sidebar-active">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                <span>Dashboard</span>
-            </a>
-            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-sidebar-inactive hover:bg-sidebar-active">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                <span>Produk</span>
-            </a>
-            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-sidebar-inactive hover:bg-sidebar-active">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                <span>Barang Masuk</span>
-            </a>
-
             <!-- Menu Aktif: Barang Keluar -->
             <a href="#" class="flex items-center space-x-3 p-3 rounded-lg bg-sidebar-active text-sidebar-active font-semibold">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3v-1"></path></svg>
                 <span>Barang Keluar</span>
             </a>
-            
-            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-sidebar-inactive hover:bg-sidebar-active">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                <span>Laporan</span>
-            </a>
-
-            <p class="text-xs font-semibold uppercase text-gray-500/70 px-4 pt-4 pb-2">Lainnya</p>
-
-            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-sidebar-inactive hover:bg-sidebar-active">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                <span>Pengaturan</span>
-            </a>
         </nav>
-
-        <!-- Footer Sidebar -->
         <div class="p-4 text-xs text-gray-500/70 border-t border-gray-700/50">
             © 2024 InventPro v1.0
         </div>
@@ -122,111 +57,590 @@
         
         <!-- Header Utama / Navbar Atas -->
         <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shadow-sm">
-            
-            <!-- Judul Halaman -->
-            <h2 class="text-xl font-semibold text-gray-800 hidden sm:block">Barang Keluar</h2>
-            
-            <!-- Pencarian, Notifikasi & Profil -->
+            <h2 class="text-xl font-semibold text-gray-800 hidden sm:block">Pencatatan Barang Keluar</h2>
             <div class="flex items-center space-x-4 ml-auto">
-                
-                <!-- Input Pencarian -->
-                <div class="relative hidden lg:block">
-                    <input type="text" placeholder="Cari..." class="w-64 py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400">
-                    <svg class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                </div>
-                
-                <!-- Notifikasi -->
+                <span id="user-id-display" class="text-xs text-gray-500 truncate"></span>
                 <button class="p-2 text-gray-500 hover:text-gray-700 relative">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1"></path></svg>
-                    <!-- Badge Notifikasi -->
-                    <span class="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-                </button>
-                
-                <!-- Avatar Profil -->
-                <button class="flex items-center space-x-2 text-sm">
-                    <img class="h-8 w-8 rounded-full object-cover border-2 border-gray-300" src="https://placehold.co/32x32/1E40AF/ffffff?text=U" alt="User Avatar" onerror="this.onerror=null;this.src='https://placehold.co/32x32/1E40AF/ffffff?text=U';">
                 </button>
             </div>
         </header>
 
         <!-- Konten Halaman Utama -->
-        <main class="flex-1 overflow-y-auto p-6 space-y-6">
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
             
             <!-- Header Konten -->
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                 <h1 class="text-2xl font-bold text-gray-800 flex items-center space-x-2 mb-4 sm:mb-0">
-                    <!-- Ikon Riwayat Barang Keluar (Panah atas, seperti di gambar) -->
                     <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(90deg);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
                     <span>Riwayat Barang Keluar</span>
                 </h1>
                 
-                <!-- Tombol Catat Barang Keluar -->
-                <button class="btn-primary flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition duration-200 w-full sm:w-auto">
+                <!-- Tombol Buka Modal Catat Barang Keluar -->
+                <button id="open-modal-btn" class="btn-primary flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition duration-200 w-full sm:w-auto">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     <span>Catat Barang Keluar</span>
                 </button>
             </div>
 
-            <!-- Area Card Utama -->
-            <div class="bg-white p-8 rounded-xl shadow-md min-h-[70vh] flex items-center justify-center">
-                
-                <!-- Placeholder Konten Kosong -->
-                <div class="text-center text-gray-500 space-y-4">
-                    <svg class="w-16 h-16 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    <p>Belum ada data barang keluar</p>
+            <!-- Bagian Status Stok Cepat -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-xl shadow-md flex justify-between items-center">
+                    <span class="text-gray-500">Total Stok Global (Pcs/Botol)</span>
+                    <span id="total-stok-display" class="text-2xl font-bold text-blue-600">Memuat...</span>
                 </div>
-                
+            </div>
+
+            <!-- Riwayat Transaksi -->
+            <div class="bg-white p-4 sm:p-8 rounded-xl shadow-md">
+                <h3 class="text-xl font-semibold mb-4">Daftar Barang Keluar</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produk</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah (Unit Kecil)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tujuan</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Catatan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactions-list" class="bg-white divide-y divide-gray-200">
+                            <!-- Data Transaksi akan dimasukkan di sini oleh JS -->
+                            <tr>
+                                <td colspan="5" class="py-4 text-center text-gray-500">Memuat data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
         </main>
     </div>
 
-    <!-- Overlay untuk mobile saat sidebar terbuka -->
-    <div id="sidebar-overlay" class="fixed inset-0 bg-black opacity-0 transition-opacity duration-300 z-40 hidden lg:hidden"></div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const sidebar = document.getElementById('sidebar');
-            const toggleButton = document.getElementById('menu-toggle');
-            const overlay = document.getElementById('sidebar-overlay');
-            const mainContent = document.querySelector('.main-content');
-
-            // Fungsi untuk membuka/menutup sidebar
-            const toggleSidebar = () => {
-                sidebar.classList.toggle('open');
-                overlay.classList.toggle('hidden');
-                overlay.classList.toggle('opacity-0');
-                overlay.classList.toggle('opacity-50');
-            };
-
-            // Event listener untuk tombol toggle
-            toggleButton.addEventListener('click', toggleSidebar);
-
-            // Event listener untuk menutup sidebar saat overlay diklik (hanya di mobile)
-            overlay.addEventListener('click', toggleSidebar);
-
-            // Menutup sidebar jika ukuran layar berubah dari mobile ke desktop
-            window.addEventListener('resize', () => {
-                if (window.innerWidth >= 1024 && sidebar.classList.contains('open')) {
-                    sidebar.classList.remove('open');
-                    overlay.classList.add('hidden');
-                    overlay.classList.remove('opacity-50');
-                    overlay.classList.add('opacity-0');
-                }
-            });
+    <!-- Modal Catat Barang Keluar (Input Batch/Draft) -->
+    <div id="new-transaction-modal" class="modal-backdrop fixed inset-0 hidden items-center justify-center p-4">
+        <div class="modal-content bg-white w-full max-w-4xl rounded-xl shadow-2xl p-6">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="text-2xl font-bold text-gray-800">Catat Barang Keluar (Batch)</h3>
+                <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600">&times;</button>
+            </div>
             
-            // Mengatur offset untuk tombol toggle agar tidak tertutup sidebar saat terbuka
-            const adjustTogglePosition = () => {
-                if (window.innerWidth < 1024 && sidebar.classList.contains('open')) {
-                     // Toggle button should be visible over the content when sidebar is open
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Kolom Kiri: Formulir Input Item -->
+                <div class="lg:col-span-1 border-r lg:pr-6">
+                    <h4 class="text-lg font-semibold mb-3 text-gray-700">Tambah Item ke Draft</h4>
+                    <form id="add-item-form" class="space-y-4">
+                        <div>
+                            <label for="product-select" class="block text-sm font-medium text-gray-700">Produk</label>
+                            <select id="product-select" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2" required>
+                                <option value="">Pilih Produk</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="jumlah-keluar" class="block text-sm font-medium text-gray-700">Jumlah Keluar (Unit Kecil)</label>
+                            <input type="number" id="jumlah-keluar" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2" min="1" required>
+                            <p id="unit-kecil-display" class="mt-1 text-xs text-gray-500"></p>
+                            <p id="stok-warning" class="mt-1 text-xs text-red-500 hidden font-semibold">Stok tidak cukup!</p>
+                        </div>
+                        <div>
+                            <label for="tujuan" class="block text-sm font-medium text-gray-700">Tujuan/Pelanggan</label>
+                            <input type="text" id="tujuan" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2" placeholder="Cth: Penjualan Toko A" required>
+                        </div>
+                        <button type="submit" class="w-full btn-primary px-4 py-2 rounded-lg font-semibold transition duration-200" id="add-item-btn">Tambahkan ke Draft</button>
+                    </form>
+                </div>
+
+                <!-- Kolom Kanan: Daftar Draft dan Tombol Simpan -->
+                <div class="lg:col-span-2">
+                    <h4 class="text-lg font-semibold mb-3 text-gray-700">Draft Transaksi (<span id="draft-count">0</span> Item)</h4>
+                    
+                    <div id="draft-list-container" class="space-y-3 max-h-80 overflow-y-auto p-2 border rounded-md bg-gray-50 mb-4">
+                        <p id="empty-draft-message" class="text-center text-gray-500 py-4">Draft kosong. Tambahkan item di samping.</p>
+                        <!-- Draft items rendered here -->
+                    </div>
+
+                    <div class="flex justify-between items-center pt-4 border-t">
+                        <button id="clear-draft-btn" class="text-red-500 hover:text-red-700 text-sm disabled:opacity-50" disabled>Hapus Draft</button>
+                        <button id="save-batch-btn" class="btn-primary px-6 py-3 rounded-lg font-bold disabled:opacity-50" disabled>
+                            Simpan & Approve (<span id="save-count">0</span>)
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- Toast/Notification Area -->
+    <div id="toast-container" class="fixed bottom-4 right-4 space-y-2"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, addDoc, onSnapshot, collection, query, writeBatch, Timestamp, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // setLogLevel('Debug'); // Aktifkan untuk debugging log Firebase
+
+        // Global Variables (Provided by Canvas Environment)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let db, auth, userId = null;
+        let products = [];
+        let stockData = {}; // {produk_id: stok_aktual_unit_kecil}
+        let draftTransactions = []; // State untuk input batch di sisi klien
+
+        // --- FIREBASE INITIALIZATION AND AUTHENTICATION ---
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
+        
+        async function initializeAuthAndFirestore() {
+            try {
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
                 } else {
-                    // Reset position
+                    await signInAnonymously(auth);
+                }
+                userId = auth.currentUser?.uid || crypto.randomUUID();
+                document.getElementById('user-id-display').textContent = `User ID: ${userId}`;
+                console.log("Firebase Auth & Firestore initialized for user:", userId);
+
+                // Setelah autentikasi, inisialisasi data dan listener
+                await setupData();
+                setupListeners();
+
+            } catch (error) {
+                console.error("Error during Firebase initialization or sign-in:", error);
+                showToast("Gagal memuat aplikasi. Cek koneksi Anda.", 'error');
+            }
+        }
+
+        // --- DATA SETUP (SIMULASI MASTER DATA) ---
+        async function setupData() {
+            // Path untuk data publik (produk) dan data pribadi (transaksi)
+            const productsCollectionRef = collection(db, `artifacts/${appId}/public/data/produk`);
+            const incomingCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/barang_masuk`);
+            
+            // 1. Inisialisasi Data Produk (jika belum ada)
+            const mockProducts = [
+                { id: 'prod-001', nama_produk: 'Air Mineral 600ml', sku: 'AM-600', unit_besar: 'Dus', unit_kecil: 'Botol', konversi_kecil: 24, initial_stok_dus: 50 },
+                { id: 'prod-002', nama_produk: 'Soft Drink Kaleng', sku: 'SD-CLG', unit_besar: 'Pack', unit_kecil: 'Kaleng', konversi_kecil: 6, initial_stok_dus: 100 },
+                { id: 'prod-003', nama_produk: 'Mie Instan Kuah', sku: 'MI-KUH', unit_besar: 'Karton', unit_kecil: 'Bungkus', konversi_kecil: 40, initial_stok_dus: 30 },
+            ];
+            
+            for (const item of mockProducts) {
+                const productRef = doc(productsCollectionRef, item.id);
+                // Menggunakan setDoc untuk memastikan ID tetap sama
+                await setDoc(productRef, {
+                    nama_produk: item.nama_produk,
+                    sku: item.sku,
+                    unit_besar: item.unit_besar,
+                    unit_kecil: item.unit_kecil,
+                    konversi_kecil: item.konversi_kecil,
+                });
+                
+                // Tambahkan Barang Masuk Awal (Simulasi Inisialisasi Stok)
+                const productIncomingQuery = query(incomingCollectionRef, where('produk_id', '==', item.id));
+                const snapshot = await getDocs(productIncomingQuery);
+                
+                // Cek apakah sudah ada barang masuk untuk produk ini
+                if (snapshot.empty) { 
+                    await addDoc(incomingCollectionRef, {
+                        produk_id: item.id,
+                        jumlah_unit_besar: item.initial_stok_dus,
+                        tanggal_masuk: Timestamp.now(),
+                        sumber: 'Stok Awal Sistem',
+                        catatan: 'Data inisialisasi awal',
+                        created_at: Timestamp.now(),
+                    });
                 }
             }
-            window.addEventListener('resize', adjustTogglePosition);
-            adjustTogglePosition(); // Panggil saat pemuatan
-        });
-    </script>
+        }
 
+        // --- REAL-TIME LISTENERS ---
+        function setupListeners() {
+            const productsCollectionRef = collection(db, `artifacts/${appId}/public/data/produk`);
+            const outgoingCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/barang_keluar`);
+            const incomingCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/barang_masuk`);
+
+            // 1. Listener Produk (untuk master data dan konversi)
+            onSnapshot(productsCollectionRef, (snapshot) => {
+                products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                populateProductSelect();
+                console.log("Produk diperbarui:", products.length);
+                // Hitung stok setelah produk dimuat
+                calculateStock(); 
+            }, (error) => console.error("Error fetching products:", error));
+
+
+            // 2. Listener Barang Masuk (untuk perhitungan stok)
+            onSnapshot(incomingCollectionRef, (snapshot) => {
+                const incoming = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                console.log("Transaksi Barang Masuk diperbarui:", incoming.length);
+                calculateStock(incoming, null); // Stok dihitung ulang
+            }, (error) => console.error("Error fetching incoming:", error));
+
+            // 3. Listener Barang Keluar (untuk display riwayat dan perhitungan stok)
+            onSnapshot(outgoingCollectionRef, (snapshot) => {
+                const outgoing = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                console.log("Transaksi Barang Keluar diperbarui:", outgoing.length);
+                renderTransactions(outgoing);
+                calculateStock(null, outgoing); // Stok dihitung ulang
+            }, (error) => console.error("Error fetching outgoing:", error));
+        }
+
+        // --- STOK CALCULATION LOGIC (Simulating the SQL View) ---
+        function calculateStock(incoming = null, outgoing = null) {
+            // Jika data belum tersedia di Window (pertama kali), ambil dari tempat penyimpanan sementara
+            if (incoming === null) incoming = window.currentIncoming || [];
+            if (outgoing === null) outgoing = window.currentOutgoing || [];
+
+            // Simpan data di Window agar bisa diakses jika salah satu listener update
+            window.currentIncoming = incoming;
+            window.currentOutgoing = outgoing;
+
+            stockData = {};
+            let totalStokGlobal = 0;
+
+            products.forEach(p => {
+                const konversi = p.konversi_kecil;
+                
+                // 1. Hitung Total Masuk (dalam unit kecil)
+                const totalMasukUnitKecil = incoming
+                    .filter(item => item.produk_id === p.id)
+                    // Pastikan jumlah_unit_besar adalah angka (Firestore mungkin menyimpannya sebagai objek Number/Timestamp jika tidak di-handle)
+                    .reduce((sum, item) => sum + (Number(item.jumlah_unit_besar) * konversi), 0); 
+
+                // 2. Hitung Total Keluar (sudah dalam unit kecil)
+                const totalKeluarUnitKecil = outgoing
+                    .filter(item => item.produk_id === p.id)
+                    .reduce((sum, item) => sum + Number(item.jumlah_unit_kecil), 0);
+
+                // 3. Stok Aktual
+                const stok = totalMasukUnitKecil - totalKeluarUnitKecil;
+                stockData[p.id] = stok;
+                totalStokGlobal += stok;
+            });
+            
+            document.getElementById('total-stok-display').textContent = totalStokGlobal.toLocaleString('id-ID');
+            console.log("Stok Aktual (dalam unit kecil):", stockData);
+            updateDraftUI(); // Update stok warning/info di modal
+        }
+
+
+        // --- RENDERING FUNCTIONS ---
+        
+        function populateProductSelect() {
+            const select = document.getElementById('product-select');
+            select.innerHTML = '<option value="">Pilih Produk</option>';
+            products.forEach(p => {
+                const option = document.createElement('option');
+                option.value = p.id;
+                option.textContent = `${p.nama_produk} (${p.unit_besar} = ${p.konversi_kecil} ${p.unit_kecil})`;
+                option.setAttribute('data-unit-kecil', p.unit_kecil);
+                option.setAttribute('data-konversi', p.konversi_kecil);
+                select.appendChild(option);
+            });
+            select.removeEventListener('change', updateUnitKecilDisplay);
+            select.addEventListener('change', updateUnitKecilDisplay);
+            select.dispatchEvent(new Event('change')); // Panggil pertama kali untuk inisialisasi
+        }
+
+        function updateUnitKecilDisplay() {
+            const select = document.getElementById('product-select');
+            const jumlahInput = document.getElementById('jumlah-keluar');
+            const unitDisplay = document.getElementById('unit-kecil-display');
+            const stokWarning = document.getElementById('stok-warning');
+            
+            const selectedOption = select.options[select.selectedIndex];
+            const produkId = selectedOption ? selectedOption.value : null;
+
+            if (produkId) {
+                const unitKecil = selectedOption.getAttribute('data-unit-kecil');
+                const currentStok = stockData[produkId] || 0;
+                
+                unitDisplay.textContent = `Unit: ${unitKecil}. Stok tersedia: ${currentStok.toLocaleString('id-ID')} ${unitKecil}`;
+                unitDisplay.classList.remove('hidden');
+
+                // Cek Stok saat input jumlah berubah
+                const checkStock = () => {
+                    const jumlah = parseInt(jumlahInput.value) || 0;
+                    const addItemBtn = document.getElementById('add-item-btn');
+                    
+                    if (jumlah <= 0) {
+                        stokWarning.textContent = `Jumlah harus lebih dari 0.`;
+                        stokWarning.classList.remove('hidden');
+                        addItemBtn.disabled = true;
+                    } else if (jumlah > currentStok) {
+                        stokWarning.textContent = `Stok tidak cukup! Maksimum: ${currentStok.toLocaleString('id-ID')} ${unitKecil}`;
+                        stokWarning.classList.remove('hidden');
+                        addItemBtn.disabled = true;
+                    } else {
+                        stokWarning.classList.add('hidden');
+                        addItemBtn.disabled = false;
+                    }
+                };
+
+                // Clear previous listener and add new one
+                jumlahInput.oninput = checkStock; 
+                checkStock(); // Cek saat produk berubah
+            } else {
+                unitDisplay.textContent = '';
+                unitDisplay.classList.add('hidden');
+                stokWarning.classList.add('hidden');
+                jumlahInput.oninput = null; // Hapus listener saat tidak ada produk terpilih
+            }
+        }
+        
+        function renderTransactions(transactions) {
+            const listContainer = document.getElementById('transactions-list');
+            listContainer.innerHTML = '';
+
+            if (transactions.length === 0) {
+                listContainer.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-gray-500">Belum ada data barang keluar.</td></tr>';
+                return;
+            }
+
+            // Urutkan berdasarkan tanggal terbaru
+            transactions.sort((a, b) => {
+                const dateA = a.created_at?.toDate ? a.created_at.toDate().getTime() : new Date(a.created_at).getTime();
+                const dateB = b.created_at?.toDate ? b.created_at.toDate().getTime() : new Date(b.created_at).getTime();
+                return dateB - dateA; // Descending
+            });
+
+            transactions.forEach(tx => {
+                const product = products.find(p => p.id === tx.produk_id);
+                // Handle konversi dari Firestore Timestamp atau Date Object
+                const date = tx.tanggal_keluar?.toDate ? tx.tanggal_keluar.toDate().toLocaleDateString('id-ID') : new Date(tx.tanggal_keluar).toLocaleDateString('id-ID');
+
+                const row = listContainer.insertRow();
+                row.className = "hover:bg-gray-100";
+
+                row.insertCell().textContent = date;
+                row.insertCell().textContent = product ? product.nama_produk : 'N/A';
+                row.insertCell().textContent = `${Number(tx.jumlah_unit_kecil).toLocaleString('id-ID')} ${product ? product.unit_kecil : ''}`;
+                row.insertCell().textContent = tx.tujuan || '-';
+                row.insertCell().textContent = tx.catatan || '-';
+            });
+        }
+
+        function updateDraftUI() {
+            const draftListContainer = document.getElementById('draft-list-container');
+            const draftCount = document.getElementById('draft-count');
+            const saveCount = document.getElementById('save-count');
+            const emptyMessage = document.getElementById('empty-draft-message');
+            const saveBtn = document.getElementById('save-batch-btn');
+            const clearBtn = document.getElementById('clear-draft-btn');
+            
+            draftListContainer.innerHTML = '';
+            
+            if (draftTransactions.length === 0) {
+                emptyMessage.classList.remove('hidden');
+                draftListContainer.appendChild(emptyMessage);
+                saveBtn.disabled = true;
+                clearBtn.disabled = true;
+            } else {
+                emptyMessage.classList.add('hidden');
+                saveBtn.disabled = false;
+                clearBtn.disabled = false;
+                
+                draftTransactions.forEach((item, index) => {
+                    const product = products.find(p => p.id === item.produk_id);
+                    // Pastikan stok aktual cukup sebelum dimasukkan ke draft (re-check)
+                    const currentStok = stockData[item.produk_id] || 0;
+                    
+                    // Simulasikan pengecekan stok, meskipun sudah dicek saat add item
+                    const isOverstocked = item.jumlah_unit_kecil > currentStok;
+
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = `flex justify-between items-center p-3 bg-white rounded-lg shadow-sm ${isOverstocked ? 'border-2 border-red-400' : ''}`;
+                    itemDiv.innerHTML = `
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold truncate">${product ? product.nama_produk : 'N/A'}</p>
+                            <p class="text-xs text-gray-600">Jml: ${item.jumlah_unit_kecil.toLocaleString('id-ID')} ${product ? product.unit_kecil : ''} | Tujuan: ${item.tujuan}</p>
+                            ${isOverstocked ? '<p class="text-xs text-red-500 font-bold">STOK KURANG (Hapus Item ini)</p>' : ''}
+                        </div>
+                        <button data-index="${index}" class="remove-draft-btn text-red-500 hover:text-red-700 ml-4 p-1 rounded-full hover:bg-red-100">
+                            &times;
+                        </button>
+                    `;
+                    draftListContainer.appendChild(itemDiv);
+                });
+                
+                // Add event listeners to remove buttons
+                draftListContainer.querySelectorAll('.remove-draft-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const index = parseInt(e.target.getAttribute('data-index'));
+                        draftTransactions.splice(index, 1);
+                        updateDraftUI();
+                    });
+                });
+            }
+            
+            draftCount.textContent = draftTransactions.length;
+            saveCount.textContent = draftTransactions.length;
+            updateUnitKecilDisplay(); // Pastikan stok di form input juga diupdate
+        }
+
+
+        // --- MODAL & BATCH HANDLING ---
+
+        const modal = document.getElementById('new-transaction-modal');
+        document.getElementById('open-modal-btn').addEventListener('click', () => {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            updateDraftUI();
+        });
+        document.getElementById('close-modal-btn').addEventListener('click', () => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        });
+        
+        // Handle Form Tambah Item ke Draft
+        document.getElementById('add-item-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const produkId = document.getElementById('product-select').value;
+            const jumlah = parseInt(document.getElementById('jumlah-keluar').value);
+            const tujuan = document.getElementById('tujuan').value.trim();
+            const product = products.find(p => p.id === produkId);
+
+            if (!produkId || jumlah <= 0 || !tujuan || !product) {
+                showToast("Data input tidak lengkap atau tidak valid.", 'error');
+                return;
+            }
+
+            const currentStok = stockData[produkId] || 0;
+            if (jumlah > currentStok) {
+                 // Warning sudah ditunjukkan oleh JS, tapi kita tambahkan pesan di sini juga.
+                 showToast(`Gagal: Stok ${product.nama_produk} tidak cukup. Tersedia: ${currentStok.toLocaleString('id-ID')}`, 'error');
+                 return;
+            }
+
+            // Tambahkan ke draft state (client-side batch)
+            draftTransactions.push({
+                produk_id: produkId,
+                jumlah_unit_kecil: jumlah,
+                tujuan: tujuan,
+                tanggal_keluar: Timestamp.now(), // Gunakan Timestamp untuk kemudahan sorting di Firestore
+                catatan: '', 
+                created_at: Timestamp.now(),
+            });
+
+            // Reset form dan update UI draft
+            document.getElementById('add-item-form').reset();
+            document.getElementById('product-select').dispatchEvent(new Event('change')); // Reset unit display
+            updateDraftUI();
+            showToast(`Item ${product.nama_produk} ditambahkan ke draft.`, 'success');
+        });
+
+        // Handle Clear Draft
+        document.getElementById('clear-draft-btn').addEventListener('click', () => {
+             // Mengganti confirm() dengan modal UI sederhana (sesuai instruksi)
+            const confirmAction = window.prompt("Ketik 'YA' untuk menghapus semua draft transaksi:", "");
+            if (confirmAction && confirmAction.toUpperCase() === 'YA') {
+                draftTransactions = [];
+                updateDraftUI();
+                showToast("Draft transaksi telah dikosongkan.", 'info');
+            } else if (confirmAction !== null) {
+                showToast("Penghapusan draft dibatalkan.", 'info');
+            }
+        });
+
+        // Handle Save Batch (Approve)
+        document.getElementById('save-batch-btn').addEventListener('click', async () => {
+            if (draftTransactions.length === 0) return;
+
+            const outgoingCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/barang_keluar`);
+            const batch = writeBatch(db);
+            const numItems = draftTransactions.length;
+            
+            // Re-check stok sebelum simpan final (Penting!)
+            let hasStockError = false;
+            let tempStockData = { ...stockData }; // Gunakan copy untuk simulasi
+
+            draftTransactions.forEach(item => {
+                const stock = tempStockData[item.produk_id] || 0;
+                if (item.jumlah_unit_kecil > stock) {
+                    hasStockError = true;
+                    // Tampilkan notifikasi spesifik jika ada stok yang kurang
+                    const product = products.find(p => p.id === item.produk_id);
+                    showToast(`Error Batch: Stok ${product.nama_produk} tidak cukup. Item ini dibatalkan.`, 'error');
+                    return;
+                }
+                
+                // Kurangi stok di simulasi
+                tempStockData[item.produk_id] -= item.jumlah_unit_kecil;
+
+                // Tambahkan ke batch
+                const newDocRef = doc(outgoingCollectionRef);
+                batch.set(newDocRef, item);
+            });
+
+            if (hasStockError) {
+                showToast("Simpan batch dibatalkan karena ada item yang kekurangan stok. Mohon periksa draft Anda.", 'error');
+                return;
+            }
+
+            try {
+                // Proses penyimpanan setiap item dalam batch
+                await batch.commit();
+
+                // Bersihkan draft setelah commit sukses
+                draftTransactions = [];
+                updateDraftUI();
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                showToast(`${numItems} transaksi Barang Keluar berhasil disimpan.`, 'success');
+                
+            } catch (error) {
+                console.error("Error committing batch:", error);
+                showToast("Gagal menyimpan transaksi batch. Silakan coba lagi.", 'error');
+            }
+        });
+
+
+        // --- UTILITY: TOAST NOTIFICATION (Menggantikan alert()) ---
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bgColor = 'bg-blue-500';
+            if (type === 'success') bgColor = 'bg-green-500';
+            if (type === 'error') bgColor = 'bg-red-500';
+            if (type === 'info') bgColor = 'bg-gray-500';
+
+            toast.className = `p-3 rounded-lg text-white shadow-xl ${bgColor} flex items-center space-x-2 transition duration-300 transform opacity-0 translate-y-2`;
+            toast.textContent = message;
+
+            container.appendChild(toast);
+            
+            // Animasi masuk
+            setTimeout(() => {
+                toast.classList.remove('opacity-0', 'translate-y-2');
+                toast.classList.add('opacity-100', 'translate-y-0');
+            }, 50); 
+
+            // Animasi keluar
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        // Initialize App
+        initializeAuthAndFirestore();
+
+        // Mobile Sidebar Toggle
+        document.getElementById('menu-toggle').addEventListener('click', () => {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        });
+
+    </script>
 </body>
 </html>
