@@ -2,7 +2,7 @@
 // Ganti dengan URL dan Anon Key project Supabase Anda
 // Dapatkan di: Project Settings > API
 const SUPABASE_URL = 'https://iltqolfmvhzaiuagtoxt.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsdHFvbGZtdmh6YWl1YWd0b3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyNDE5MjQsImV4cCI6MjA4MDgxNzkyNH0.sGzEQjpKfy7fdw8KBNO7mVzKd2tuxqQaYAdRuTjHVMs';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsdHFvbGZtdmh6YWl1YWd0b3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyNDE5MjQsImV4cCI6MjA4MDgxNzkyNH0.sGzEQjpKfy7fdw8KBNO7mVzKd2tuxqQaYAdRuTjHVMs
 
 // Inisialisasi Klien Supabase
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -258,6 +258,21 @@ async function handleSubmitBarangMasuk(event) {
 
 // **INIALISASI APLIKASI**
 document.addEventListener('DOMContentLoaded', () => {
+    
+    // PERIKSA: Cek apakah kredensial Supabase sudah diganti (Penyebab umum menu tidak dapat di-klik)
+    if (SUPABASE_URL.includes('[GANTI_DENGAN_URL_ANDA]') || SUPABASE_ANON_KEY.includes('[GANTI_DENGAN_ANON_KEY_ANDA]')) {
+        const contentArea = document.getElementById('content-area');
+        contentArea.innerHTML = `
+            <div class="bg-red-100 border border-red-400 text-red-700 p-6 rounded-xl shadow-lg mx-auto max-w-2xl mt-10" role="alert">
+                <strong class="font-bold text-lg block mb-2">🚨 Kesalahan Konfigurasi Fatal!</strong>
+                <span class="block text-sm">Harap ganti placeholder <code>SUPABASE_URL</code> dan <code>SUPABASE_ANON_KEY</code> di **file app.js**.</span>
+                <span class="block text-sm mt-1">Aplikasi tidak dapat menginisialisasi fungsi dan event listener tanpa konfigurasi Supabase yang valid.</span>
+            </div>
+        `;
+        console.error("FATAL ERROR: Kredensial Supabase belum diatur. Harap ganti placeholder di app.js.");
+        return; // Hentikan eksekusi inisialisasi fungsional
+    }
+
     // 1. Inisialisasi tampilan awal
     switchView('stok', 'Stok Saat Ini');
 
