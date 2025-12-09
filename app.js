@@ -84,8 +84,12 @@ function switchView(targetView, title) {
         loadDataProduk();
     } else if (targetView === 'stok') {
         loadDataStok();
-    } else if (targetView === 'keluar' || targetView === 'masuk') {
-        loadProdukToDropdowns();
+    } else if (targetView === 'masuk') {
+        loadProdukToDropdowns(); // Untuk form
+        loadDataMasuk(); // Untuk riwayat
+    } else if (targetView === 'keluar') {
+        loadProdukToDropdowns(); // Untuk form
+        loadDataKeluar(); // Untuk riwayat
     }
 }
 
@@ -170,6 +174,95 @@ async function loadDataProduk() {
         displayFetchError(error.message || 'Koneksi database gagal.', 'produkTableBody');
     }
 }
+
+/**
+ * Mengambil data riwayat Barang Masuk (Tabel `barang_masuk`) dengan join ke `produk`.
+ */
+async function loadDataMasuk() {
+    if (!supabase) return;
+    const tableBody = document.getElementById('masukTableBody');
+    tableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Memuat data Barang Masuk...</td></tr>';
+
+    try {
+        // Fetch data barang masuk dan join dengan nama/sku produk
+        const { data: masuk, error } = await supabase
+            .from('barang_masuk')
+            .select(`
+                *,
+                produk (nama_produk, sku)
+            `)
+            .order('tanggal_masuk', { ascending: false });
+
+        if (error) throw error;
+
+        if (masuk && masuk.length > 0) {
+            tableBody.innerHTML = '';
+            masuk.forEach(t => {
+                const row = tableBody.insertRow();
+                row.className = 'hover:bg-gray-50 transition-colors duration-100';
+                row.insertCell().textContent = new Date(t.tanggal_masuk).toLocaleDateString('id-ID');
+                row.insertCell().textContent = t.produk ? `${t.produk.nama_produk} (${t.produk.sku})` : 'Produk tidak dikenal';
+                row.insertCell().textContent = t.jumlah_unit_besar.toLocaleString('id-ID');
+                row.insertCell().textContent = t.sumber || '-';
+                row.insertCell().textContent = t.catatan ? t.catatan.substring(0, 50) + '...' : '-';
+            });
+        } else {
+            tableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada riwayat barang masuk.</td></tr>';
+        }
+        
+        // Setelah memuat riwayat, pastikan form Masuk terlihat (opsional, tapi bagus)
+        switchView('masuk', 'Catat Barang Masuk');
+
+    } catch (error) {
+        console.error('Error memuat data barang masuk:', error);
+        displayFetchError(error.message || 'Koneksi database gagal.', 'masukTableBody');
+    }
+}
+
+/**
+ * Mengambil data riwayat Barang Keluar (Tabel `barang_keluar`) dengan join ke `produk`.
+ */
+async function loadDataKeluar() {
+    if (!supabase) return;
+    const tableBody = document.getElementById('keluarTableBody');
+    tableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Memuat data Barang Keluar...</td></tr>';
+
+    try {
+        // Fetch data barang keluar dan join dengan nama/sku produk
+        const { data: keluar, error } = await supabase
+            .from('barang_keluar')
+            .select(`
+                *,
+                produk (nama_produk, sku)
+            `)
+            .order('tanggal_keluar', { ascending: false });
+
+        if (error) throw error;
+
+        if (keluar && keluar.length > 0) {
+            tableBody.innerHTML = '';
+            keluar.forEach(t => {
+                const row = tableBody.insertRow();
+                row.className = 'hover:bg-gray-50 transition-colors duration-100';
+                row.insertCell().textContent = new Date(t.tanggal_keluar).toLocaleDateString('id-ID');
+                row.insertCell().textContent = t.produk ? `${t.produk.nama_produk} (${t.produk.sku})` : 'Produk tidak dikenal';
+                row.insertCell().textContent = t.jumlah_unit_kecil.toLocaleString('id-ID');
+                row.insertCell().textContent = t.tujuan || '-';
+                row.insertCell().textContent = t.catatan ? t.catatan.substring(0, 50) + '...' : '-';
+            });
+        } else {
+            tableBody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">Tidak ada riwayat barang keluar.</td></tr>';
+        }
+
+        // Setelah memuat riwayat, pastikan form Keluar terlihat (opsional, tapi bagus)
+        switchView('keluar', 'Catat Barang Keluar');
+
+    } catch (error) {
+        console.error('Error memuat data barang keluar:', error);
+        displayFetchError(error.message || 'Koneksi database gagal.', 'keluarTableBody');
+    }
+}
+
 
 /**
  * Mengambil data produk dan mengisi dropdown (select) di form Masuk dan Keluar.
@@ -260,6 +353,8 @@ async function handleSubmitBarangKeluar(event) {
         pesanStatus.textContent = '✅ Barang Keluar berhasil dicatat!';
         pesanStatus.className = 'mt-2 text-sm font-medium text-green-600';
         form.reset(); 
+        loadDataKeluar(); // Refresh riwayat setelah submit
+        loadDataStok(); // Refresh stok setelah submit
     } catch (error) {
         console.error('Error saat mencatat Barang Keluar:', error);
         pesanStatus.textContent = `❌ Gagal mencatat. Error: ${error.message}`;
@@ -311,6 +406,8 @@ async function handleSubmitBarangMasuk(event) {
         pesanStatus.textContent = '✅ Barang Masuk berhasil dicatat!';
         pesanStatus.className = 'mt-2 text-sm font-medium text-green-600';
         form.reset(); 
+        loadDataMasuk(); // Refresh riwayat setelah submit
+        loadDataStok(); // Refresh stok setelah submit
     } catch (error) {
         console.error('Error saat mencatat Barang Masuk:', error);
         pesanStatus.textContent = `❌ Gagal mencatat. Error: ${error.message}`;
