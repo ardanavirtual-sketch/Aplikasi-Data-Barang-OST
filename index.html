@@ -3,78 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Data Barang PT OST</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; }
-        .container { max-width: 1200px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
-        h1, h2 { color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
-        th { background-color: #007bff; color: white; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        /* Style untuk Form */
-        form { background: #e9ecef; padding: 15px; border-radius: 5px; margin-bottom: 30px; }
-        input[type="number"], input[type="date"], input[type="text"], textarea, select {
-            width: 100%; padding: 10px; margin: 8px 0; display: inline-block; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;
-        }
-        button { background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; float: right; }
-        button:hover { background-color: #218838; }
-        label { margin-top: 10px; display: block; font-weight: bold; }
-    </style>
+    <title>Inventaris PT OST | Dashboard</title>
+    <!-- Memuat Tailwind CSS CDN untuk styling modern -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Memuat Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Konfigurasi Tailwind & Font Inter -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        :root {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Styling untuk scrollbar */
+        .content-area::-webkit-scrollbar {
+            width: 8px;
+        }
+        .content-area::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1; /* slate-300 */
+            border-radius: 4px;
+        }
+        .content-area::-webkit-scrollbar-track {
+            background-color: #f8fafc; /* slate-50 */
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <h1>📦 Aplikasi Data Barang PT OST</h1>
+<body class="bg-gray-50 min-h-screen flex antialiased">
 
-        <div id="barang-keluar-form">
-            <h2>📝 Input Barang Keluar</h2>
-            <form id="formBarangKeluar">
-                <label for="produk_id_keluar">Pilih Produk (ID):</label>
-                <select id="produk_id_keluar" name="produk_id_keluar" required>
-                    <option value="">Memuat produk...</option>
-                </select>
-
-                <label for="jumlah_unit_kecil">Jumlah Unit Kecil:</label>
-                <input type="number" id="jumlah_unit_kecil" name="jumlah_unit_kecil" required min="1">
-
-                <label for="tanggal_keluar">Tanggal Keluar:</label>
-                <input type="date" id="tanggal_keluar" name="tanggal_keluar" required>
-
-                <label for="tujuan">Tujuan:</label>
-                <input type="text" id="tujuan" name="tujuan" required>
-
-                <label for="catatan_keluar">Catatan:</label>
-                <textarea id="catatan_keluar" name="catatan_keluar"></textarea>
-
-                <button type="submit">Catat Barang Keluar</button>
-                <div style="clear: both;"></div>
-            </form>
-            <p id="pesanStatus" style="color: green; font-weight: bold;"></p>
+    <!-- Sidebar / Navigasi Kiri -->
+    <div id="sidebar" class="w-64 bg-white shadow-xl flex-shrink-0 flex flex-col transition-all duration-300">
+        <div class="p-6 border-b border-gray-100">
+            <h1 class="text-2xl font-extrabold text-indigo-700 tracking-tight">OST Inventory</h1>
+            <p class="text-sm text-gray-500">Data Barang</p>
         </div>
 
-        <hr>
-
-        <div id="data-produk">
-            <h2>🛍️ Data Produk (Dari Tabel Produk)</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nama Produk</th>
-                        <th>SKU</th>
-                        <th>Deskripsi</th>
-                        <th>Unit Besar</th>
-                        <th>Unit Kecil</th>
-                        <th>Konversi Kecil</th>
-                    </tr>
-                </thead>
-                <tbody id="produkTableBody">
-                    <tr><td colspan="6">Memuat data...</td></tr>
-                </tbody>
-            </table>
+        <nav class="flex-grow p-4 space-y-2">
+            <!-- Menu Item: Dashboard/Stok -->
+            <a href="#" id="menu-stok" class="nav-item flex items-center p-3 text-sm font-medium text-gray-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors duration-150 active" data-target="stok">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-3 text-indigo-500" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8V4H10L21 8Z"/><path d="M10 4L3 8V12L10 8Z"/><path d="M21 8L14 12V16L21 12Z"/><path d="M3 12L10 16V20L3 16Z"/></svg>
+                <span>Stok Saat Ini</span>
+            </a>
+            <!-- Menu Item: Data Produk -->
+            <a href="#" id="menu-produk" class="nav-item flex items-center p-3 text-sm font-medium text-gray-500 hover:bg-indigo-100 rounded-lg transition-colors duration-150" data-target="produk">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-3" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><path d="M7 3v9"/><rect width="7" height="9" x="14" y="3" rx="1"/><path d="M14 3v9"/><rect width="7" height="9" x="3" y="14" rx="1"/><path d="M7 14v9"/><rect width="7" height="9" x="14" y="14" rx="1"/><path d="M14 14v9"/></svg>
+                <span>Data Produk</span>
+            </a>
+            <!-- Menu Item: Barang Masuk -->
+            <a href="#" id="menu-masuk" class="nav-item flex items-center p-3 text-sm font-medium text-gray-500 hover:bg-indigo-100 rounded-lg transition-colors duration-150" data-target="masuk">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-3" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12h-7"/><path d="M5 12h7"/></svg>
+                <span>Barang Masuk</span>
+            </a>
+            <!-- Menu Item: Barang Keluar -->
+            <a href="#" id="menu-keluar" class="nav-item flex items-center p-3 text-sm font-medium text-gray-500 hover:bg-indigo-100 rounded-lg transition-colors duration-150" data-target="keluar">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-3" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5-7 7 7 7"/></svg>
+                <span>Barang Keluar</span>
+            </a>
+        </nav>
+        
+        <!-- Bagian Bawah Sidebar (Opsional) -->
+        <div class="p-4 border-t border-gray-100">
+            <p class="text-xs text-gray-400">Powered by Supabase</p>
         </div>
     </div>
 
+    <!-- Konten Utama (Header + Area Konten) -->
+    <main class="flex-grow flex flex-col">
+        <!-- Header -->
+        <header class="bg-white shadow-sm p-4 flex items-center justify-between flex-shrink-0">
+            <h2 id="page-title" class="text-xl font-semibold text-gray-800">Stok Saat Ini</h2>
+            <div class="flex items-center space-x-4">
+                <span class="text-sm text-gray-500 hidden sm:block">PT OST Inventory System</span>
+            </div>
+        </header>
+
+        <!-- Area Konten Dinamis -->
+        <div id="content-area" class="content-area flex-grow p-6 overflow-y-auto">
+
+            <!-- Bagian 1: Data Stok Saat Ini (Default View) -->
+            <div id="view-stok" class="page-view bg-white p-6 rounded-xl shadow-lg">
+                <h3 class="text-2xl font-bold text-gray-700 mb-4">Stok Saat Ini (Tabel `stok_saat_ini_pcs`)</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-indigo-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Nama Produk</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">SKU</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Deskripsi</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Unit Besar</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Unit Kecil</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Stok (Unit Kecil)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stokTableBody" class="bg-white divide-y divide-gray-200">
+                            <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Memuat data Stok...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Bagian 2: Data Produk -->
+            <div id="view-produk" class="page-view bg-white p-6 rounded-xl shadow-lg hidden">
+                <h3 class="text-2xl font-bold text-gray-700 mb-4">Master Data Produk (Tabel `produk`)</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-indigo-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Nama Produk</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">SKU</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Deskripsi</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Unit Besar</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Unit Kecil</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Konversi Kecil</th>
+                            </tr>
+                        </thead>
+                        <tbody id="produkTableBody" class="bg-white divide-y divide-gray-200">
+                            <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Memuat data Produk...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Bagian 3: Form Barang Masuk -->
+            <div id="view-masuk" class="page-view bg-white p-6 rounded-xl shadow-lg hidden">
+                <h3 class="text-2xl font-bold text-gray-700 mb-6">Catat Barang Masuk (Tabel `barang_masuk`)</h3>
+                <form id="formBarangMasuk" class="space-y-4 max-w-lg">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="produk_id_masuk" class="block text-sm font-medium text-gray-700">Pilih Produk:</label>
+                            <select id="produk_id_masuk" name="produk_id_masuk" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                                <option value="" disabled selected>-- Memuat produk... --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="tanggal_masuk" class="block text-sm font-medium text-gray-700">Tanggal Masuk:</label>
+                            <input type="date" id="tanggal_masuk" name="tanggal_masuk" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="jumlah_unit_besar" class="block text-sm font-medium text-gray-700">Jumlah Unit Besar (cth: Kardus/Dus):</label>
+                        <input type="number" id="jumlah_unit_besar" name="jumlah_unit_besar" required min="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                    </div>
+                    <div>
+                        <label for="sumber" class="block text-sm font-medium text-gray-700">Sumber Barang:</label>
+                        <input type="text" id="sumber" name="sumber" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                    </div>
+                    <div>
+                        <label for="catatan_masuk" class="block text-sm font-medium text-gray-700">Catatan:</label>
+                        <textarea id="catatan_masuk" name="catatan_masuk" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150">
+                            Catat Barang Masuk
+                        </button>
+                    </div>
+                    <p id="pesanStatusMasuk" class="mt-2 text-sm font-medium"></p>
+                </form>
+            </div>
+
+            <!-- Bagian 4: Form Barang Keluar -->
+            <div id="view-keluar" class="page-view bg-white p-6 rounded-xl shadow-lg hidden">
+                <h3 class="text-2xl font-bold text-gray-700 mb-6">Catat Barang Keluar (Tabel `barang_keluar`)</h3>
+                <form id="formBarangKeluar" class="space-y-4 max-w-lg">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="produk_id_keluar" class="block text-sm font-medium text-gray-700">Pilih Produk:</label>
+                            <select id="produk_id_keluar" name="produk_id_keluar" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                                <option value="" disabled selected>-- Memuat produk... --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="tanggal_keluar" class="block text-sm font-medium text-gray-700">Tanggal Keluar:</label>
+                            <input type="date" id="tanggal_keluar" name="tanggal_keluar" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="jumlah_unit_kecil" class="block text-sm font-medium text-gray-700">Jumlah Unit Kecil (cth: Satuan/Pcs):</label>
+                        <input type="number" id="jumlah_unit_kecil" name="jumlah_unit_kecil" required min="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                    </div>
+                    <div>
+                        <label for="tujuan" class="block text-sm font-medium text-gray-700">Tujuan:</label>
+                        <input type="text" id="tujuan" name="tujuan" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border">
+                    </div>
+                    <div>
+                        <label for="catatan_keluar" class="block text-sm font-medium text-gray-700">Catatan:</label>
+                        <textarea id="catatan_keluar" name="catatan_keluar" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-150">
+                            Catat Barang Keluar
+                        </button>
+                    </div>
+                    <p id="pesanStatusKeluar" class="mt-2 text-sm font-medium"></p>
+                </form>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Memuat file JavaScript kustom -->
     <script src="app.js"></script>
 </body>
 </html>
