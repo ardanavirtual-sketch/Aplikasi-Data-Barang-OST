@@ -3,24 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InventPro - Dashboard Inventori Lengkap</title>
+    <title>InventPro - Dashboard Inventori Supabase</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Firebase SDK (Ganti Supabase dengan Firebase/Firestore) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, addDoc, setDoc, onSnapshot, collection, query, orderBy, where, runTransaction, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <!-- Import Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* Gaya Tailwind Custom */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar { width: 280px; transition: transform 0.3s ease-in-out; z-index: 50; }
+        .main-content { margin-left: 280px; }
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(-280px); position: fixed; height: 100%; }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+        }
+        .bg-sidebar { background-color: #171c26; }
+        .bg-sidebar-active { background-color: #272d3a; }
+        .text-sidebar-inactive { color: #b0b4ba; }
+        .text-sidebar-active { color: #ffffff; }
+        .nav-link.active { background-color: #f76807; color: white; } /* Warna Oranye untuk aktif */
+        .nav-link:hover:not(.active) { background-color: #272d3a; color: #ffffff; }
+
+        .btn-primary { background-color: #f76807; color: white; hover:bg-orange-700; }
+        .btn-success { background-color: #10b981; color: white; hover:bg-green-700; }
+        .btn-danger { background-color: #ef4444; color: white; hover:bg-red-700; }
         
-        // setLogLevel('debug'); // Aktifkan log debug Firestore
+        .modal-backdrop { background-color: rgba(0, 0, 0, 0.5); }
+    </style>
+    
+    <script type="module">
+        const { createClient } = supabase;
 
-        // Variabel global yang disediakan oleh Canvas
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        // --- SUPABASE INITIALIZATION ---
+        // PENTING: Ganti placeholder ini dengan kredensial Supabase Anda.
+        // Kegagalan untuk mengganti ini akan menyebabkan TypeError: Failed to fetch.
+        const SUPABASE_URL = 'https://iltqolfmvhzaiuagtoxt.supabase.co'; // GANTI DENGAN URL SUPABASE ANDA
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsdHFvbGZtdmh6YWl1YWd0b3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyNDE5MjQsImV4cCI6MjA4MDgxNzkyNH0.sGzEQjpKfy7fdw8KBNO7mVzKd2tuxqQaYAdRuTjHVMs'; // GANTI DENGAN ANON KEY SUPABASE ANDA
 
-        let db, auth;
-        let userId = null; 
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let userId = 'demo-user'; // ID Pengguna Sederhana untuk Supabase
 
         // State Global Aplikasi
         window.appState = {
@@ -30,93 +52,106 @@
             historyIncoming: [],
             draftTransactions: [],
             currentPage: window.location.hash.substring(1) || 'stock',
-            isAuthReady: false,
+            isDataReady: false,
         };
-
-        // --- FIREBASE INITIALIZATION & AUTHENTICATION ---
-        async function initializeAuthAndFirestore() {
-            if (!firebaseConfig) {
-                console.error("Firebase config is missing.");
-                showToast("Kesalahan Konfigurasi: Firebase Config tidak ditemukan.", 'error');
-                return;
-            }
-
+        
+        // --- DATA FETCHING ---
+        async function fetchProducts() {
             try {
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-
-                // Autentikasi
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-                
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        userId = user.uid;
-                        window.appState.isAuthReady = true;
-                        document.getElementById('user-id-display').textContent = `User ID: ${userId}`;
-                        setupListeners();
-                    } else {
-                        userId = crypto.randomUUID(); // Fallback ID jika anonim gagal
-                        window.appState.isAuthReady = true;
-                        document.getElementById('user-id-display').textContent = `Anon ID: ${userId}`;
-                        setupListeners();
-                    }
-                });
+                const { data, error } = await supabase
+                    .from('products')
+                    .select('*');
+                if (error) throw error;
+                window.appState.products = data || [];
             } catch (error) {
-                console.error("Firebase/Auth initialization failed:", error);
-                showToast(`Gagal memuat autentikasi: ${error.message}`, 'error');
+                console.error("Error fetching products:", error);
+                showToast("Gagal memuat data produk.", 'error');
+            }
+        }
+
+        async function fetchIncoming() {
+            try {
+                const { data, error } = await supabase
+                    .from('incoming')
+                    .select('*');
+                if (error) throw error;
+                window.appState.historyIncoming = data || [];
+            } catch (error) {
+                console.error("Error fetching incoming:", error);
+                showToast("Gagal memuat riwayat masuk.", 'error');
+            }
+        }
+
+        async function fetchOutgoing() {
+            try {
+                const { data, error } = await supabase
+                    .from('outgoing')
+                    .select('*');
+                if (error) throw error;
+                window.appState.historyOutgoing = data || [];
+            } catch (error) {
+                console.error("Error fetching outgoing:", error);
+                showToast("Gagal memuat riwayat keluar.", 'error');
             }
         }
         
-        // --- DATA PATHS ---
-        const getProductsCollectionRef = () => collection(db, `/artifacts/${appId}/public/data/products`);
-        const getIncomingCollectionRef = () => collection(db, `/artifacts/${appId}/users/${userId}/incoming`);
-        const getOutgoingCollectionRef = () => collection(db, `/artifacts/${appId}/users/${userId}/outgoing`);
+        // --- INITIAL DATA SETUP ---
+        async function setupData() {
+            // Lakukan pengecekan dan isi data awal jika tabel produk kosong
+            try {
+                const { data: products, error } = await supabase
+                    .from('products')
+                    .select('id');
+                
+                if (error) throw error;
 
-        // --- DATA FETCHING & LISTENING (ON SNAPSHOT) ---
-        function setupListeners() {
-            if (!window.appState.isAuthReady) return;
+                if (products.length === 0) {
+                    const mockProducts = [
+                        { nama_produk: 'Air Mineral 600ml', sku: 'AM-600', unit_besar: 'Dus', unit_kecil: 'Botol', konversi_kecil: 24 },
+                        { nama_produk: 'Soft Drink Kaleng', sku: 'SD-CLG', unit_besar: 'Pack', unit_kecil: 'Kaleng', konversi_kecil: 6 },
+                        { nama_produk: 'Mie Instan Kuah', sku: 'MI-KUH', unit_besar: 'Karton', unit_kecil: 'Bungkus', konversi_kecil: 40 },
+                    ];
+                    
+                    showToast("Mengisi data produk awal. Mohon tunggu sebentar...", 'info');
 
-            // Listener 1: Master Data Produk
-            onSnapshot(getProductsCollectionRef(), (snapshot) => {
-                window.appState.products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                updateStockSummary(); // Update stock based on master data changes
-                if (window.appState.currentPage === 'master') renderApp();
-            }, (error) => {
-                console.error("Error listening to products:", error);
-                showToast("Gagal memuat data produk.", 'error');
-            });
+                    const { error: insertError } = await supabase
+                        .from('products')
+                        .insert(mockProducts);
 
-            // Listener 2: Riwayat Barang Masuk
-            onSnapshot(getIncomingCollectionRef(), (snapshot) => {
-                window.appState.historyIncoming = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                updateStockSummary();
-                if (window.appState.currentPage === 'incoming') renderApp();
-            }, (error) => {
-                console.error("Error listening to incoming:", error);
-                showToast("Gagal memuat riwayat masuk.", 'error');
-            });
+                    if (insertError) throw insertError;
+                }
+            } catch (error) {
+                console.error("Error setting up initial data:", error);
+                showToast(`Gagal menyiapkan data awal: ${error.message}. Pastikan Kredensial Supabase Anda benar.`, 'error');
+            }
+        }
 
-            // Listener 3: Riwayat Barang Keluar
-            onSnapshot(getOutgoingCollectionRef(), (snapshot) => {
-                window.appState.historyOutgoing = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                updateStockSummary();
-                if (window.appState.currentPage === 'outgoing') renderApp();
-            }, (error) => {
-                console.error("Error listening to outgoing:", error);
-                showToast("Gagal memuat riwayat keluar.", 'error');
-            });
+        async function loadAllData() {
+            if (SUPABASE_URL === 'https://iltqolfmvhzaiuagtoxt.supabase.co' || SUPABASE_ANON_KEY === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsdHFvbGZtdmh6YWl1YWd0b3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyNDE5MjQsImV4cCI6MjA4MDgxNzkyNH0.sGzEQjpKfy7fdw8KBNO7mVzKd2tuxqQaYAdRuTjHVMs') {
+                showToast("PERINGATAN: Kredensial Supabase belum diatur. Gunakan placeholder.", 'error');
+                // Tidak menjalankan fetch jika kredensial placeholder, tapi merender UI kosong
+                window.appState.isDataReady = true;
+                handleNavigation(); 
+                return;
+            }
             
-            // Initial data setup check (simulasi jika perlu)
-            checkInitialData();
+            await setupData(); // Pastikan ada data master
+            
+            // Ambil semua data secara paralel
+            await Promise.all([
+                fetchProducts(),
+                fetchIncoming(),
+                fetchOutgoing()
+            ]);
+            
+            updateStockSummary();
+            window.appState.isDataReady = true;
+            handleNavigation();
         }
 
         // --- STOCK CALCULATION LOGIC ---
         function updateStockSummary() {
+            // ... (Logika perhitungan stok tetap sama seperti sebelumnya, karena hanya bergantung pada data di appState)
             const { products, historyIncoming, historyOutgoing } = window.appState;
             const newStockData = {};
 
@@ -134,8 +169,9 @@
             // Hitung Barang Masuk (dalam unit kecil)
             historyIncoming.forEach(tx => {
                 const stockItem = newStockData[tx.produk_id];
-                if (stockItem) {
-                    const masukKecil = tx.jumlah_unit_besar * stockItem.konversi;
+                const product = products.find(p => p.id === tx.produk_id);
+                if (stockItem && product) {
+                    const masukKecil = tx.jumlah_unit_besar * product.konversi_kecil; // Menggunakan konversi dari produk
                     stockItem.stok_kecil += masukKecil;
                     stockItem.total_masuk_kecil += masukKecil;
                 }
@@ -151,11 +187,12 @@
             });
 
             window.appState.stockData = newStockData;
-            if (window.appState.currentPage === 'stock') renderApp();
+            if (['stock', 'master', 'incoming', 'outgoing'].includes(window.appState.currentPage)) renderApp();
         }
 
         // --- NAVIGATION & ROUTING ---
         function handleNavigation() {
+            // ... (Fungsi navigasi tetap sama)
             const newPage = window.location.hash.substring(1) || 'stock';
             if (newPage !== window.appState.currentPage) {
                 window.appState.currentPage = newPage;
@@ -178,7 +215,7 @@
             let title = '';
 
             // Loading state check
-            if (!window.appState.isAuthReady || (products.length === 0 && historyIncoming.length === 0)) {
+            if (!window.appState.isDataReady) {
                  contentArea.innerHTML = renderLoadingState();
                  return;
             }
@@ -219,35 +256,41 @@
                 <div class="text-center py-20 text-gray-500">
                     <svg class="w-12 h-12 mx-auto mb-4 text-blue-500 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356-2A8.001 8.001 0 004.582 19.58m15.356-2A8.001 8.001 0 014.582 4.42"></path></svg>
                     Memuat data master dan stok awal...
-                    <p class="mt-2 text-xs">Pastikan Anda telah mengaktifkan Firebase dan Firestore.</p>
+                    <p class="mt-2 text-xs">Pastikan Anda telah memasukkan kredensial Supabase yang benar.</p>
                 </div>
             `;
         }
         
-        // --- VIEW RENDERERS ---
+        // --- VIEW RENDERERS (Tetap Sama) ---
 
         function getProductById(id) {
+            // Supabase menggunakan 'id' sebagai primary key secara default
             return window.appState.products.find(p => p.id === id);
         }
 
         function renderStockView(products, stockData) {
-            const stockItems = Object.keys(stockData)
-                .map(id => ({ id, ...stockData[id], product: getProductById(id) }))
+            const stockItems = products
+                .map(product => ({ 
+                    id: product.id, 
+                    product: product, 
+                    ...stockData[product.id] 
+                }))
                 .filter(item => item.product); 
 
-            const totalStokGlobal = stockItems.reduce((sum, item) => sum + item.stok_kecil, 0);
+            const totalStokGlobal = stockItems.reduce((sum, item) => sum + (item.stok_kecil || 0), 0);
             
             const tableRows = stockItems.map(item => {
-                const stokClass = item.stok_kecil < 100 ? 'text-red-600 font-bold' : 'text-green-600';
+                const stok = item.stok_kecil || 0;
+                const stokClass = stok < 100 ? 'text-red-600 font-bold' : 'text-green-600';
                 return `
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-3 text-sm font-medium text-gray-900">${item.product.nama_produk} <span class="text-xs text-gray-500 block">${item.product.sku}</span></td>
                         <td class="px-6 py-3 text-sm text-gray-500">${item.product.unit_besar} (${item.product.konversi_kecil} ${item.product.unit_kecil})</td>
                         <td class="px-6 py-3 text-sm ${stokClass}">
-                            ${Number(item.stok_kecil).toLocaleString('id-ID')} ${item.unit_kecil}
+                            ${Number(stok).toLocaleString('id-ID')} ${item.product.unit_kecil}
                         </td>
-                        <td class="px-6 py-3 text-sm text-gray-500">${Number(item.total_masuk_kecil).toLocaleString('id-ID')}</td>
-                        <td class="px-6 py-3 text-sm text-gray-500">${Number(item.total_keluar_kecil).toLocaleString('id-ID')}</td>
+                        <td class="px-6 py-3 text-sm text-gray-500">${Number(item.total_masuk_kecil || 0).toLocaleString('id-ID')}</td>
+                        <td class="px-6 py-3 text-sm text-gray-500">${Number(item.total_keluar_kecil || 0).toLocaleString('id-ID')}</td>
                     </tr>
                 `;
             }).join('');
@@ -332,11 +375,11 @@
         
         function renderOutgoingView(products, historyOutgoing) {
             const tableRows = historyOutgoing
-                // Sort by timestamp descending (newest first)
-                .sort((a, b) => new Date(b.tanggal_keluar) - new Date(a.tanggal_keluar))
+                .sort((a, b) => new Date(b.created_at || b.tanggal_keluar) - new Date(a.created_at || a.tanggal_keluar))
                 .map(tx => {
                 const product = getProductById(tx.produk_id);
-                const date = new Date(tx.tanggal_keluar).toLocaleDateString('id-ID'); 
+                // Supabase menggunakan 'created_at' secara default, tapi kita juga menerima tanggal_keluar
+                const date = new Date(tx.created_at || tx.tanggal_keluar).toLocaleDateString('id-ID'); 
                 return `
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-3 text-sm text-gray-500">${date}</td>
@@ -380,11 +423,10 @@
 
         function renderIncomingView(products, historyIncoming) {
             const tableRows = historyIncoming
-                // Sort by timestamp descending (newest first)
-                .sort((a, b) => new Date(b.tanggal_masuk) - new Date(a.tanggal_masuk))
+                .sort((a, b) => new Date(b.created_at || b.tanggal_masuk) - new Date(a.created_at || a.tanggal_masuk))
                 .map(tx => {
                 const product = getProductById(tx.produk_id);
-                const date = new Date(tx.tanggal_masuk).toLocaleDateString('id-ID'); 
+                const date = new Date(tx.created_at || tx.tanggal_masuk).toLocaleDateString('id-ID'); 
                 return `
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-3 text-sm text-gray-500">${date}</td>
@@ -427,9 +469,8 @@
         }
 
         // --- DYNAMIC LISTENERS (RUN AFTER RENDER) ---
-
         function attachDynamicListeners() {
-            // Re-attach modal trigger buttons
+            // ... (Fungsi attachDynamicListeners tetap sama)
             const modal = document.getElementById('transaction-modal');
             const modalTitle = document.getElementById('modal-title');
             const modalContentArea = document.getElementById('modal-content-area');
@@ -480,7 +521,7 @@
             }
         }
         
-        // --- FORM GENERATORS ---
+        // --- FORM GENERATORS (Tetap Sama) ---
 
         function getMasterDataForm() {
             return `
@@ -524,8 +565,8 @@
 
             let productOptions = products.map(p => {
                 const stockItem = stockData[p.id] || { stok_kecil: 0 };
-                const disabled = isOutgoing && stockItem.stok_kecil <= 0 ? 'disabled' : '';
-                const stockText = isOutgoing ? `(Stok: ${stockItem.stok_kecil.toLocaleString('id-ID')} ${p.unit_kecil})` : '';
+                const disabled = isOutgoing && (stockItem.stok_kecil || 0) <= 0 ? 'disabled' : '';
+                const stockText = isOutgoing ? `(Stok: ${(stockItem.stok_kecil || 0).toLocaleString('id-ID')} ${p.unit_kecil})` : '';
                 return `
                     <option value="${p.id}" data-unit-text="${isOutgoing ? p.unit_kecil : p.unit_besar}" data-konversi="${p.konversi_kecil}" ${disabled}>
                         ${p.nama_produk} ${stockText}
@@ -584,26 +625,7 @@
 
         // --- HANDLERS & LOGIC ---
         
-        // Simulasikan data awal jika koleksi kosong
-        async function checkInitialData() {
-            if (!db) return;
-            const productDocs = await getDocs(getProductsCollectionRef());
-            if (productDocs.empty) {
-                const mockProducts = [
-                    { nama_produk: 'Air Mineral 600ml', sku: 'AM-600', unit_besar: 'Dus', unit_kecil: 'Botol', konversi_kecil: 24 },
-                    { nama_produk: 'Soft Drink Kaleng', sku: 'SD-CLG', unit_besar: 'Pack', unit_kecil: 'Kaleng', konversi_kecil: 6 },
-                    { nama_produk: 'Mie Instan Kuah', sku: 'MI-KUH', unit_besar: 'Karton', unit_kecil: 'Bungkus', konversi_kecil: 40 },
-                ];
-                
-                showToast("Mengisi data produk awal. Mohon tunggu sebentar...", 'info');
-
-                for (const item of mockProducts) {
-                    await addDoc(getProductsCollectionRef(), item);
-                }
-            }
-        }
-
-        // Master Data Handler
+        // Master Data Handler (Supabase)
         async function handleAddProduct(e) {
             e.preventDefault();
             const nama_produk = document.getElementById('nama_produk').value.trim();
@@ -617,28 +639,45 @@
                 return;
             }
             
-            // Cek duplikasi SKU secara in-memory (karena Firestore tidak mendukung query unik yang efisien tanpa indeks)
-            const isSkuExists = window.appState.products.some(p => p.sku === sku);
-            if (isSkuExists) {
+            // Supabase: Cek duplikasi SKU
+            const { data: existing, error: fetchError } = await supabase
+                .from('products')
+                .select('sku')
+                .eq('sku', sku);
+                
+            if (fetchError) {
+                 console.error("Error checking SKU:", fetchError);
+                 showToast("Gagal memeriksa SKU.", 'error');
+                 return;
+            }
+
+            if (existing && existing.length > 0) {
                  showToast("SKU ini sudah digunakan. Mohon gunakan SKU yang berbeda.", 'error');
                  return;
             }
 
             try {
-                await addDoc(getProductsCollectionRef(), { nama_produk, sku, unit_besar, unit_kecil, konversi_kecil });
+                const { error } = await supabase
+                    .from('products')
+                    .insert([{ nama_produk, sku, unit_besar, unit_kecil, konversi_kecil }]);
                 
-                showToast(`Produk '${nama_produk}' berhasil ditambahkan!`, 'success');
+                if (error) throw error;
+                
+                showToast(`Produk '${nama_produk}' berhasil ditambahkan! Memuat ulang data...`, 'success');
                 document.getElementById('transaction-modal').classList.add('hidden');
                 document.getElementById('transaction-modal').classList.remove('flex');
+                
+                // Muat ulang data secara keseluruhan untuk refresh UI
+                await loadAllData(); 
             } catch (error) {
                 console.error("Error adding product:", error);
-                showToast("Gagal menyimpan produk. Cek koneksi atau izin Anda.", 'error');
+                showToast("Gagal menyimpan produk. Cek koneksi Supabase Anda.", 'error');
             }
         }
         
-        // Transaction Draft Logic
-        
+        // Transaction Draft Logic (Tetap Sama)
         function setupTransactionFormListeners(type) {
+            // ... (Logika listeners formulir transaksi tetap sama)
             const isOutgoing = type === 'outgoing';
             const primaryId = isOutgoing ? 'tujuan' : 'sumber';
 
@@ -666,7 +705,7 @@
                     unitDisplay.textContent = `Unit: ${unitText}`;
                     
                     if (isOutgoing) {
-                        const currentStok = stockItem.stok_kecil;
+                        const currentStok = stockItem.stok_kecil || 0;
                         unitDisplay.textContent = `Unit: ${unitText}. Stok tersedia: ${currentStok.toLocaleString('id-ID')} ${unitText}`;
                         
                         const jumlah = parseInt(jumlahInput.value) || 0;
@@ -705,7 +744,7 @@
 
                 if (isOutgoing) {
                     const stockItem = window.appState.stockData[produkId] || { stok_kecil: 0 };
-                    const currentStok = stockItem.stok_kecil;
+                    const currentStok = stockItem.stok_kecil || 0;
                     
                     if (jumlah > currentStok) {
                         showToast(`Gagal: Stok ${product.nama_produk} tidak cukup.`, 'error');
@@ -717,8 +756,8 @@
                         jumlah_unit_kecil: jumlah,
                         tujuan: primaryValue,
                         catatan: catatan,
+                        // Supabase akan otomatis menambahkan created_at, tapi kita tambahkan tanggal untuk konsistensi di UI jika created_at hilang
                         tanggal_keluar: new Date().toISOString().split('T')[0],
-                        timestamp: Date.now(),
                     });
                 } else {
                     // Incoming item is stored as unit besar
@@ -727,8 +766,8 @@
                         jumlah_unit_besar: jumlah,
                         sumber: primaryValue,
                         catatan: catatan,
+                         // Supabase akan otomatis menambahkan created_at, tapi kita tambahkan tanggal untuk konsistensi di UI jika created_at hilang
                         tanggal_masuk: new Date().toISOString().split('T')[0],
-                        timestamp: Date.now(),
                     });
                 }
 
@@ -740,7 +779,6 @@
             
             // Handle Clear Draft
             document.getElementById('clear-draft-btn').onclick = () => {
-                // Menggunakan kustom modal UI pengganti window.confirm
                 showCustomConfirmation("Yakin ingin menghapus semua draft transaksi ini?", () => {
                     window.appState.draftTransactions = [];
                     updateDraftUI(type);
@@ -753,6 +791,7 @@
         }
         
         function updateDraftUI(type) {
+             // ... (Logika update Draft UI tetap sama)
             const { products, draftTransactions, stockData } = window.appState;
             const isOutgoing = type === 'outgoing';
             const draftListContainer = document.getElementById('draft-list-container');
@@ -776,8 +815,8 @@
                 
                 draftTransactions.forEach((item, index) => {
                     const product = getProductById(item.produk_id);
-                    const stockItem = stockData[item.produk_id] || { stok_kecil: 0 };
-                    const currentStok = stockItem.stok_kecil;
+                    const stockItem = window.appState.stockData[item.produk_id] || { stok_kecil: 0 };
+                    const currentStok = stockItem.stok_kecil || 0;
                     
                     let primaryText = isOutgoing ? item.tujuan : item.sumber;
                     let quantityText;
@@ -785,6 +824,7 @@
 
                     if (isOutgoing) {
                         quantityText = `${item.jumlah_unit_kecil.toLocaleString('id-ID')} ${product ? product.unit_kecil : ''}`;
+                        // Cek stok secara real-time vs stok saat ini
                         if (item.jumlah_unit_kecil > currentStok) {
                             isError = true;
                             hasOverstockedItem = true;
@@ -817,7 +857,7 @@
                 });
                 
                 // Menonaktifkan tombol simpan jika ada item yang kekurangan stok
-                saveBtn.disabled = hasOverstockedItem;
+                saveBtn.disabled = hasOverstockedItem || draftTransactions.length === 0;
                 clearBtn.disabled = false;
             }
             
@@ -825,12 +865,13 @@
             saveCount.textContent = draftTransactions.length;
         }
 
+        // Save Batch Handler (Supabase)
         async function handleSaveBatch(type) {
             const { draftTransactions } = window.appState;
             if (draftTransactions.length === 0) return;
 
             const isOutgoing = type === 'outgoing';
-            const collectionRef = isOutgoing ? getOutgoingCollectionRef() : getIncomingCollectionRef();
+            const tableName = isOutgoing ? 'outgoing' : 'incoming';
 
             // Lakukan pengecekan stok terakhir untuk Barang Keluar sebelum commit
             if (isOutgoing) {
@@ -847,8 +888,11 @@
             }
             
             try {
-                const batchPromises = draftTransactions.map(item => addDoc(collectionRef, item));
-                await Promise.all(batchPromises);
+                const { error } = await supabase
+                    .from(tableName)
+                    .insert(draftTransactions);
+
+                if (error) throw error;
 
                 // Success
                 const numItems = draftTransactions.length;
@@ -858,17 +902,21 @@
                 document.getElementById('transaction-modal').classList.add('hidden');
                 document.getElementById('transaction-modal').classList.remove('flex');
 
-                showToast(`${numItems} transaksi ${isOutgoing ? 'Barang Keluar' : 'Barang Masuk'} berhasil disimpan.`, 'success');
+                showToast(`${numItems} transaksi ${isOutgoing ? 'Barang Keluar' : 'Barang Masuk'} berhasil disimpan. Memuat ulang data...`, 'success');
+                
+                // Muat ulang data secara keseluruhan untuk refresh UI dan perhitungan stok
+                await loadAllData(); 
                 
             } catch (error) {
                 console.error("Error committing batch:", error);
-                showToast("Gagal menyimpan transaksi batch. Silakan coba lagi.", 'error');
+                showToast(`Gagal menyimpan transaksi batch: ${error.message}`, 'error');
             }
         }
 
 
         // --- UTILITY: CUSTOM CONFIRMATION MODAL (Ganti window.confirm) ---
         function showCustomConfirmation(message, onConfirm) {
+            // ... (Fungsi modal kustom tetap sama)
             const modal = document.getElementById('transaction-modal');
             const modalTitle = document.getElementById('modal-title');
             const modalContentArea = document.getElementById('modal-content-area');
@@ -898,6 +946,7 @@
 
         // --- UTILITY: TOAST NOTIFICATION ---
         function showToast(message, type = 'info') {
+             // ... (Fungsi toast notifikasi tetap sama)
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             
@@ -926,7 +975,7 @@
         }
 
         // --- START APPLICATION ---
-        initializeAuthAndFirestore();
+        loadAllData();
 
         // Setup Navigation Listener
         window.addEventListener('hashchange', handleNavigation);
@@ -949,7 +998,7 @@
     <!-- Sidebar -->
     <div id="sidebar" class="sidebar bg-sidebar flex flex-col fixed h-full shadow-lg lg:relative lg:translate-x-0">
         <div class="p-6 text-white border-b border-gray-700/50">
-            <h1 class="text-2xl font-bold tracking-wider">InventPro</h1>
+            <h1 class="text-2xl font-bold tracking-wider">InventPro (SB)</h1>
             <p class="text-xs text-gray-400">Sistem Manajemen Inventori</p>
         </div>
         <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
@@ -981,8 +1030,8 @@
 
         </nav>
         <div class="p-4 text-xs text-gray-500/70 border-t border-gray-700/50">
-            <span id="user-id-display" class="block truncate">Memuat User ID...</span>
-            © 2024 InventPro v2.1 (Firestore)
+            <span id="user-id-display" class="block truncate">User ID: demo-user</span>
+            © 2024 InventPro v2.2 (Supabase)
         </div>
     </div>
 
