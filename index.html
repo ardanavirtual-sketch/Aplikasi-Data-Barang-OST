@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InventPro - Barang Keluar</title>
+    <!-- Memuat Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Mengatur font utama ke Inter, fallback ke sans-serif */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Menyembunyikan "Activate Windows" jika muncul di preview */
+            overflow: hidden;
+        }
+        /* Mengatur lebar sidebar agar responsif */
+        .sidebar {
+            width: 280px; /* Lebar default untuk desktop/tablet */
+            transition: transform 0.3s ease-in-out;
+            z-index: 50;
+        }
+        .main-content {
+            margin-left: 280px; /* Offset konten utama sama dengan lebar sidebar */
+        }
+        @media (max-width: 1024px) {
+            .sidebar {
+                /* Sembunyikan sidebar di mobile secara default */
+                transform: translateX(-280px);
+                position: fixed;
+                height: 100%;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+        /* Mengatur warna kustom agar sesuai dengan gambar */
+        .bg-sidebar {
+            background-color: #171c26;
+        }
+        .text-sidebar-inactive {
+            color: #b0b4ba;
+        }
+        .text-sidebar-active {
+            color: #ffffff;
+        }
+        .bg-sidebar-active {
+            background-color: #272d3a;
+        }
+        .btn-primary {
+            background-color: #f76807;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #e05e00;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex h-screen overflow-hidden">
+
+    <!-- Ikon Menu Toggle (Hanya terlihat di mobile) -->
+    <button id="menu-toggle" class="lg:hidden fixed top-4 left-4 p-2 rounded-lg bg-gray-200 z-50">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    </button>
+
+    <!-- Sidebar / Panel Navigasi Kiri -->
+    <div id="sidebar" class="sidebar bg-sidebar flex flex-col fixed h-full shadow-lg lg:relative lg:translate-x-0">
+        
+        <!-- Header Sidebar / Logo -->
+        <div class="p-6 text-white border-b border-gray-700/50">
+            <h1 class="text-xl font-bold">InventPro</h1>
+            <p class="text-xs text-gray-400">Inventory Management</p>
+        </div>
+
+        <!-- Menu Navigasi -->
+        <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
+            <p class="text-xs font-semibold uppercase text-gray-500/70 px-4 pt-4 pb-2">Menu Utama</p>
+            
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-sidebar-inactive hover:bg-sidebar-active">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-sidebar-inactive hover:bg-sidebar-active">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                <span>Produk</span>
+            </a>
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-sidebar-inactive hover:bg-sidebar-active">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                <span>Barang Masuk</span>
+            </a>
+
+            <!-- Menu Aktif: Barang Keluar -->
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg bg-sidebar-active text-sidebar-active font-semibold">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3v-1"></path></svg>
+                <span>Barang Keluar</span>
+            </a>
+            
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-sidebar-inactive hover:bg-sidebar-active">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span>Laporan</span>
+            </a>
+
+            <p class="text-xs font-semibold uppercase text-gray-500/70 px-4 pt-4 pb-2">Lainnya</p>
+
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-sidebar-inactive hover:bg-sidebar-active">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span>Pengaturan</span>
+            </a>
+        </nav>
+
+        <!-- Footer Sidebar -->
+        <div class="p-4 text-xs text-gray-500/70 border-t border-gray-700/50">
+            © 2024 InventPro v1.0
+        </div>
+    </div>
+
+    <!-- Area Konten Utama -->
+    <div class="main-content flex-1 flex flex-col overflow-hidden">
+        
+        <!-- Header Utama / Navbar Atas -->
+        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shadow-sm">
+            
+            <!-- Judul Halaman -->
+            <h2 class="text-xl font-semibold text-gray-800 hidden sm:block">Barang Keluar</h2>
+            
+            <!-- Pencarian, Notifikasi & Profil -->
+            <div class="flex items-center space-x-4 ml-auto">
+                
+                <!-- Input Pencarian -->
+                <div class="relative hidden lg:block">
+                    <input type="text" placeholder="Cari..." class="w-64 py-2 pl-10 pr-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-400">
+                    <svg class="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                
+                <!-- Notifikasi -->
+                <button class="p-2 text-gray-500 hover:text-gray-700 relative">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1"></path></svg>
+                    <!-- Badge Notifikasi -->
+                    <span class="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+                </button>
+                
+                <!-- Avatar Profil -->
+                <button class="flex items-center space-x-2 text-sm">
+                    <img class="h-8 w-8 rounded-full object-cover border-2 border-gray-300" src="https://placehold.co/32x32/1E40AF/ffffff?text=U" alt="User Avatar" onerror="this.onerror=null;this.src='https://placehold.co/32x32/1E40AF/ffffff?text=U';">
+                </button>
+            </div>
+        </header>
+
+        <!-- Konten Halaman Utama -->
+        <main class="flex-1 overflow-y-auto p-6 space-y-6">
+            
+            <!-- Header Konten -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                <h1 class="text-2xl font-bold text-gray-800 flex items-center space-x-2 mb-4 sm:mb-0">
+                    <!-- Ikon Riwayat Barang Keluar (Panah atas, seperti di gambar) -->
+                    <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(90deg);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                    <span>Riwayat Barang Keluar</span>
+                </h1>
+                
+                <!-- Tombol Catat Barang Keluar -->
+                <button class="btn-primary flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition duration-200 w-full sm:w-auto">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    <span>Catat Barang Keluar</span>
+                </button>
+            </div>
+
+            <!-- Area Card Utama -->
+            <div class="bg-white p-8 rounded-xl shadow-md min-h-[70vh] flex items-center justify-center">
+                
+                <!-- Placeholder Konten Kosong -->
+                <div class="text-center text-gray-500 space-y-4">
+                    <svg class="w-16 h-16 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    <p>Belum ada data barang keluar</p>
+                </div>
+                
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Overlay untuk mobile saat sidebar terbuka -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black opacity-0 transition-opacity duration-300 z-40 hidden lg:hidden"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const toggleButton = document.getElementById('menu-toggle');
+            const overlay = document.getElementById('sidebar-overlay');
+            const mainContent = document.querySelector('.main-content');
+
+            // Fungsi untuk membuka/menutup sidebar
+            const toggleSidebar = () => {
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('hidden');
+                overlay.classList.toggle('opacity-0');
+                overlay.classList.toggle('opacity-50');
+            };
+
+            // Event listener untuk tombol toggle
+            toggleButton.addEventListener('click', toggleSidebar);
+
+            // Event listener untuk menutup sidebar saat overlay diklik (hanya di mobile)
+            overlay.addEventListener('click', toggleSidebar);
+
+            // Menutup sidebar jika ukuran layar berubah dari mobile ke desktop
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 1024 && sidebar.classList.contains('open')) {
+                    sidebar.classList.remove('open');
+                    overlay.classList.add('hidden');
+                    overlay.classList.remove('opacity-50');
+                    overlay.classList.add('opacity-0');
+                }
+            });
+            
+            // Mengatur offset untuk tombol toggle agar tidak tertutup sidebar saat terbuka
+            const adjustTogglePosition = () => {
+                if (window.innerWidth < 1024 && sidebar.classList.contains('open')) {
+                     // Toggle button should be visible over the content when sidebar is open
+                } else {
+                    // Reset position
+                }
+            }
+            window.addEventListener('resize', adjustTogglePosition);
+            adjustTogglePosition(); // Panggil saat pemuatan
+        });
+    </script>
+
+</body>
+</html>
