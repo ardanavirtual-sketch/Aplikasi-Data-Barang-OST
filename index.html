@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InventPro - Barang Keluar Multi-Unit</title>
+    <title>InventPro - Barang Keluar Multi-Unit (Supabase View)</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         body { font-family: 'Inter', sans-serif; }
@@ -28,12 +29,10 @@
 </head>
 <body class="bg-gray-100 flex h-screen overflow-hidden">
 
-    <!-- Ikon Menu Toggle (Hanya terlihat di mobile) -->
     <button id="menu-toggle" class="lg:hidden fixed top-4 left-4 p-2 rounded-lg bg-gray-200 z-50">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
     </button>
 
-    <!-- Sidebar -->
     <div id="sidebar" class="sidebar bg-sidebar flex flex-col fixed h-full shadow-lg lg:relative lg:translate-x-0">
         <div class="p-6 text-white border-b border-gray-700/50">
             <h1 class="text-xl font-bold">InventPro</h1>
@@ -41,7 +40,6 @@
         </div>
         <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
             <p class="text-xs font-semibold uppercase text-gray-500/70 px-4 pt-4 pb-2">Menu Utama</p>
-            <!-- Menu Aktif: Barang Keluar -->
             <a href="#" class="flex items-center space-x-3 p-3 rounded-lg bg-sidebar-active text-sidebar-active font-semibold">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3v-1"></path></svg>
                 <span>Barang Keluar</span>
@@ -52,10 +50,8 @@
         </div>
     </div>
 
-    <!-- Area Konten Utama -->
     <div class="main-content flex-1 flex flex-col overflow-hidden">
         
-        <!-- Header Utama / Navbar Atas -->
         <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shadow-sm">
             <h2 class="text-xl font-semibold text-gray-800 hidden sm:block">Pencatatan Barang Keluar</h2>
             <div class="flex items-center space-x-4 ml-auto">
@@ -66,24 +62,20 @@
             </div>
         </header>
 
-        <!-- Konten Halaman Utama -->
         <main class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
             
-            <!-- Header Konten -->
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                 <h1 class="text-2xl font-bold text-gray-800 flex items-center space-x-2 mb-4 sm:mb-0">
                     <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(90deg);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
                     <span>Riwayat Barang Keluar</span>
                 </h1>
                 
-                <!-- Tombol Buka Modal Catat Barang Keluar -->
                 <button id="open-modal-btn" class="btn-primary flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition duration-200 w-full sm:w-auto">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     <span>Catat Barang Keluar</span>
                 </button>
             </div>
 
-            <!-- Bagian Status Stok Cepat -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="bg-white p-5 rounded-xl shadow-md flex justify-between items-center">
                     <span class="text-gray-500">Total Stok Global (Pcs/Botol)</span>
@@ -91,7 +83,6 @@
                 </div>
             </div>
 
-            <!-- Riwayat Transaksi -->
             <div class="bg-white p-4 sm:p-8 rounded-xl shadow-md">
                 <h3 class="text-xl font-semibold mb-4">Daftar Barang Keluar</h3>
                 <div class="overflow-x-auto">
@@ -106,7 +97,6 @@
                             </tr>
                         </thead>
                         <tbody id="transactions-list" class="bg-white divide-y divide-gray-200">
-                            <!-- Data Transaksi akan dimasukkan di sini oleh JS -->
                             <tr>
                                 <td colspan="5" class="py-4 text-center text-gray-500">Memuat data...</td>
                             </tr>
@@ -118,7 +108,6 @@
         </main>
     </div>
 
-    <!-- Modal Catat Barang Keluar (Input Batch/Draft) -->
     <div id="new-transaction-modal" class="modal-backdrop fixed inset-0 hidden items-center justify-center p-4">
         <div class="modal-content bg-white w-full max-w-4xl rounded-xl shadow-2xl p-6">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
@@ -127,7 +116,6 @@
             </div>
             
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Kolom Kiri: Formulir Input Item -->
                 <div class="lg:col-span-1 border-r lg:pr-6">
                     <h4 class="text-lg font-semibold mb-3 text-gray-700">Tambah Item ke Draft</h4>
                     <form id="add-item-form" class="space-y-4">
@@ -151,14 +139,12 @@
                     </form>
                 </div>
 
-                <!-- Kolom Kanan: Daftar Draft dan Tombol Simpan -->
                 <div class="lg:col-span-2">
                     <h4 class="text-lg font-semibold mb-3 text-gray-700">Draft Transaksi (<span id="draft-count">0</span> Item)</h4>
                     
                     <div id="draft-list-container" class="space-y-3 max-h-80 overflow-y-auto p-2 border rounded-md bg-gray-50 mb-4">
                         <p id="empty-draft-message" class="text-center text-gray-500 py-4">Draft kosong. Tambahkan item di samping.</p>
-                        <!-- Draft items rendered here -->
-                    </div>
+                        </div>
 
                     <div class="flex justify-between items-center pt-4 border-t">
                         <button id="clear-draft-btn" class="text-red-500 hover:text-red-700 text-sm disabled:opacity-50" disabled>Hapus Draft</button>
@@ -172,167 +158,181 @@
         </div>
     </div>
     
-    <!-- Toast/Notification Area -->
     <div id="toast-container" class="fixed bottom-4 right-4 space-y-2"></div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, addDoc, onSnapshot, collection, query, writeBatch, Timestamp, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        const { createClient } = supabase;
+
+        // =================================================================
+        // !! GANTI DENGAN URL DAN ANON KEY SUPABASE ANDA !!
+        // =================================================================
+        const supabaseUrl = 'https://iltqolfmvhzaiuagtoxt.supabase.co'; 
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsdHFvbGZtdmh6YWl1YWd0b3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyNDE5MjQsImV4cCI6MjA4MDgxNzkyNH0.sGzEQjpKfy7fdw8KBNO7mVzKd2tuxqQaYAdRuTjHVMs'; 
         
-        // setLogLevel('Debug'); // Aktifkan untuk debugging log Firebase
+        // Simulasikan UUID pengguna (Penting: Ganti dengan session.user.id jika menggunakan Supabase Auth)
+        let supabaseClient, userId = '00000000-0000-0000-0000-000000000001'; 
 
-        // Global Variables (Provided by Canvas Environment)
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        let db, auth, userId = null;
         let products = [];
         let stockData = {}; // {produk_id: stok_aktual_unit_kecil}
         let draftTransactions = []; // State untuk input batch di sisi klien
-
-        // --- FIREBASE INITIALIZATION AND AUTHENTICATION ---
-        const app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
-        auth = getAuth(app);
         
-        async function initializeAuthAndFirestore() {
+        // --- SUPABASE INITIALIZATION ---
+        function initializeSupabase() {
             try {
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-                userId = auth.currentUser?.uid || crypto.randomUUID();
-                document.getElementById('user-id-display').textContent = `User ID: ${userId}`;
-                console.log("Firebase Auth & Firestore initialized for user:", userId);
+                supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+                document.getElementById('user-id-display').textContent = `User ID: ${userId} (Simulasi)`;
+                console.log("Supabase Client initialized for user:", userId);
 
-                // Setelah autentikasi, inisialisasi data dan listener
-                await setupData();
+                // Setelah inisialisasi, setup data dan listener
+                setupData(); 
                 setupListeners();
 
             } catch (error) {
-                console.error("Error during Firebase initialization or sign-in:", error);
-                showToast("Gagal memuat aplikasi. Cek koneksi Anda.", 'error');
+                console.error("Error during Supabase initialization:", error);
+                showToast("Gagal memuat aplikasi. Cek konfigurasi URL/Key Supabase Anda.", 'error');
             }
         }
-
+        
         // --- DATA SETUP (SIMULASI MASTER DATA) ---
         async function setupData() {
-            // Path untuk data publik (produk) dan data pribadi (transaksi)
-            const productsCollectionRef = collection(db, `artifacts/${appId}/public/data/produk`);
-            const incomingCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/barang_masuk`);
-            
-            // 1. Inisialisasi Data Produk (jika belum ada)
+            // Data mock produk awal (menggunakan SKU untuk checking duplikasi)
             const mockProducts = [
-                { id: 'prod-001', nama_produk: 'Air Mineral 600ml', sku: 'AM-600', unit_besar: 'Dus', unit_kecil: 'Botol', konversi_kecil: 24, initial_stok_dus: 50 },
-                { id: 'prod-002', nama_produk: 'Soft Drink Kaleng', sku: 'SD-CLG', unit_besar: 'Pack', unit_kecil: 'Kaleng', konversi_kecil: 6, initial_stok_dus: 100 },
-                { id: 'prod-003', nama_produk: 'Mie Instan Kuah', sku: 'MI-KUH', unit_besar: 'Karton', unit_kecil: 'Bungkus', konversi_kecil: 40, initial_stok_dus: 30 },
+                { nama_produk: 'Air Mineral 600ml', sku: 'AM-600', unit_besar: 'Dus', unit_kecil: 'Botol', konversi_kecil: 24, initial_stok_dus: 50 },
+                { nama_produk: 'Soft Drink Kaleng', sku: 'SD-CLG', unit_besar: 'Pack', unit_kecil: 'Kaleng', konversi_kecil: 6, initial_stok_dus: 100 },
+                { nama_produk: 'Mie Instan Kuah', sku: 'MI-KUH', unit_besar: 'Karton', unit_kecil: 'Bungkus', konversi_kecil: 40, initial_stok_dus: 30 },
             ];
-            
-            for (const item of mockProducts) {
-                const productRef = doc(productsCollectionRef, item.id);
-                // Menggunakan setDoc untuk memastikan ID tetap sama
-                await setDoc(productRef, {
-                    nama_produk: item.nama_produk,
-                    sku: item.sku,
-                    unit_besar: item.unit_besar,
-                    unit_kecil: item.unit_kecil,
-                    konversi_kecil: item.konversi_kecil,
-                });
-                
-                // Tambahkan Barang Masuk Awal (Simulasi Inisialisasi Stok)
-                const productIncomingQuery = query(incomingCollectionRef, where('produk_id', '==', item.id));
-                const snapshot = await getDocs(productIncomingQuery);
-                
-                // Cek apakah sudah ada barang masuk untuk produk ini
-                if (snapshot.empty) { 
-                    await addDoc(incomingCollectionRef, {
-                        produk_id: item.id,
-                        jumlah_unit_besar: item.initial_stok_dus,
-                        tanggal_masuk: Timestamp.now(),
-                        sumber: 'Stok Awal Sistem',
-                        catatan: 'Data inisialisasi awal',
-                        created_at: Timestamp.now(),
-                    });
+
+            try {
+                for (const item of mockProducts) {
+                    // Cek apakah produk sudah ada berdasarkan SKU
+                    const { data: existingProd } = await supabaseClient
+                        .from('produk')
+                        .select('id')
+                        .eq('sku', item.sku);
+
+                    if (!existingProd || existingProd.length === 0) {
+                        // 1. Insert Produk baru
+                        const { data: newProd, error: insertError } = await supabaseClient.from('produk').insert({
+                            nama_produk: item.nama_produk,
+                            sku: item.sku,
+                            unit_besar: item.unit_besar,
+                            unit_kecil: item.unit_kecil,
+                            konversi_kecil: item.konversi_kecil,
+                        }).select('id'); // Ambil ID (UUID) yang baru dibuat
+
+                        if (insertError) throw insertError;
+
+                        const newId = newProd[0].id;
+                        
+                        // 2. Tambahkan Barang Masuk Awal (Simulasi Inisialisasi Stok)
+                        await supabaseClient.from('barang_masuk').insert({
+                            produk_id: newId, 
+                            jumlah_unit_besar: item.initial_stok_dus,
+                            tanggal_masuk: new Date().toISOString().split('T')[0], // Format DATE YYYY-MM-DD
+                            sumber: 'Stok Awal Sistem',
+                            catatan: 'Data inisialisasi awal',
+                            user_id: userId,
+                        });
+                    }
                 }
+            } catch (error) {
+                console.error("Error setting up initial data:", error);
+                showToast("Gagal menginisialisasi data awal (Produk/Stok). Cek skema dan RLS.", 'error');
             }
         }
-
-        // --- REAL-TIME LISTENERS ---
-        function setupListeners() {
-            const productsCollectionRef = collection(db, `artifacts/${appId}/public/data/produk`);
-            const outgoingCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/barang_keluar`);
-            const incomingCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/barang_masuk`);
-
-            // 1. Listener Produk (untuk master data dan konversi)
-            onSnapshot(productsCollectionRef, (snapshot) => {
-                products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                populateProductSelect();
-                console.log("Produk diperbarui:", products.length);
-                // Hitung stok setelah produk dimuat
-                calculateStock(); 
-            }, (error) => console.error("Error fetching products:", error));
-
-
-            // 2. Listener Barang Masuk (untuk perhitungan stok)
-            onSnapshot(incomingCollectionRef, (snapshot) => {
-                const incoming = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                console.log("Transaksi Barang Masuk diperbarui:", incoming.length);
-                calculateStock(incoming, null); // Stok dihitung ulang
-            }, (error) => console.error("Error fetching incoming:", error));
-
-            // 3. Listener Barang Keluar (untuk display riwayat dan perhitungan stok)
-            onSnapshot(outgoingCollectionRef, (snapshot) => {
-                const outgoing = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                console.log("Transaksi Barang Keluar diperbarui:", outgoing.length);
-                renderTransactions(outgoing);
-                calculateStock(null, outgoing); // Stok dihitung ulang
-            }, (error) => console.error("Error fetching outgoing:", error));
-        }
-
-        // --- STOK CALCULATION LOGIC (Simulating the SQL View) ---
-        function calculateStock(incoming = null, outgoing = null) {
-            // Jika data belum tersedia di Window (pertama kali), ambil dari tempat penyimpanan sementara
-            if (incoming === null) incoming = window.currentIncoming || [];
-            if (outgoing === null) outgoing = window.currentOutgoing || [];
-
-            // Simpan data di Window agar bisa diakses jika salah satu listener update
-            window.currentIncoming = incoming;
-            window.currentOutgoing = outgoing;
+        
+        // --- FETCH DATA FROM SUPABASE ---
+        
+        // FUNGSI BARU: Mengambil Stok langsung dari SQL VIEW
+        async function fetchStockView() {
+            // Catatan: Karena View tidak mencakup user_id, kita mengambil semua data stok global.
+            // Jika Anda ingin memfilter stok per pengguna, View harus dimodifikasi untuk menyertakan user_id
+            // atau menggunakan RLS Policy yang sesuai pada tabel dasar.
+            const { data, error } = await supabaseClient
+                .from('stok_saat_ini_pcs') // Mengambil data dari View
+                .select('*'); 
+            
+            if (error) {
+                console.error("Error fetching stock view:", error);
+                showToast("Gagal memuat data stok dari View. Pastikan View 'stok_saat_ini_pcs' ada.", 'error');
+                return;
+            }
 
             stockData = {};
             let totalStokGlobal = 0;
 
-            products.forEach(p => {
-                const konversi = p.konversi_kecil;
-                
-                // 1. Hitung Total Masuk (dalam unit kecil)
-                const totalMasukUnitKecil = incoming
-                    .filter(item => item.produk_id === p.id)
-                    // Pastikan jumlah_unit_besar adalah angka (Firestore mungkin menyimpannya sebagai objek Number/Timestamp jika tidak di-handle)
-                    .reduce((sum, item) => sum + (Number(item.jumlah_unit_besar) * konversi), 0); 
-
-                // 2. Hitung Total Keluar (sudah dalam unit kecil)
-                const totalKeluarUnitKecil = outgoing
-                    .filter(item => item.produk_id === p.id)
-                    .reduce((sum, item) => sum + Number(item.jumlah_unit_kecil), 0);
-
-                // 3. Stok Aktual
-                const stok = totalMasukUnitKecil - totalKeluarUnitKecil;
-                stockData[p.id] = stok;
+            data.forEach(item => {
+                const stok = Number(item.stok_aktual_unit_kecil);
+                stockData[item.produk_id] = stok;
                 totalStokGlobal += stok;
             });
-            
+
             document.getElementById('total-stok-display').textContent = totalStokGlobal.toLocaleString('id-ID');
-            console.log("Stok Aktual (dalam unit kecil):", stockData);
-            updateDraftUI(); // Update stok warning/info di modal
+            console.log("Stok Aktual (dari View) diperbarui:", stockData);
+            updateDraftUI(); 
         }
 
+        // Fetch Produk (Data Master)
+        async function fetchProducts() {
+            const { data, error } = await supabaseClient
+                .from('produk')
+                .select('*');
+            
+            if (error) {
+                console.error("Error fetching products:", error);
+                showToast("Gagal memuat data produk.", 'error');
+                return;
+            }
+            products = data;
+            populateProductSelect();
+            console.log("Produk diperbarui:", products.length);
+        }
 
-        // --- RENDERING FUNCTIONS ---
+        // Fetch Barang Keluar (untuk Display Riwayat)
+        async function fetchOutgoing() {
+            const { data, error } = await supabaseClient
+                .from('barang_keluar')
+                .select('*')
+                .eq('user_id', userId) // Filter data berdasarkan pengguna
+                .order('tanggal_keluar', { ascending: false });
+            
+            if (error) {
+                console.error("Error fetching outgoing:", error);
+                showToast("Gagal memuat riwayat barang keluar.", 'error');
+                return;
+            }
+            window.currentOutgoing = data;
+            console.log("Transaksi Barang Keluar diperbarui:", data.length);
+            renderTransactions(data);
+        }
+        
+        // --- REAL-TIME LISTENERS (Supabase Realtime) ---
+        function setupListeners() {
+            // Fetch pertama kali
+            fetchProducts();
+            fetchStockView(); // Panggil View untuk mendapatkan stok
+            fetchOutgoing(); // Panggil riwayat keluar
+
+            // Listener untuk Barang Masuk (Perubahan memicu update stok dari View)
+            supabaseClient
+                .channel('incoming_changes')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'barang_masuk', filter: `user_id=eq.${userId}` }, fetchStockView) 
+                .subscribe();
+
+            // Listener untuk Barang Keluar (Perubahan memicu update stok dari View DAN update riwayat)
+            supabaseClient
+                .channel('outgoing_changes')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'barang_keluar', filter: `user_id=eq.${userId}` }, (payload) => {
+                    fetchStockView();
+                    fetchOutgoing(); // Re-fetch history
+                })
+                .subscribe();
+        }
+        
+        // Catatan: Logika 'calculateStock' lama DIBUANG karena digantikan oleh fetchStockView.
+
+
+        // --- RENDERING FUNCTIONS (TIDAK BERUBAH) ---
         
         function populateProductSelect() {
             const select = document.getElementById('product-select');
@@ -347,7 +347,7 @@
             });
             select.removeEventListener('change', updateUnitKecilDisplay);
             select.addEventListener('change', updateUnitKecilDisplay);
-            select.dispatchEvent(new Event('change')); // Panggil pertama kali untuk inisialisasi
+            select.dispatchEvent(new Event('change')); 
         }
 
         function updateUnitKecilDisplay() {
@@ -366,7 +366,6 @@
                 unitDisplay.textContent = `Unit: ${unitKecil}. Stok tersedia: ${currentStok.toLocaleString('id-ID')} ${unitKecil}`;
                 unitDisplay.classList.remove('hidden');
 
-                // Cek Stok saat input jumlah berubah
                 const checkStock = () => {
                     const jumlah = parseInt(jumlahInput.value) || 0;
                     const addItemBtn = document.getElementById('add-item-btn');
@@ -385,14 +384,13 @@
                     }
                 };
 
-                // Clear previous listener and add new one
                 jumlahInput.oninput = checkStock; 
-                checkStock(); // Cek saat produk berubah
+                checkStock(); 
             } else {
                 unitDisplay.textContent = '';
                 unitDisplay.classList.add('hidden');
                 stokWarning.classList.add('hidden');
-                jumlahInput.oninput = null; // Hapus listener saat tidak ada produk terpilih
+                jumlahInput.oninput = null; 
             }
         }
         
@@ -405,17 +403,9 @@
                 return;
             }
 
-            // Urutkan berdasarkan tanggal terbaru
-            transactions.sort((a, b) => {
-                const dateA = a.created_at?.toDate ? a.created_at.toDate().getTime() : new Date(a.created_at).getTime();
-                const dateB = b.created_at?.toDate ? b.created_at.toDate().getTime() : new Date(b.created_at).getTime();
-                return dateB - dateA; // Descending
-            });
-
             transactions.forEach(tx => {
                 const product = products.find(p => p.id === tx.produk_id);
-                // Handle konversi dari Firestore Timestamp atau Date Object
-                const date = tx.tanggal_keluar?.toDate ? tx.tanggal_keluar.toDate().toLocaleDateString('id-ID') : new Date(tx.tanggal_keluar).toLocaleDateString('id-ID');
+                const date = new Date(tx.tanggal_keluar).toLocaleDateString('id-ID'); 
 
                 const row = listContainer.insertRow();
                 row.className = "hover:bg-gray-100";
@@ -445,15 +435,16 @@
                 clearBtn.disabled = true;
             } else {
                 emptyMessage.classList.add('hidden');
-                saveBtn.disabled = false;
+                // Nonaktifkan tombol Save jika ada item yang stoknya kurang
+                const hasOverstockedItem = draftTransactions.some(item => item.jumlah_unit_kecil > (stockData[item.produk_id] || 0));
+                
+                saveBtn.disabled = hasOverstockedItem;
                 clearBtn.disabled = false;
                 
                 draftTransactions.forEach((item, index) => {
                     const product = products.find(p => p.id === item.produk_id);
-                    // Pastikan stok aktual cukup sebelum dimasukkan ke draft (re-check)
                     const currentStok = stockData[item.produk_id] || 0;
                     
-                    // Simulasikan pengecekan stok, meskipun sudah dicek saat add item
                     const isOverstocked = item.jumlah_unit_kecil > currentStok;
 
                     const itemDiv = document.createElement('div');
@@ -471,23 +462,25 @@
                     draftListContainer.appendChild(itemDiv);
                 });
                 
-                // Add event listeners to remove buttons
                 draftListContainer.querySelectorAll('.remove-draft-btn').forEach(button => {
                     button.addEventListener('click', (e) => {
-                        const index = parseInt(e.target.getAttribute('data-index'));
-                        draftTransactions.splice(index, 1);
-                        updateDraftUI();
+                        const target = e.target.closest('.remove-draft-btn');
+                        if (target) {
+                             const index = parseInt(target.getAttribute('data-index'));
+                             draftTransactions.splice(index, 1);
+                             updateDraftUI();
+                        }
                     });
                 });
             }
             
             draftCount.textContent = draftTransactions.length;
             saveCount.textContent = draftTransactions.length;
-            updateUnitKecilDisplay(); // Pastikan stok di form input juga diupdate
+            updateUnitKecilDisplay(); 
         }
 
 
-        // --- MODAL & BATCH HANDLING ---
+        // --- MODAL & BATCH HANDLING (TIDAK BERUBAH) ---
 
         const modal = document.getElementById('new-transaction-modal');
         document.getElementById('open-modal-btn').addEventListener('click', () => {
@@ -515,7 +508,6 @@
 
             const currentStok = stockData[produkId] || 0;
             if (jumlah > currentStok) {
-                 // Warning sudah ditunjukkan oleh JS, tapi kita tambahkan pesan di sini juga.
                  showToast(`Gagal: Stok ${product.nama_produk} tidak cukup. Tersedia: ${currentStok.toLocaleString('id-ID')}`, 'error');
                  return;
             }
@@ -525,21 +517,20 @@
                 produk_id: produkId,
                 jumlah_unit_kecil: jumlah,
                 tujuan: tujuan,
-                tanggal_keluar: Timestamp.now(), // Gunakan Timestamp untuk kemudahan sorting di Firestore
+                tanggal_keluar: new Date().toISOString().split('T')[0], // Format DATE YYYY-MM-DD
                 catatan: '', 
-                created_at: Timestamp.now(),
+                user_id: userId, // Sertakan user_id
             });
 
             // Reset form dan update UI draft
             document.getElementById('add-item-form').reset();
-            document.getElementById('product-select').dispatchEvent(new Event('change')); // Reset unit display
+            document.getElementById('product-select').dispatchEvent(new Event('change')); 
             updateDraftUI();
             showToast(`Item ${product.nama_produk} ditambahkan ke draft.`, 'success');
         });
 
         // Handle Clear Draft
         document.getElementById('clear-draft-btn').addEventListener('click', () => {
-             // Mengganti confirm() dengan modal UI sederhana (sesuai instruksi)
             const confirmAction = window.prompt("Ketik 'YA' untuk menghapus semua draft transaksi:", "");
             if (confirmAction && confirmAction.toUpperCase() === 'YA') {
                 draftTransactions = [];
@@ -554,47 +545,48 @@
         document.getElementById('save-batch-btn').addEventListener('click', async () => {
             if (draftTransactions.length === 0) return;
 
-            const outgoingCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/barang_keluar`);
-            const batch = writeBatch(db);
             const numItems = draftTransactions.length;
             
             // Re-check stok sebelum simpan final (Penting!)
+            let itemsToSave = [];
+            let tempStockData = { ...stockData }; 
             let hasStockError = false;
-            let tempStockData = { ...stockData }; // Gunakan copy untuk simulasi
 
+            // Memastikan item yang ditambahkan masih memiliki stok saat ini
             draftTransactions.forEach(item => {
                 const stock = tempStockData[item.produk_id] || 0;
                 if (item.jumlah_unit_kecil > stock) {
                     hasStockError = true;
-                    // Tampilkan notifikasi spesifik jika ada stok yang kurang
-                    const product = products.find(p => p.id === item.produk_id);
-                    showToast(`Error Batch: Stok ${product.nama_produk} tidak cukup. Item ini dibatalkan.`, 'error');
-                    return;
+                } else {
+                    tempStockData[item.produk_id] -= item.jumlah_unit_kecil; // Simulasi pengurangan stok
+                    itemsToSave.push(item);
                 }
-                
-                // Kurangi stok di simulasi
-                tempStockData[item.produk_id] -= item.jumlah_unit_kecil;
-
-                // Tambahkan ke batch
-                const newDocRef = doc(outgoingCollectionRef);
-                batch.set(newDocRef, item);
             });
 
             if (hasStockError) {
-                showToast("Simpan batch dibatalkan karena ada item yang kekurangan stok. Mohon periksa draft Anda.", 'error');
+                showToast("Simpan batch dibatalkan karena ada item yang kekurangan stok saat konfirmasi. Mohon periksa draft Anda.", 'error');
                 return;
+            }
+            
+            if (itemsToSave.length === 0) {
+                 showToast("Tidak ada item yang valid untuk disimpan.", 'info');
+                 return;
             }
 
             try {
-                // Proses penyimpanan setiap item dalam batch
-                await batch.commit();
+                // Supabase menggunakan 'insert' untuk batch operation
+                const { error } = await supabaseClient
+                    .from('barang_keluar')
+                    .insert(itemsToSave);
+                
+                if (error) throw error;
 
                 // Bersihkan draft setelah commit sukses
                 draftTransactions = [];
                 updateDraftUI();
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
-                showToast(`${numItems} transaksi Barang Keluar berhasil disimpan.`, 'success');
+                showToast(`${itemsToSave.length} transaksi Barang Keluar berhasil disimpan.`, 'success');
                 
             } catch (error) {
                 console.error("Error committing batch:", error);
@@ -603,7 +595,7 @@
         });
 
 
-        // --- UTILITY: TOAST NOTIFICATION (Menggantikan alert()) ---
+        // --- UTILITY: TOAST NOTIFICATION ---
         function showToast(message, type = 'info') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -633,7 +625,7 @@
         }
 
         // Initialize App
-        initializeAuthAndFirestore();
+        initializeSupabase();
 
         // Mobile Sidebar Toggle
         document.getElementById('menu-toggle').addEventListener('click', () => {
