@@ -14,89 +14,29 @@
         :root {
             --primary-color: #4361ee;
             --secondary-color: #3a0ca3;
-            --success-color: #4cc9f0;
-            --warning-color: #f72585;
+            --success-color: #28a745;
+            --info-color: #17a2b8;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
             --light-color: #f8f9fa;
-            --dark-color: #212529;
+            --dark-color: #343a40;
+            --sidebar-width: 250px;
         }
         
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            border: none;
-            transition: transform 0.3s;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
-        .card:hover {
-            transform: translateY(-5px);
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fb;
+            color: #333;
+            overflow-x: hidden;
         }
         
-        .badge-stok {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-weight: 600;
-        }
-        
-        .stok-tinggi { background-color: #d4edda; color: #155724; }
-        .stok-sedang { background-color: #fff3cd; color: #856404; }
-        .stok-rendah { background-color: #f8d7da; color: #721c24; }
-        
-        .sidebar {
-            background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
-            min-height: 100vh;
-            color: white;
-        }
-        
-        .nav-link {
-            color: rgba(255,255,255,0.8);
-            padding: 12px 20px;
-            margin: 5px 0;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-        
-        .nav-link:hover, .nav-link.active {
-            background-color: rgba(255,255,255,0.1);
-            color: white;
-        }
-        
-        .table-responsive {
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        
-        .table th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-        }
-        
-        .modal-content {
-            border-radius: 15px;
-            border: none;
-        }
-        
-        .stat-card {
-            border-left: 5px solid var(--primary-color);
-        }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-        
-        .btn-primary:hover {
-            background-color: var(--secondary-color);
-            border-color: var(--secondary-color);
-        }
-        
-        .dashboard-header {
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-        }
-        
+        /* Loading Screen */
         .loading {
             display: none;
             position: fixed;
@@ -104,10 +44,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(255,255,255,0.8);
+            background-color: rgba(255,255,255,0.95);
             z-index: 9999;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
         }
         
         .loading.active {
@@ -115,12 +56,19 @@
         }
         
         .spinner {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border: 5px solid #f3f3f3;
             border-top: 5px solid var(--primary-color);
             border-radius: 50%;
             animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        .loading-text {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 18px;
         }
         
         @keyframes spin {
@@ -128,17 +76,674 @@
             100% { transform: rotate(360deg); }
         }
         
-        .action-buttons .btn {
-            margin-right: 5px;
+        /* Layout */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-header {
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-header h3 {
+            font-weight: 700;
             margin-bottom: 5px;
+            font-size: 1.5rem;
+        }
+        
+        .sidebar-header p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+        
+        .nav-menu {
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 5px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            border-left-color: rgba(255,255,255,0.3);
+        }
+        
+        .nav-link.active {
+            background-color: rgba(255,255,255,0.15);
+            color: white;
+            border-left-color: white;
+            font-weight: 600;
+        }
+        
+        .nav-icon {
+            width: 24px;
+            text-align: center;
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+        
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+        
+        .user-details h6 {
+            margin-bottom: 2px;
+            font-size: 0.9rem;
+        }
+        
+        .user-details small {
+            opacity: 0.7;
+            font-size: 0.8rem;
+        }
+        
+        .btn-logout {
+            width: 100%;
+            background-color: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-logout:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Top Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
         }
         
         .page-title {
             color: var(--secondary-color);
             font-weight: 700;
-            border-bottom: 3px solid var(--primary-color);
+            font-size: 1.8rem;
+            position: relative;
             padding-bottom: 10px;
-            display: inline-block;
+        }
+        
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+        
+        .top-bar-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .date-display {
+            background-color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        .user-dropdown .btn {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            color: var(--dark-color);
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .user-dropdown .dropdown-menu {
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-top: 10px;
+        }
+        
+        /* Dashboard */
+        .dashboard-header {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.3;
+        }
+        
+        .dashboard-header h2 {
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .dashboard-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card.success {
+            border-left-color: var(--success-color);
+        }
+        
+        .stat-card.info {
+            border-left-color: var(--info-color);
+        }
+        
+        .stat-card.warning {
+            border-left-color: var(--warning-color);
+        }
+        
+        .stat-card.danger {
+            border-left-color: var(--danger-color);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card .stat-icon {
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .stat-card.success .stat-icon {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+        
+        .stat-card.info .stat-icon {
+            background-color: rgba(23, 162, 184, 0.1);
+            color: var(--info-color);
+        }
+        
+        .stat-card.warning .stat-icon {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .stat-card.danger .stat-icon {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--dark-color);
+        }
+        
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 992px) {
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .content-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #e0e0e0;
+            background-color: #f8f9fa;
+        }
+        
+        .card-header h5 {
+            margin-bottom: 0;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .card-body {
+            padding: 25px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        
+        /* Tables */
+        .table-container {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table thead th {
+            background-color: #f1f5fd;
+            color: var(--primary-color);
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+            padding: 15px;
+            white-space: nowrap;
+        }
+        
+        .table tbody td {
+            padding: 15px;
+            vertical-align: middle;
+            border-color: #eef2f7;
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(67, 97, 238, 0.03);
+        }
+        
+        .badge {
+            padding: 6px 12px;
+            font-weight: 500;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        
+        .badge-stok-tinggi {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+        }
+        
+        .badge-stok-sedang {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .badge-stok-rendah {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+        
+        /* Buttons */
+        .btn {
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: var(--dark-color);
+        }
+        
+        .btn-info {
+            background-color: var(--info-color);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+        
+        .btn-outline-primary {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            background-color: transparent;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .quick-action-btn {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--dark-color);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .quick-action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .quick-action-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background-color: rgba(67, 97, 238, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-right: 15px;
+        }
+        
+        .quick-action-content h6 {
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .quick-action-content p {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+        
+        /* Modals */
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 25px;
+        }
+        
+        .modal-title {
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid #e0e0e0;
+            padding: 20px 25px;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--dark-color);
+            margin-bottom: 8px;
+        }
+        
+        .form-control, .form-select {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px 15px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.15);
+        }
+        
+        .input-group-text {
+            background-color: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            color: #6c757d;
+        }
+        
+        .form-text {
+            font-size: 0.85rem;
+        }
+        
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 350px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+            
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .top-bar-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-responsive {
+                margin: 0 -15px;
+                padding: 0 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+        
+        /* Mobile Toggle */
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 99;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: flex;
+            }
         }
     </style>
 </head>
@@ -146,165 +751,149 @@
     <!-- Loading Screen -->
     <div class="loading" id="loading">
         <div class="spinner"></div>
+        <div class="loading-text">Memuat aplikasi...</div>
     </div>
     
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0">
-                <div class="position-sticky pt-3">
-                    <div class="text-center p-4">
-                        <h3><i class="fas fa-boxes me-2"></i>Inventori Pro</h3>
-                        <p class="text-light opacity-75">Sistem Manajemen Barang</p>
-                    </div>
-                    
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#" data-page="dashboard">
-                                <i class="fas fa-home me-2"></i> Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" data-page="stok">
-                                <i class="fas fa-box me-2"></i> Stok Barang
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" data-page="produk">
-                                <i class="fas fa-list me-2"></i> Daftar Produk
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" data-page="barang-masuk">
-                                <i class="fas fa-arrow-down me-2"></i> Barang Masuk
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" data-page="barang-keluar">
-                                <i class="fas fa-arrow-up me-2"></i> Barang Keluar
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" data-page="laporan">
-                                <i class="fas fa-chart-bar me-2"></i> Laporan
-                            </a>
-                        </li>
-                    </ul>
-                    
-                    <div class="position-absolute bottom-0 w-100 p-3">
-                        <div class="text-center">
-                            <button class="btn btn-outline-light w-100 mb-2" id="logoutBtn">
-                                <i class="fas fa-sign-out-alt me-2"></i> Logout
-                            </button>
-                            <small class="text-light opacity-75">v1.0.0</small>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+    <!-- Mobile Toggle Button -->
+    <button class="mobile-toggle" id="mobileToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-boxes me-2"></i>Inventori Pro</h3>
+                <p>Sistem Manajemen Barang</p>
+            </div>
             
-            <!-- Main Content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-                <!-- Page Header -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="page-title" id="pageTitle">Dashboard</h1>
-                    <div class="d-flex align-items-center">
-                        <div class="me-3">
-                            <span id="currentDate"></span>
-                        </div>
-                        <div class="dropdown">
-                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-user me-2"></i> <span id="userEmail">Admin</span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Pengaturan</a></li>
-                                <li><a class="dropdown-item" href="#" id="logoutBtn2"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
-                            </ul>
-                        </div>
+            <div class="nav-menu">
+                <div class="nav-item">
+                    <a class="nav-link active" href="#" data-page="dashboard">
+                        <div class="nav-icon"><i class="fas fa-home"></i></div>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="#" data-page="stok">
+                        <div class="nav-icon"><i class="fas fa-box"></i></div>
+                        <span>Stok Barang</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="#" data-page="produk">
+                        <div class="nav-icon"><i class="fas fa-list"></i></div>
+                        <span>Daftar Produk</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="#" data-page="barang-masuk">
+                        <div class="nav-icon"><i class="fas fa-arrow-down"></i></div>
+                        <span>Barang Masuk</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="#" data-page="barang-keluar">
+                        <div class="nav-icon"><i class="fas fa-arrow-up"></i></div>
+                        <span>Barang Keluar</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="#" data-page="laporan">
+                        <div class="nav-icon"><i class="fas fa-chart-bar"></i></div>
+                        <span>Laporan</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <h6 id="userName">Administrator</h6>
+                        <small id="userRole">Super Admin</small>
                     </div>
                 </div>
-                
-                <!-- Dashboard Content -->
+                <button class="btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt me-2"></i> Logout
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="main-content" id="mainContent">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                <div class="top-bar-actions">
+                    <div class="date-display" id="currentDate">
+                        Senin, 1 Januari 2024
+                    </div>
+                    <div class="user-dropdown">
+                        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-2"></i>
+                            <span id="userEmail">admin@inventori.com</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profil</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Pengaturan</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="#" id="logoutBtn2"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Page Content -->
+            <div id="pageContent">
+                <!-- Dashboard Page -->
                 <div id="dashboardPage" class="page-content">
                     <div class="dashboard-header">
-                        <div class="row align-items-center">
-                            <div class="col-md-8">
-                                <h2>Selamat Datang di Sistem Inventori</h2>
-                                <p class="mb-0">Kelola stok, barang masuk, dan barang keluar dengan mudah dan efisien</p>
+                        <h2>Selamat Datang di Sistem Inventori</h2>
+                        <p>Kelola stok, barang masuk, dan barang keluar dengan mudah dan efisien</p>
+                    </div>
+                    
+                    <!-- Stats Grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-boxes"></i>
                             </div>
-                            <div class="col-md-4 text-end">
-                                <i class="fas fa-warehouse fa-4x opacity-50"></i>
+                            <div class="stat-value" id="totalProduk">0</div>
+                            <div class="stat-label">Total Produk</div>
+                        </div>
+                        <div class="stat-card success">
+                            <div class="stat-icon">
+                                <i class="fas fa-cubes"></i>
                             </div>
+                            <div class="stat-value" id="totalStok">0</div>
+                            <div class="stat-label">Total Stok (pcs)</div>
+                        </div>
+                        <div class="stat-card info">
+                            <div class="stat-icon">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div class="stat-value" id="barangMasukBulan">0</div>
+                            <div class="stat-label">Barang Masuk (Bulan)</div>
+                        </div>
+                        <div class="stat-card warning">
+                            <div class="stat-icon">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="stat-value" id="barangKeluarBulan">0</div>
+                            <div class="stat-label">Barang Keluar (Bulan)</div>
                         </div>
                     </div>
                     
-                    <div class="row mb-4">
-                        <div class="col-md-3">
-                            <div class="card stat-card">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h5 class="card-title text-muted">Total Produk</h5>
-                                            <h2 id="totalProduk">0</h2>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fas fa-boxes fa-2x text-primary"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card stat-card">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h5 class="card-title text-muted">Total Stok</h5>
-                                            <h2 id="totalStok">0</h2>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fas fa-cubes fa-2x text-success"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card stat-card">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h5 class="card-title text-muted">Barang Masuk (Bulan)</h5>
-                                            <h2 id="barangMasukBulan">0</h2>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fas fa-arrow-down fa-2x text-info"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card stat-card">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h5 class="card-title text-muted">Barang Keluar (Bulan)</h5>
-                                            <h2 id="barangKeluarBulan">0</h2>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fas fa-arrow-up fa-2x text-warning"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="card">
+                    <!-- Dashboard Content -->
+                    <div class="dashboard-content">
+                        <!-- Left Column -->
+                        <div>
+                            <div class="content-card">
                                 <div class="card-header">
-                                    <h5 class="mb-0">Stok Rendah</h5>
+                                    <h5><i class="fas fa-exclamation-triangle me-2 text-warning"></i>Stok Rendah</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -326,24 +915,52 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card">
+                        
+                        <!-- Right Column -->
+                        <div>
+                            <div class="content-card">
                                 <div class="card-header">
-                                    <h5 class="mb-0">Aksi Cepat</h5>
+                                    <h5><i class="fas fa-bolt me-2 text-primary"></i>Aksi Cepat</h5>
                                 </div>
                                 <div class="card-body">
-                                    <button class="btn btn-primary w-100 mb-3" id="tambahProdukBtn">
-                                        <i class="fas fa-plus me-2"></i> Tambah Produk Baru
-                                    </button>
-                                    <button class="btn btn-success w-100 mb-3" id="tambahBarangMasukBtn">
-                                        <i class="fas fa-arrow-down me-2"></i> Barang Masuk
-                                    </button>
-                                    <button class="btn btn-warning w-100 mb-3" id="tambahBarangKeluarBtn">
-                                        <i class="fas fa-arrow-up me-2"></i> Barang Keluar
-                                    </button>
-                                    <button class="btn btn-info w-100" id="generateLaporanBtn">
-                                        <i class="fas fa-file-alt me-2"></i> Generate Laporan
-                                    </button>
+                                    <div class="quick-actions">
+                                        <a href="#" class="quick-action-btn" id="tambahProdukBtn">
+                                            <div class="quick-action-icon">
+                                                <i class="fas fa-plus"></i>
+                                            </div>
+                                            <div class="quick-action-content">
+                                                <h6>Tambah Produk Baru</h6>
+                                                <p>Tambah produk baru ke inventori</p>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="quick-action-btn" id="tambahBarangMasukBtn">
+                                            <div class="quick-action-icon">
+                                                <i class="fas fa-arrow-down"></i>
+                                            </div>
+                                            <div class="quick-action-content">
+                                                <h6>Barang Masuk</h6>
+                                                <p>Catat barang yang masuk ke gudang</p>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="quick-action-btn" id="tambahBarangKeluarBtn">
+                                            <div class="quick-action-icon">
+                                                <i class="fas fa-arrow-up"></i>
+                                            </div>
+                                            <div class="quick-action-content">
+                                                <h6>Barang Keluar</h6>
+                                                <p>Catat barang yang keluar dari gudang</p>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="quick-action-btn" id="generateLaporanBtn">
+                                            <div class="quick-action-icon">
+                                                <i class="fas fa-file-alt"></i>
+                                            </div>
+                                            <div class="quick-action-content">
+                                                <h6>Generate Laporan</h6>
+                                                <p>Buat laporan periode tertentu</p>
+                                            </div>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -352,9 +969,9 @@
                 
                 <!-- Stok Barang Page -->
                 <div id="stokPage" class="page-content" style="display: none;">
-                    <div class="card">
+                    <div class="content-card">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">Stok Saat Ini</h5>
+                            <h5><i class="fas fa-box me-2"></i>Stok Saat Ini</h5>
                             <div>
                                 <button class="btn btn-primary" id="refreshStokBtn">
                                     <i class="fas fa-sync-alt me-2"></i> Refresh
@@ -363,7 +980,7 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover" id="tableStok">
+                                <table class="table table-hover" id="tableStok">
                                     <thead>
                                         <tr>
                                             <th>Nama Produk</th>
@@ -386,16 +1003,16 @@
                 
                 <!-- Daftar Produk Page -->
                 <div id="produkPage" class="page-content" style="display: none;">
-                    <div class="card">
+                    <div class="content-card">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">Daftar Produk</h5>
+                            <h5><i class="fas fa-list me-2"></i>Daftar Produk</h5>
                             <button class="btn btn-primary" id="tambahProdukBtn2">
                                 <i class="fas fa-plus me-2"></i> Tambah Produk
                             </button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover" id="tableProduk">
+                                <table class="table table-hover" id="tableProduk">
                                     <thead>
                                         <tr>
                                             <th>Nama Produk</th>
@@ -418,16 +1035,16 @@
                 
                 <!-- Barang Masuk Page -->
                 <div id="barangMasukPage" class="page-content" style="display: none;">
-                    <div class="card">
+                    <div class="content-card">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">Barang Masuk</h5>
+                            <h5><i class="fas fa-arrow-down me-2"></i>Barang Masuk</h5>
                             <button class="btn btn-primary" id="tambahBarangMasukBtn2">
                                 <i class="fas fa-plus me-2"></i> Tambah Barang Masuk
                             </button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover" id="tableBarangMasuk">
+                                <table class="table table-hover" id="tableBarangMasuk">
                                     <thead>
                                         <tr>
                                             <th>Tanggal</th>
@@ -449,16 +1066,16 @@
                 
                 <!-- Barang Keluar Page -->
                 <div id="barangKeluarPage" class="page-content" style="display: none;">
-                    <div class="card">
+                    <div class="content-card">
                         <div class="card-header d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">Barang Keluar</h5>
+                            <h5><i class="fas fa-arrow-up me-2"></i>Barang Keluar</h5>
                             <button class="btn btn-primary" id="tambahBarangKeluarBtn2">
                                 <i class="fas fa-plus me-2"></i> Tambah Barang Keluar
                             </button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-striped table-hover" id="tableBarangKeluar">
+                                <table class="table table-hover" id="tableBarangKeluar">
                                     <thead>
                                         <tr>
                                             <th>Tanggal</th>
@@ -480,14 +1097,14 @@
                 
                 <!-- Laporan Page -->
                 <div id="laporanPage" class="page-content" style="display: none;">
-                    <div class="card">
+                    <div class="content-card">
                         <div class="card-header">
-                            <h5 class="mb-0">Laporan Inventori</h5>
+                            <h5><i class="fas fa-chart-bar me-2"></i>Laporan Inventori</h5>
                         </div>
                         <div class="card-body">
                             <div class="row mb-4">
                                 <div class="col-md-3">
-                                    <label for="laporanPeriode">Pilih Periode</label>
+                                    <label for="laporanPeriode" class="form-label">Pilih Periode</label>
                                     <select class="form-select" id="laporanPeriode">
                                         <option value="hari-ini">Hari Ini</option>
                                         <option value="minggu-ini">Minggu Ini</option>
@@ -496,14 +1113,20 @@
                                         <option value="custom">Custom</option>
                                     </select>
                                 </div>
-                                <div class="col-md-3" id="customDateRange" style="display: none;">
-                                    <label for="tanggalAwal">Tanggal Awal</label>
-                                    <input type="date" class="form-control" id="tanggalAwal">
-                                    <label for="tanggalAkhir" class="mt-2">Tanggal Akhir</label>
-                                    <input type="date" class="form-control" id="tanggalAkhir">
+                                <div class="col-md-6" id="customDateRange" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="tanggalAwal" class="form-label">Tanggal Awal</label>
+                                            <input type="date" class="form-control" id="tanggalAwal">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="tanggalAkhir" class="form-label">Tanggal Akhir</label>
+                                            <input type="date" class="form-control" id="tanggalAkhir">
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-md-3 align-self-end">
-                                    <button class="btn btn-primary" id="generateLaporanBtn2">
+                                    <button class="btn btn-primary w-100" id="generateLaporanBtn2">
                                         <i class="fas fa-chart-bar me-2"></i> Generate Laporan
                                     </button>
                                 </div>
@@ -511,25 +1134,27 @@
                             
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="card">
+                                    <div class="content-card">
                                         <div class="card-header">
                                             <h6>Ringkasan Laporan</h6>
                                         </div>
                                         <div class="card-body">
-                                            <div id="ringkasanLaporan">
-                                                <!-- Ringkasan laporan akan ditampilkan di sini -->
+                                            <div id="ringkasanLaporan" class="empty-state">
+                                                <i class="fas fa-file-alt"></i>
+                                                <p>Pilih periode dan generate laporan</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="card">
+                                    <div class="content-card">
                                         <div class="card-header">
                                             <h6>Produk dengan Pergerakan Tertinggi</h6>
                                         </div>
                                         <div class="card-body">
-                                            <div id="pergerakanProduk">
-                                                <!-- Data pergerakan produk akan ditampilkan di sini -->
+                                            <div id="pergerakanProduk" class="empty-state">
+                                                <i class="fas fa-chart-line"></i>
+                                                <p>Data akan tampil setelah generate laporan</p>
                                             </div>
                                         </div>
                                     </div>
@@ -538,65 +1163,84 @@
                         </div>
                     </div>
                 </div>
-            </main>
-        </div>
+            </div>
+        </main>
     </div>
     
     <!-- Modal Tambah Produk -->
-    <div class="modal fade" id="modalTambahProduk" tabindex="-1">
+    <div class="modal fade" id="modalTambahProduk" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Tambah Produk Baru</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>Tambah Produk Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="formTambahProduk">
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="namaProduk" class="form-label">Nama Produk *</label>
-                                    <input type="text" class="form-control" id="namaProduk" required>
+                                    <label for="namaProduk" class="form-label">Nama Produk <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="namaProduk" required
+                                           placeholder="Contoh: Susu Kaleng 250ml">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="sku" class="form-label">SKU *</label>
-                                    <input type="text" class="form-control" id="sku" required>
+                                    <label for="sku" class="form-label">SKU (Kode Produk) <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="sku" required
+                                           placeholder="Contoh: SKU-001">
+                                    <div class="form-text">Kode unik untuk identifikasi produk</div>
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="deskripsiProduk" class="form-label">Deskripsi</label>
-                            <textarea class="form-control" id="deskripsiProduk" rows="3"></textarea>
+                            <textarea class="form-control" id="deskripsiProduk" rows="3"
+                                      placeholder="Deskripsi singkat produk"></textarea>
                         </div>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="unitBesar" class="form-label">Unit Besar *</label>
-                                    <input type="text" class="form-control" id="unitBesar" required>
-                                    <small class="text-muted">Contoh: Karton, Pak, Dus</small>
+                                    <label for="unitBesar" class="form-label">Unit Besar <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="unitBesar" required
+                                           placeholder="Karton, Pak, Dus">
+                                    <div class="form-text">Satuan pembelian grosir</div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="unitKecil" class="form-label">Unit Kecil *</label>
-                                    <input type="text" class="form-control" id="unitKecil" required>
-                                    <small class="text-muted">Contoh: Pcs, Botol, Sachet</small>
+                                    <label for="unitKecil" class="form-label">Unit Kecil <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="unitKecil" required
+                                           placeholder="Pcs, Botol, Sachet">
+                                    <div class="form-text">Satuan penjualan eceran</div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label for="konversiKecil" class="form-label">Konversi *</label>
-                                    <input type="number" class="form-control" id="konversiKecil" min="1" value="1" required>
-                                    <small class="text-muted">1 Unit Besar = ? Unit Kecil</small>
+                                    <label for="konversiKecil" class="form-label">Konversi <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">1</span>
+                                        <input type="number" class="form-control" id="konversiKecil" 
+                                               min="1" value="1" required>
+                                        <span class="input-group-text" id="konversiLabel">Unit Kecil</span>
+                                    </div>
+                                    <div class="form-text">
+                                        1 <span id="unitBesarPreview">Unit Besar</span> = 
+                                        <span id="konversiPreview" class="fw-bold text-primary">1</span> 
+                                        <span id="unitKecilPreview">Unit Kecil</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan Produk</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Batal
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Simpan Produk
+                        </button>
                     </div>
                 </form>
             </div>
@@ -604,41 +1248,54 @@
     </div>
     
     <!-- Modal Tambah Barang Masuk -->
-    <div class="modal fade" id="modalTambahBarangMasuk" tabindex="-1">
+    <div class="modal fade" id="modalTambahBarangMasuk" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Tambah Barang Masuk</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title"><i class="fas fa-arrow-down me-2"></i>Tambah Barang Masuk</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="formTambahBarangMasuk">
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="produkMasuk" class="form-label">Produk *</label>
+                            <label for="produkMasuk" class="form-label">Produk <span class="text-danger">*</span></label>
                             <select class="form-select" id="produkMasuk" required>
-                                <option value="">Pilih Produk</option>
+                                <option value="">Pilih Produk...</option>
                             </select>
+                            <div class="form-text" id="produkInfoMasuk"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="jumlahUnitBesar" class="form-label">Jumlah (Unit Besar) *</label>
-                            <input type="number" class="form-control" id="jumlahUnitBesar" min="1" required>
+                            <label for="jumlahUnitBesar" class="form-label">Jumlah (Unit Besar) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="jumlahUnitBesar" min="1" required>
+                                <span class="input-group-text" id="unitBesarLabelMasuk">Unit</span>
+                            </div>
+                            <div class="form-text">
+                                Setara dengan <span id="konversiInfoMasuk" class="fw-bold">0</span> unit kecil
+                            </div>
                         </div>
                         <div class="mb-3">
-                            <label for="tanggalMasuk" class="form-label">Tanggal Masuk *</label>
+                            <label for="tanggalMasuk" class="form-label">Tanggal Masuk <span class="text-danger">*</span></label>
                             <input type="date" class="form-control" id="tanggalMasuk" required>
                         </div>
                         <div class="mb-3">
                             <label for="sumber" class="form-label">Sumber</label>
-                            <input type="text" class="form-control" id="sumber">
+                            <input type="text" class="form-control" id="sumber" 
+                                   placeholder="Contoh: Supplier ABC, Pembelian, Retur">
                         </div>
                         <div class="mb-3">
                             <label for="catatanMasuk" class="form-label">Catatan</label>
-                            <textarea class="form-control" id="catatanMasuk" rows="3"></textarea>
+                            <textarea class="form-control" id="catatanMasuk" rows="3"
+                                      placeholder="Catatan tambahan..."></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan Barang Masuk</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Batal
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check me-2"></i>Simpan Barang Masuk
+                        </button>
                     </div>
                 </form>
             </div>
@@ -646,42 +1303,55 @@
     </div>
     
     <!-- Modal Tambah Barang Keluar -->
-    <div class="modal fade" id="modalTambahBarangKeluar" tabindex="-1">
+    <div class="modal fade" id="modalTambahBarangKeluar" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Tambah Barang Keluar</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title"><i class="fas fa-arrow-up me-2"></i>Tambah Barang Keluar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="formTambahBarangKeluar">
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="produkKeluar" class="form-label">Produk *</label>
+                            <label for="produkKeluar" class="form-label">Produk <span class="text-danger">*</span></label>
                             <select class="form-select" id="produkKeluar" required>
-                                <option value="">Pilih Produk</option>
+                                <option value="">Pilih Produk...</option>
                             </select>
+                            <div class="form-text" id="produkInfoKeluar"></div>
                         </div>
                         <div class="mb-3">
-                            <label for="jumlahUnitKecil" class="form-label">Jumlah (Unit Kecil) *</label>
-                            <input type="number" class="form-control" id="jumlahUnitKecil" min="1" required>
-                            <small class="text-muted">Stok tersedia: <span id="stokTersedia">0</span> pcs</small>
+                            <label for="jumlahUnitKecil" class="form-label">Jumlah (Unit Kecil) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="jumlahUnitKecil" min="1" required>
+                                <span class="input-group-text" id="unitKecilLabelKeluar">pcs</span>
+                            </div>
+                            <div class="alert alert-info mt-2 py-2" id="stokInfoBox">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Stok tersedia: <strong id="stokTersedia">0</strong> pcs
+                            </div>
                         </div>
                         <div class="mb-3">
-                            <label for="tanggalKeluar" class="form-label">Tanggal Keluar *</label>
+                            <label for="tanggalKeluar" class="form-label">Tanggal Keluar <span class="text-danger">*</span></label>
                             <input type="date" class="form-control" id="tanggalKeluar" required>
                         </div>
                         <div class="mb-3">
                             <label for="tujuan" class="form-label">Tujuan</label>
-                            <input type="text" class="form-control" id="tujuan">
+                            <input type="text" class="form-control" id="tujuan" 
+                                   placeholder="Contoh: Toko XYZ, Penjualan, Sample">
                         </div>
                         <div class="mb-3">
                             <label for="catatanKeluar" class="form-label">Catatan</label>
-                            <textarea class="form-control" id="catatanKeluar" rows="3"></textarea>
+                            <textarea class="form-control" id="catatanKeluar" rows="3"
+                                      placeholder="Catatan tambahan..."></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan Barang Keluar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Batal
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check me-2"></i>Simpan Barang Keluar
+                        </button>
                     </div>
                 </form>
             </div>
@@ -691,41 +1361,66 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     
+    <!-- Main Application Script -->
     <script>
         // Konfigurasi Supabase
-        const SUPABASE_URL = 'https://your-project.supabase.co'; // Ganti dengan URL Supabase Anda
-        const SUPABASE_KEY = 'your-anon-key'; // Ganti dengan anon key Supabase Anda
+        const SUPABASE_URL = 'https://iltqolfmvhzaiuagtoxt.supabase.co'; // Ganti dengan URL Supabase Anda
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsdHFvbGZtdmh6YWl1YWd0b3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyNDE5MjQsImV4cCI6MjA4MDgxNzkyNH0.sGzEQjpKfy7fdw8KBNO7mVzKd2tuxqQaYAdRuTjHVMs'; // Ganti dengan anon key Supabase Anda
         
+        // Variabel global
         let supabase;
         let currentPage = 'dashboard';
         
-        // Inisialisasi aplikasi
+        // Inisialisasi aplikasi saat halaman dimuat
         document.addEventListener('DOMContentLoaded', function() {
             initApp();
         });
         
         async function initApp() {
-            // Set tanggal hari ini
+            // Tampilkan loading screen
+            showLoading(true, 'Memuat aplikasi...');
+            
+            try {
+                // Set tanggal hari ini
+                updateCurrentDate();
+                
+                // Inisialisasi Supabase
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                
+                // Setup event listeners
+                setupEventListeners();
+                
+                // Inisialisasi preview konversi
+                updateKonversiPreview();
+                
+                // Set tanggal default untuk form
+                setDefaultDates();
+                
+                // Tampilkan dashboard pertama kali
+                showPage('dashboard');
+                
+                // Muat data awal
+                await initDataLoaders();
+                
+                showNotification('Sistem inventori siap digunakan!', 'success');
+                
+            } catch (error) {
+                console.error('Failed to initialize app:', error);
+                showNotification('Gagal memuat data awal. Periksa koneksi database.', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        function updateCurrentDate() {
             const now = new Date();
-            document.getElementById('currentDate').textContent = now.toLocaleDateString('id-ID', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-            
-            // Inisialisasi Supabase
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            
-            // Setup event listeners
-            setupEventListeners();
-            
-            // Tampilkan dashboard pertama kali
-            showPage('dashboard');
-            
-            // Muat data awal
-            loadDashboardData();
-            loadProdukOptions();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('id-ID', options);
         }
         
         function setupEventListeners() {
@@ -741,7 +1436,17 @@
                     
                     // Tampilkan halaman yang dipilih
                     showPage(page);
+                    
+                    // Tutup sidebar di mobile
+                    if (window.innerWidth <= 768) {
+                        document.getElementById('sidebar').classList.remove('active');
+                    }
                 });
+            });
+            
+            // Mobile toggle
+            document.getElementById('mobileToggle').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('active');
             });
             
             // Tombol logout
@@ -816,8 +1521,39 @@
                 await tambahBarangKeluar();
             });
             
-            // Update info stok saat produk berubah
-            document.getElementById('produkKeluar').addEventListener('change', updateStokInfo);
+            // Event untuk update preview konversi
+            document.getElementById('unitBesar').addEventListener('input', updateKonversiPreview);
+            document.getElementById('unitKecil').addEventListener('input', updateKonversiPreview);
+            document.getElementById('konversiKecil').addEventListener('input', updateKonversiPreview);
+            
+            // Event untuk update info produk saat pilihan berubah
+            document.getElementById('produkMasuk').addEventListener('change', updateProdukInfoMasuk);
+            document.getElementById('produkKeluar').addEventListener('change', updateProdukInfoKeluar);
+            
+            // Event untuk validasi jumlah barang keluar
+            document.getElementById('jumlahUnitKecil').addEventListener('input', validateStokKeluar);
+            
+            // Event untuk update konversi saat jumlah berubah (barang masuk)
+            document.getElementById('jumlahUnitBesar').addEventListener('input', function() {
+                updateKonversiMasuk();
+            });
+        }
+        
+        async function initDataLoaders() {
+            // Load data awal secara paralel
+            await Promise.all([
+                loadDashboardData(),
+                loadProdukOptions(),
+                loadStokData()
+            ]);
+        }
+        
+        function setDefaultDates() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('tanggalMasuk').value = today;
+            document.getElementById('tanggalKeluar').value = today;
+            document.getElementById('tanggalAwal').value = today;
+            document.getElementById('tanggalAkhir').value = today;
         }
         
         function showPage(pageName) {
@@ -871,8 +1607,94 @@
             modal.show();
         }
         
+        // Fungsi update preview konversi
+        function updateKonversiPreview() {
+            const unitBesar = document.getElementById('unitBesar').value || 'Unit Besar';
+            const unitKecil = document.getElementById('unitKecil').value || 'Unit Kecil';
+            const konversi = document.getElementById('konversiKecil').value || '1';
+            
+            document.getElementById('unitBesarPreview').textContent = unitBesar;
+            document.getElementById('unitKecilPreview').textContent = unitKecil;
+            document.getElementById('konversiPreview').textContent = konversi;
+            document.getElementById('konversiLabel').textContent = unitKecil;
+        }
+        
+        // Fungsi update info produk di modal barang masuk
+        function updateProdukInfoMasuk() {
+            const select = document.getElementById('produkMasuk');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (selectedOption.value) {
+                const konversi = selectedOption.getAttribute('data-konversi') || '1';
+                const unitBesar = selectedOption.getAttribute('data-unit-besar') || 'Unit';
+                const unitKecil = selectedOption.getAttribute('data-unit-kecil') || 'pcs';
+                
+                document.getElementById('unitBesarLabelMasuk').textContent = unitBesar;
+                document.getElementById('produkInfoMasuk').textContent = `1 ${unitBesar} = ${konversi} ${unitKecil}`;
+                
+                // Update konversi
+                updateKonversiMasuk();
+            } else {
+                document.getElementById('unitBesarLabelMasuk').textContent = 'Unit';
+                document.getElementById('produkInfoMasuk').textContent = '';
+                document.getElementById('konversiInfoMasuk').textContent = '0';
+            }
+        }
+        
+        function updateKonversiMasuk() {
+            const select = document.getElementById('produkMasuk');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (selectedOption.value) {
+                const konversi = parseInt(selectedOption.getAttribute('data-konversi')) || 1;
+                const jumlah = parseInt(document.getElementById('jumlahUnitBesar').value) || 0;
+                const totalKecil = jumlah * konversi;
+                document.getElementById('konversiInfoMasuk').textContent = totalKecil;
+            }
+        }
+        
+        // Fungsi update info produk di modal barang keluar
+        async function updateProdukInfoKeluar() {
+            const select = document.getElementById('produkKeluar');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            if (selectedOption.value) {
+                const unitKecil = selectedOption.getAttribute('data-unit-kecil') || 'pcs';
+                document.getElementById('unitKecilLabelKeluar').textContent = unitKecil;
+                document.getElementById('produkInfoKeluar').textContent = `Satuan: ${unitKecil}`;
+                
+                // Update info stok
+                await updateStokInfo();
+            } else {
+                document.getElementById('unitKecilLabelKeluar').textContent = 'pcs';
+                document.getElementById('produkInfoKeluar').textContent = '';
+                document.getElementById('stokInfoBox').innerHTML = 
+                    `<i class="fas fa-info-circle me-2"></i>Pilih produk terlebih dahulu`;
+            }
+        }
+        
+        // Fungsi validasi stok barang keluar
+        function validateStokKeluar() {
+            const jumlah = parseInt(document.getElementById('jumlahUnitKecil').value) || 0;
+            const stokTersedia = parseInt(document.getElementById('stokTersedia').textContent) || 0;
+            
+            if (jumlah > stokTersedia) {
+                document.getElementById('stokInfoBox').className = 'alert alert-danger mt-2 py-2';
+                document.getElementById('stokInfoBox').innerHTML = 
+                    `<i class="fas fa-exclamation-triangle me-2"></i>
+                     Stok tidak cukup! Permintaan: ${jumlah} pcs, Stok tersedia: ${stokTersedia} pcs`;
+                return false;
+            } else {
+                document.getElementById('stokInfoBox').className = 'alert alert-info mt-2 py-2';
+                document.getElementById('stokInfoBox').innerHTML = 
+                    `<i class="fas fa-info-circle me-2"></i>
+                     Stok tersedia: <strong>${stokTersedia}</strong> pcs`;
+                return true;
+            }
+        }
+        
         async function loadDashboardData() {
-            showLoading(true);
+            showLoading(true, 'Memuat data dashboard...');
             
             try {
                 // Hitung total produk
@@ -931,7 +1753,7 @@
                 
             } catch (error) {
                 console.error('Error loading dashboard data:', error);
-                alert('Terjadi kesalahan saat memuat data dashboard');
+                showNotification('Terjadi kesalahan saat memuat data dashboard', 'error');
             } finally {
                 showLoading(false);
             }
@@ -942,8 +1764,9 @@
                 const { data, error } = await supabase
                     .from('stok_saat_ini_pcs')
                     .select('*')
+                    .lt('stok_total_pcs', 20)
                     .order('stok_total_pcs', { ascending: true })
-                    .limit(5);
+                    .limit(10);
                 
                 const tbody = document.querySelector('#tableStokRendah tbody');
                 tbody.innerHTML = '';
@@ -954,12 +1777,12 @@
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${item.nama_produk}</td>
-                            <td>${item.sku}</td>
-                            <td>${item.stok_total_pcs}</td>
-                            <td><span class="badge-stok ${status.class}">${status.text}</span></td>
+                            <td><span class="badge bg-secondary">${item.sku}</span></td>
+                            <td><strong>${item.stok_total_pcs}</strong> ${item.unit_kecil}</td>
+                            <td><span class="badge ${status.class}">${status.text}</span></td>
                             <td>
-                                <button class="btn btn-sm btn-outline-primary" onclick="tambahBarangMasukForProduct(${item.produk_id})">
-                                    <i class="fas fa-arrow-down"></i>
+                                <button class="btn btn-sm btn-success" onclick="tambahBarangMasukForProduct(${item.produk_id})" title="Tambah Stok">
+                                    <i class="fas fa-plus"></i>
                                 </button>
                             </td>
                         `;
@@ -968,17 +1791,31 @@
                 } else {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="5" class="text-center">Tidak ada data stok rendah</td>
+                            <td colspan="5" class="text-center text-muted py-4">
+                                <i class="fas fa-check-circle fa-2x mb-2 text-success"></i>
+                                <p>Tidak ada stok rendah</p>
+                                <small class="text-muted">Semua produk memiliki stok cukup</small>
+                            </td>
                         </tr>
                     `;
                 }
             } catch (error) {
                 console.error('Error loading low stock:', error);
+                const tbody = document.querySelector('#tableStokRendah tbody');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center text-danger py-4">
+                            <i class="fas fa-exclamation-circle fa-2x mb-2"></i>
+                            <p>Gagal memuat data stok</p>
+                            <small>${error.message}</small>
+                        </td>
+                    </tr>
+                `;
             }
         }
         
         async function loadStokData() {
-            showLoading(true);
+            showLoading(true, 'Memuat data stok...');
             
             try {
                 const { data, error } = await supabase
@@ -997,11 +1834,11 @@
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${item.nama_produk}</td>
-                            <td>${item.sku}</td>
+                            <td><span class="badge bg-secondary">${item.sku}</span></td>
                             <td>${item.unit_besar}</td>
                             <td>${item.unit_kecil}</td>
-                            <td>${item.stok_total_pcs}</td>
-                            <td><span class="badge-stok ${status.class}">${status.text}</span></td>
+                            <td><strong>${item.stok_total_pcs}</strong></td>
+                            <td><span class="badge ${status.class}">${status.text}</span></td>
                             <td>${lastUpdated}</td>
                         `;
                         tbody.appendChild(row);
@@ -1009,20 +1846,24 @@
                 } else {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="7" class="text-center">Belum ada data stok</td>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                <i class="fas fa-box-open fa-2x mb-2"></i>
+                                <p>Belum ada data stok</p>
+                                <small class="text-muted">Tambah produk dan barang masuk terlebih dahulu</small>
+                            </td>
                         </tr>
                     `;
                 }
             } catch (error) {
                 console.error('Error loading stock data:', error);
-                alert('Terjadi kesalahan saat memuat data stok');
+                showNotification('Terjadi kesalahan saat memuat data stok', 'error');
             } finally {
                 showLoading(false);
             }
         }
         
         async function loadProdukData() {
-            showLoading(true);
+            showLoading(true, 'Memuat data produk...');
             
             try {
                 const { data, error } = await supabase
@@ -1038,16 +1879,16 @@
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${item.nama_produk}</td>
-                            <td>${item.sku}</td>
+                            <td><span class="badge bg-primary">${item.sku}</span></td>
                             <td>${item.deskripsi || '-'}</td>
                             <td>${item.unit_besar}</td>
                             <td>${item.unit_kecil}</td>
                             <td>1 ${item.unit_besar} = ${item.konversi_kecil} ${item.unit_kecil}</td>
                             <td class="action-buttons">
-                                <button class="btn btn-sm btn-outline-primary" onclick="editProduk(${item.id})">
+                                <button class="btn btn-sm btn-outline-primary btn-action" onclick="editProduk(${item.id})" title="Edit">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="hapusProduk(${item.id})">
+                                <button class="btn btn-sm btn-outline-danger btn-action" onclick="hapusProduk(${item.id})" title="Hapus">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -1057,88 +1898,82 @@
                 } else {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="7" class="text-center">Belum ada data produk</td>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                <i class="fas fa-list-alt fa-2x mb-2"></i>
+                                <p>Belum ada data produk</p>
+                                <small class="text-muted">Tambah produk baru untuk memulai</small>
+                            </td>
                         </tr>
                     `;
                 }
             } catch (error) {
                 console.error('Error loading product data:', error);
-                alert('Terjadi kesalahan saat memuat data produk');
+                showNotification('Terjadi kesalahan saat memuat data produk', 'error');
             } finally {
                 showLoading(false);
             }
         }
         
         async function loadBarangMasukData() {
-            showLoading(true);
+            showLoading(true, 'Memuat data barang masuk...');
             
             try {
-                const { data, error } = await supabase
+                const { data: barangMasuk, error } = await supabase
                     .from('barang_masuk')
-                    .select(`
-                        *,
-                        produk:nama_produk
-                    `)
+                    .select('*')
                     .order('tanggal_masuk', { ascending: false });
                 
                 const tbody = document.querySelector('#tableBarangMasuk tbody');
                 tbody.innerHTML = '';
                 
-                if (data && data.length > 0) {
-                    // Catatan: Anda perlu menyesuaikan query join sesuai struktur database
-                    // Contoh di atas mungkin perlu disesuaikan
-                    
-                    // Untuk sekarang, kita akan ambil data terpisah
-                    const { data: barangMasuk, error: errorBM } = await supabase
-                        .from('barang_masuk')
-                        .select('*')
-                        .order('tanggal_masuk', { ascending: false });
-                    
-                    if (barangMasuk) {
-                        for (const item of barangMasuk) {
-                            // Ambil info produk
-                            const { data: produkData } = await supabase
-                                .from('produk')
-                                .select('nama_produk')
-                                .eq('id', item.produk_id)
-                                .single();
-                            
-                            const tanggal = new Date(item.tanggal_masuk).toLocaleDateString('id-ID');
-                            const namaProduk = produkData ? produkData.nama_produk : 'Unknown';
-                            
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                                <td>${tanggal}</td>
-                                <td>${namaProduk}</td>
-                                <td>${item.jumlah_unit_besar}</td>
-                                <td>${item.sumber || '-'}</td>
-                                <td>${item.catatan || '-'}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="hapusBarangMasuk(${item.id})">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            `;
-                            tbody.appendChild(row);
-                        }
+                if (barangMasuk && barangMasuk.length > 0) {
+                    for (const item of barangMasuk) {
+                        // Ambil info produk
+                        const { data: produkData } = await supabase
+                            .from('produk')
+                            .select('nama_produk')
+                            .eq('id', item.produk_id)
+                            .single();
+                        
+                        const tanggal = new Date(item.tanggal_masuk).toLocaleDateString('id-ID');
+                        const namaProduk = produkData ? produkData.nama_produk : 'Unknown';
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${tanggal}</td>
+                            <td>${namaProduk}</td>
+                            <td><strong>${item.jumlah_unit_besar}</strong></td>
+                            <td>${item.sumber || '-'}</td>
+                            <td>${item.catatan || '-'}</td>
+                            <td class="action-buttons">
+                                <button class="btn btn-sm btn-outline-danger btn-action" onclick="hapusBarangMasuk(${item.id})" title="Hapus">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
                     }
                 } else {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="6" class="text-center">Belum ada data barang masuk</td>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                <i class="fas fa-arrow-down fa-2x mb-2"></i>
+                                <p>Belum ada data barang masuk</p>
+                                <small class="text-muted">Tambah barang masuk untuk memulai</small>
+                            </td>
                         </tr>
                     `;
                 }
             } catch (error) {
                 console.error('Error loading incoming goods data:', error);
-                alert('Terjadi kesalahan saat memuat data barang masuk');
+                showNotification('Terjadi kesalahan saat memuat data barang masuk', 'error');
             } finally {
                 showLoading(false);
             }
         }
         
         async function loadBarangKeluarData() {
-            showLoading(true);
+            showLoading(true, 'Memuat data barang keluar...');
             
             try {
                 const { data: barangKeluar, error } = await supabase
@@ -1165,11 +2000,11 @@
                         row.innerHTML = `
                             <td>${tanggal}</td>
                             <td>${namaProduk}</td>
-                            <td>${item.jumlah_unit_kecil}</td>
+                            <td><strong>${item.jumlah_unit_kecil}</strong></td>
                             <td>${item.tujuan || '-'}</td>
                             <td>${item.catatan || '-'}</td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-danger" onclick="hapusBarangKeluar(${item.id})">
+                            <td class="action-buttons">
+                                <button class="btn btn-sm btn-outline-danger btn-action" onclick="hapusBarangKeluar(${item.id})" title="Hapus">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>
@@ -1179,13 +2014,17 @@
                 } else {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="6" class="text-center">Belum ada data barang keluar</td>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                <i class="fas fa-arrow-up fa-2x mb-2"></i>
+                                <p>Belum ada data barang keluar</p>
+                                <small class="text-muted">Tambah barang keluar untuk memulai</small>
+                            </td>
                         </tr>
                     `;
                 }
             } catch (error) {
                 console.error('Error loading outgoing goods data:', error);
-                alert('Terjadi kesalahan saat memuat data barang keluar');
+                showNotification('Terjadi kesalahan saat memuat data barang keluar', 'error');
             } finally {
                 showLoading(false);
             }
@@ -1195,31 +2034,77 @@
             try {
                 const { data, error } = await supabase
                     .from('produk')
-                    .select('id, nama_produk, sku')
+                    .select('id, nama_produk, sku, konversi_kecil, unit_besar, unit_kecil')
                     .order('nama_produk');
                 
                 const selectMasuk = document.getElementById('produkMasuk');
                 const selectKeluar = document.getElementById('produkKeluar');
                 
-                selectMasuk.innerHTML = '<option value="">Pilih Produk</option>';
-                selectKeluar.innerHTML = '<option value="">Pilih Produk</option>';
+                // Clear dan tambahkan opsi default
+                selectMasuk.innerHTML = '<option value="">Pilih Produk...</option>';
+                selectKeluar.innerHTML = '<option value="">Pilih Produk...</option>';
                 
                 if (data && data.length > 0) {
                     data.forEach(item => {
                         const optionMasuk = document.createElement('option');
                         optionMasuk.value = item.id;
-                        optionMasup.textContent = `${item.nama_produk} (${item.sku})`;
+                        optionMasuk.textContent = `${item.nama_produk} (${item.sku})`;
+                        optionMasuk.setAttribute('data-konversi', item.konversi_kecil);
+                        optionMasuk.setAttribute('data-unit-besar', item.unit_besar);
+                        optionMasuk.setAttribute('data-unit-kecil', item.unit_kecil);
                         
                         const optionKeluar = document.createElement('option');
                         optionKeluar.value = item.id;
                         optionKeluar.textContent = `${item.nama_produk} (${item.sku})`;
+                        optionKeluar.setAttribute('data-konversi', item.konversi_kecil);
+                        optionKeluar.setAttribute('data-unit-besar', item.unit_besar);
+                        optionKeluar.setAttribute('data-unit-kecil', item.unit_kecil);
                         
                         selectMasuk.appendChild(optionMasuk);
                         selectKeluar.appendChild(optionKeluar);
                     });
+                    
+                    // Update info stok untuk opsi produk
+                    await updateAllProductStockInfo();
+                } else {
+                    // Tambahkan pesan jika tidak ada produk
+                    const option = document.createElement('option');
+                    option.value = "";
+                    option.textContent = "Belum ada produk - Tambah produk terlebih dahulu";
+                    selectMasuk.appendChild(option.cloneNode(true));
+                    selectKeluar.appendChild(option);
                 }
             } catch (error) {
                 console.error('Error loading product options:', error);
+                showNotification('Error memuat data produk', 'error');
+            }
+        }
+        
+        // Fungsi untuk update info stok semua produk
+        async function updateAllProductStockInfo() {
+            try {
+                const { data: stokData, error } = await supabase
+                    .from('stok_saat_ini_pcs')
+                    .select('produk_id, stok_total_pcs');
+                
+                if (stokData) {
+                    const selectKeluar = document.getElementById('produkKeluar');
+                    const options = selectKeluar.options;
+                    
+                    for (let i = 0; i < options.length; i++) {
+                        const option = options[i];
+                        if (option.value) {
+                            const stokItem = stokData.find(item => item.produk_id == option.value);
+                            const stok = stokItem ? stokItem.stok_total_pcs : 0;
+                            
+                            // Tambahkan info stok ke teks opsi
+                            const originalText = option.textContent;
+                            option.textContent = `${originalText} - Stok: ${stok} pcs`;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating stock info:', error);
             }
         }
         
@@ -1228,6 +2113,8 @@
             
             if (!produkId) {
                 document.getElementById('stokTersedia').textContent = '0';
+                document.getElementById('stokInfoBox').innerHTML = 
+                    `<i class="fas fa-info-circle me-2"></i>Pilih produk terlebih dahulu`;
                 return;
             }
             
@@ -1239,17 +2126,36 @@
                     .single();
                 
                 if (data) {
-                    document.getElementById('stokTersedia').textContent = data.stok_total_pcs || 0;
+                    const stok = data.stok_total_pcs || 0;
+                    document.getElementById('stokTersedia').textContent = stok;
+                    
+                    // Update stok info box
+                    if (stok <= 10) {
+                        document.getElementById('stokInfoBox').className = 'alert alert-warning mt-2 py-2';
+                        document.getElementById('stokInfoBox').innerHTML = 
+                            `<i class="fas fa-exclamation-triangle me-2"></i>
+                             Stok rendah! Tersedia: <strong>${stok}</strong> pcs`;
+                    } else {
+                        document.getElementById('stokInfoBox').className = 'alert alert-info mt-2 py-2';
+                        document.getElementById('stokInfoBox').innerHTML = 
+                            `<i class="fas fa-check-circle me-2"></i>
+                             Stok tersedia: <strong>${stok}</strong> pcs`;
+                    }
                 } else {
                     document.getElementById('stokTersedia').textContent = '0';
+                    document.getElementById('stokInfoBox').innerHTML = 
+                        `<i class="fas fa-info-circle me-2"></i>Stok tidak ditemukan`;
                 }
             } catch (error) {
                 console.error('Error loading stock info:', error);
+                document.getElementById('stokTersedia').textContent = '0';
+                document.getElementById('stokInfoBox').innerHTML = 
+                    `<i class="fas fa-exclamation-circle me-2"></i>Error memuat stok`;
             }
         }
         
         async function tambahProduk() {
-            showLoading(true);
+            showLoading(true, 'Menyimpan produk...');
             
             const produkData = {
                 nama_produk: document.getElementById('namaProduk').value,
@@ -1281,17 +2187,17 @@
                 // Refresh opsi produk
                 loadProdukOptions();
                 
-                alert('Produk berhasil ditambahkan!');
+                showNotification('Produk berhasil ditambahkan!', 'success');
             } catch (error) {
                 console.error('Error adding product:', error);
-                alert('Terjadi kesalahan saat menambahkan produk');
+                showNotification('Terjadi kesalahan saat menambahkan produk', 'error');
             } finally {
                 showLoading(false);
             }
         }
         
         async function tambahBarangMasuk() {
-            showLoading(true);
+            showLoading(true, 'Menyimpan barang masuk...');
             
             const barangMasukData = {
                 produk_id: parseInt(document.getElementById('produkMasuk').value),
@@ -1319,17 +2225,28 @@
                     loadDashboardData();
                 }
                 
-                alert('Barang masuk berhasil dicatat!');
+                // Refresh stok info
+                if (currentPage === 'stok') {
+                    loadStokData();
+                }
+                
+                showNotification('Barang masuk berhasil dicatat!', 'success');
             } catch (error) {
                 console.error('Error adding incoming goods:', error);
-                alert('Terjadi kesalahan saat mencatat barang masuk');
+                showNotification('Terjadi kesalahan saat mencatat barang masuk', 'error');
             } finally {
                 showLoading(false);
             }
         }
         
         async function tambahBarangKeluar() {
-            showLoading(true);
+            // Validasi stok terlebih dahulu
+            if (!validateStokKeluar()) {
+                showNotification('Stok tidak cukup untuk melakukan transaksi ini', 'error');
+                return;
+            }
+            
+            showLoading(true, 'Menyimpan barang keluar...');
             
             const barangKeluarData = {
                 produk_id: parseInt(document.getElementById('produkKeluar').value),
@@ -1338,14 +2255,6 @@
                 tujuan: document.getElementById('tujuan').value || null,
                 catatan: document.getElementById('catatanKeluar').value || null
             };
-            
-            // Validasi stok
-            const stokTersedia = parseInt(document.getElementById('stokTersedia').textContent);
-            if (barangKeluarData.jumlah_unit_kecil > stokTersedia) {
-                alert('Jumlah barang keluar melebihi stok tersedia!');
-                showLoading(false);
-                return;
-            }
             
             try {
                 const { data, error } = await supabase
@@ -1365,17 +2274,22 @@
                     loadDashboardData();
                 }
                 
-                alert('Barang keluar berhasil dicatat!');
+                // Refresh stok info
+                if (currentPage === 'stok') {
+                    loadStokData();
+                }
+                
+                showNotification('Barang keluar berhasil dicatat!', 'success');
             } catch (error) {
                 console.error('Error adding outgoing goods:', error);
-                alert('Terjadi kesalahan saat mencatat barang keluar');
+                showNotification('Terjadi kesalahan saat mencatat barang keluar', 'error');
             } finally {
                 showLoading(false);
             }
         }
         
         async function generateLaporan() {
-            showLoading(true);
+            showLoading(true, 'Membuat laporan...');
             
             try {
                 // Tentukan periode
@@ -1415,20 +2329,22 @@
                 // Ambil data barang masuk
                 const { data: barangMasuk, error: errorMasuk } = await supabase
                     .from('barang_masuk')
-                    .select('*, produk(nama_produk)')
+                    .select('*, produk(nama_produk, sku)')
                     .gte('tanggal_masuk', startDateStr)
                     .lte('tanggal_masuk', endDateStr);
                 
                 // Ambil data barang keluar
                 const { data: barangKeluar, error: errorKeluar } = await supabase
                     .from('barang_keluar')
-                    .select('*, produk(nama_produk)')
+                    .select('*, produk(nama_produk, sku)')
                     .gte('tanggal_keluar', startDateStr)
                     .lte('tanggal_keluar', endDateStr);
                 
                 // Hitung ringkasan
                 let totalMasuk = 0;
                 let totalKeluar = 0;
+                let totalNilaiMasuk = 0;
+                let totalNilaiKeluar = 0;
                 
                 if (barangMasuk) {
                     totalMasuk = barangMasuk.reduce((sum, item) => sum + (item.jumlah_unit_besar || 0), 0);
@@ -1440,14 +2356,46 @@
                 
                 // Tampilkan ringkasan
                 const ringkasanHTML = `
-                    <div class="row">
-                        <div class="col-6">
-                            <p class="mb-1">Periode: ${startDate.toLocaleDateString('id-ID')} - ${endDate.toLocaleDateString('id-ID')}</p>
-                            <p class="mb-1">Total Barang Masuk: <strong>${totalMasuk} unit besar</strong></p>
-                            <p class="mb-1">Total Barang Keluar: <strong>${totalKeluar} unit kecil</strong></p>
-                            <p class="mb-0">Transaksi: <strong>${(barangMasuk?.length || 0) + (barangKeluar?.length || 0)}</strong></p>
+                    <div>
+                        <div class="mb-4">
+                            <h6 class="text-primary">Ringkasan Laporan</h6>
+                            <p class="mb-2">Periode: ${startDate.toLocaleDateString('id-ID')} - ${endDate.toLocaleDateString('id-ID')}</p>
                         </div>
-                        <div class="col-6 text-end">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card bg-light mb-3">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Barang Masuk</h6>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h2 class="mb-0 text-success">${totalMasuk}</h2>
+                                                <small class="text-muted">Unit Besar</small>
+                                            </div>
+                                            <div class="text-end">
+                                                <p class="mb-0">${barangMasuk?.length || 0} transaksi</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light mb-3">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Barang Keluar</h6>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h2 class="mb-0 text-warning">${totalKeluar}</h2>
+                                                <small class="text-muted">Unit Kecil</small>
+                                            </div>
+                                            <div class="text-end">
+                                                <p class="mb-0">${barangKeluar?.length || 0} transaksi</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end mt-3">
                             <button class="btn btn-sm btn-outline-primary" onclick="exportLaporan()">
                                 <i class="fas fa-download me-2"></i> Export Laporan
                             </button>
@@ -1458,22 +2406,81 @@
                 document.getElementById('ringkasanLaporan').innerHTML = ringkasanHTML;
                 
                 // Tampilkan produk dengan pergerakan tertinggi
-                // (Implementasi sederhana - bisa dikembangkan lebih lanjut)
-                const pergerakanHTML = `
-                    <p>Fitur analisis pergerakan produk akan ditampilkan di sini.</p>
-                    <p>Anda dapat mengembangkan fitur ini lebih lanjut untuk menampilkan:</p>
-                    <ul>
-                        <li>Produk dengan penjualan tertinggi</li>
-                        <li>Produk dengan stok terendah</li>
-                        <li>Grafik pergerakan stok</li>
-                    </ul>
-                `;
+                // Analisis sederhana: hitung total pergerakan per produk
+                const produkPergerakan = {};
+                
+                if (barangMasuk) {
+                    barangMasuk.forEach(item => {
+                        const produkId = item.produk_id;
+                        if (!produkPergerakan[produkId]) {
+                            produkPergerakan[produkId] = {
+                                nama: item.produk?.nama_produk || 'Unknown',
+                                masuk: 0,
+                                keluar: 0
+                            };
+                        }
+                        produkPergerakan[produkId].masuk += item.jumlah_unit_besar;
+                    });
+                }
+                
+                if (barangKeluar) {
+                    barangKeluar.forEach(item => {
+                        const produkId = item.produk_id;
+                        if (!produkPergerakan[produkId]) {
+                            produkPergerakan[produkId] = {
+                                nama: item.produk?.nama_produk || 'Unknown',
+                                masuk: 0,
+                                keluar: 0
+                            };
+                        }
+                        produkPergerakan[produkId].keluar += item.jumlah_unit_kecil;
+                    });
+                }
+                
+                // Urutkan berdasarkan total pergerakan
+                const sortedProduk = Object.values(produkPergerakan)
+                    .sort((a, b) => (b.masuk + b.keluar) - (a.masuk + a.keluar))
+                    .slice(0, 5);
+                
+                let pergerakanHTML = '<h6 class="mb-3">Top 5 Produk dengan Pergerakan Tertinggi</h6>';
+                
+                if (sortedProduk.length > 0) {
+                    sortedProduk.forEach((produk, index) => {
+                        pergerakanHTML += `
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="fw-bold">${index + 1}. ${produk.nama}</span>
+                                    <span class="badge bg-primary">${produk.masuk + produk.keluar} unit</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-success" style="width: ${(produk.masuk / (produk.masuk + produk.keluar)) * 100}%" 
+                                         title="Masuk: ${produk.masuk}"></div>
+                                    <div class="progress-bar bg-warning" style="width: ${(produk.keluar / (produk.masuk + produk.keluar)) * 100}%" 
+                                         title="Keluar: ${produk.keluar}"></div>
+                                </div>
+                                <div class="d-flex justify-content-between mt-1">
+                                    <small class="text-success"><i class="fas fa-arrow-down me-1"></i> ${produk.masuk}</small>
+                                    <small class="text-warning"><i class="fas fa-arrow-up me-1"></i> ${produk.keluar}</small>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    pergerakanHTML = `
+                        <div class="text-center text-muted py-3">
+                            <i class="fas fa-chart-line fa-2x mb-2"></i>
+                            <p>Tidak ada data pergerakan pada periode ini</p>
+                        </div>
+                    `;
+                }
                 
                 document.getElementById('pergerakanProduk').innerHTML = pergerakanHTML;
                 
+                showNotification('Laporan berhasil dibuat!', 'success');
+                
             } catch (error) {
                 console.error('Error generating report:', error);
-                alert('Terjadi kesalahan saat membuat laporan');
+                showNotification('Terjadi kesalahan saat membuat laporan', 'error');
             } finally {
                 showLoading(false);
             }
@@ -1481,22 +2488,67 @@
         
         function getStokStatus(stok) {
             if (stok >= 100) {
-                return { class: 'stok-tinggi', text: 'Tinggi' };
+                return { class: 'badge-stok-tinggi', text: 'Tinggi' };
             } else if (stok >= 20) {
-                return { class: 'stok-sedang', text: 'Sedang' };
+                return { class: 'badge-stok-sedang', text: 'Sedang' };
             } else {
-                return { class: 'stok-rendah', text: 'Rendah' };
+                return { class: 'badge-stok-rendah', text: 'Rendah' };
             }
         }
         
-        function showLoading(show) {
-            document.getElementById('loading').classList.toggle('active', show);
+        function showLoading(show, message = '') {
+            const loading = document.getElementById('loading');
+            const loadingText = loading.querySelector('.loading-text');
+            
+            if (message) {
+                loadingText.textContent = message;
+            }
+            
+            if (show) {
+                loading.classList.add('active');
+            } else {
+                loading.classList.remove('active');
+            }
+        }
+        
+        function showNotification(message, type = 'info') {
+            const alertClass = {
+                'success': 'alert-success',
+                'error': 'alert-danger',
+                'warning': 'alert-warning',
+                'info': 'alert-info'
+            }[type] || 'alert-info';
+            
+            const icon = {
+                'success': 'fas fa-check-circle',
+                'error': 'fas fa-exclamation-circle',
+                'warning': 'fas fa-exclamation-triangle',
+                'info': 'fas fa-info-circle'
+            }[type] || 'fas fa-info-circle';
+            
+            const alert = document.createElement('div');
+            alert.className = `alert ${alertClass} alert-dismissible fade show notification`;
+            alert.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="${icon} me-2"></i>
+                    <div class="flex-grow-1">${message}</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            document.body.appendChild(alert);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 5000);
         }
         
         function logout() {
             if (confirm('Apakah Anda yakin ingin logout?')) {
-                // Redirect ke halaman login atau lakukan logout
-                window.location.href = 'login.html';
+                window.location.href = 'index.html';
             }
         }
         
@@ -1508,12 +2560,12 @@
         
         async function editProduk(id) {
             // Implementasi edit produk
-            alert('Fitur edit produk akan segera tersedia');
+            showNotification('Fitur edit produk akan segera tersedia', 'info');
         }
         
         async function hapusProduk(id) {
             if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
-                showLoading(true);
+                showLoading(true, 'Menghapus produk...');
                 
                 try {
                     const { error } = await supabase
@@ -1525,10 +2577,12 @@
                     
                     loadProdukData();
                     loadProdukOptions();
-                    alert('Produk berhasil dihapus');
+                    loadDashboardData();
+                    
+                    showNotification('Produk berhasil dihapus', 'success');
                 } catch (error) {
                     console.error('Error deleting product:', error);
-                    alert('Terjadi kesalahan saat menghapus produk');
+                    showNotification('Terjadi kesalahan saat menghapus produk', 'error');
                 } finally {
                     showLoading(false);
                 }
@@ -1537,7 +2591,7 @@
         
         async function hapusBarangMasuk(id) {
             if (confirm('Apakah Anda yakin ingin menghapus data barang masuk ini?')) {
-                showLoading(true);
+                showLoading(true, 'Menghapus data barang masuk...');
                 
                 try {
                     const { error } = await supabase
@@ -1548,10 +2602,12 @@
                     if (error) throw error;
                     
                     loadBarangMasukData();
-                    alert('Data barang masuk berhasil dihapus');
+                    loadDashboardData();
+                    
+                    showNotification('Data barang masuk berhasil dihapus', 'success');
                 } catch (error) {
                     console.error('Error deleting incoming goods:', error);
-                    alert('Terjadi kesalahan saat menghapus data barang masuk');
+                    showNotification('Terjadi kesalahan saat menghapus data barang masuk', 'error');
                 } finally {
                     showLoading(false);
                 }
@@ -1560,7 +2616,7 @@
         
         async function hapusBarangKeluar(id) {
             if (confirm('Apakah Anda yakin ingin menghapus data barang keluar ini?')) {
-                showLoading(true);
+                showLoading(true, 'Menghapus data barang keluar...');
                 
                 try {
                     const { error } = await supabase
@@ -1571,10 +2627,12 @@
                     if (error) throw error;
                     
                     loadBarangKeluarData();
-                    alert('Data barang keluar berhasil dihapus');
+                    loadDashboardData();
+                    
+                    showNotification('Data barang keluar berhasil dihapus', 'success');
                 } catch (error) {
                     console.error('Error deleting outgoing goods:', error);
-                    alert('Terjadi kesalahan saat menghapus data barang keluar');
+                    showNotification('Terjadi kesalahan saat menghapus data barang keluar', 'error');
                 } finally {
                     showLoading(false);
                 }
@@ -1582,9 +2640,16 @@
         }
         
         function exportLaporan() {
-            alert('Fitur export laporan akan segera tersedia');
+            showNotification('Fitur export laporan akan segera tersedia', 'info');
             // Implementasi: Generate PDF atau Excel dari data laporan
         }
+        
+        // Handle window resize untuk mobile
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
+        });
     </script>
 </body>
 </html>
