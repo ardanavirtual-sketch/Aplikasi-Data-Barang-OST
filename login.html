@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Inventori Pro</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@wpocean/kit@1.0.0/dist/css/wpocean.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .login-header {
+            background: linear-gradient(90deg, #4361ee, #3a0ca3);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .login-body {
+            padding: 30px;
+        }
+        
+        .btn-login {
+            background: linear-gradient(90deg, #4361ee, #3a0ca3);
+            border: none;
+            width: 100%;
+            padding: 12px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-header">
+            <h3><i class="fas fa-boxes me-2"></i>Inventori Pro</h3>
+            <p class="mb-0">Sistem Manajemen Barang</p>
+        </div>
+        <div class="login-body">
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="nama@perusahaan.com" required>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="********" required>
+                </div>
+                <button type="submit" class="btn btn-login mb-3">
+                    <i class="fas fa-sign-in-alt me-2"></i> Masuk ke Sistem
+                </button>
+                <div class="text-center">
+                    <small class="text-muted">Demo aplikasi - gunakan email dan password apapun</small>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Untuk demo, langsung redirect ke halaman utama
+            // Dalam implementasi nyata, lakukan autentikasi dengan Supabase Auth
+            window.location.href = 'inventori.html';
+        });
+    </script>
+</body>
+</html>
