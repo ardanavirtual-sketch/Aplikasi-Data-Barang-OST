@@ -1,1 +1,479 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Inventori - Manajemen Barang</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1><i class="fas fa-boxes"></i> Aplikasi Inventori</h1>
+            <p class="subtitle">Manajemen Data Barang Masuk & Keluar</p>
+        </header>
 
+        <!-- Dashboard Stats -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: #4CAF50;">
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="total-barang">0</h3>
+                    <p>Total Barang</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: #2196F3;">
+                    <i class="fas fa-sign-in-alt"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="total-masuk">0</h3>
+                    <p>Barang Masuk</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: #FF9800;">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="total-keluar">0</h3>
+                    <p>Barang Keluar</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: #9C27B0;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="total-rendah">0</h3>
+                    <p>Stok Rendah</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <nav>
+                    <ul>
+                        <li class="active" data-tab="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</li>
+                        <li data-tab="barang"><i class="fas fa-box"></i> Data Barang</li>
+                        <li data-tab="barang-masuk"><i class="fas fa-arrow-down"></i> Barang Masuk</li>
+                        <li data-tab="barang-keluar"><i class="fas fa-arrow-up"></i> Barang Keluar</li>
+                        <li data-tab="laporan"><i class="fas fa-chart-bar"></i> Laporan</li>
+                        <li data-tab="kategori"><i class="fas fa-tags"></i> Kategori</li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Dashboard Tab -->
+                <div id="dashboard" class="tab-content active">
+                    <div class="tab-header">
+                        <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+                        <button id="refresh-btn" class="btn-refresh"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <h3>Grafik Stok Barang</h3>
+                        <canvas id="stokChart"></canvas>
+                    </div>
+                    
+                    <div class="recent-activity">
+                        <h3>Aktivitas Terbaru</h3>
+                        <div id="activity-list">
+                            <div class="loading">Memuat data...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Barang Tab -->
+                <div id="barang" class="tab-content">
+                    <div class="tab-header">
+                        <h2><i class="fas fa-box"></i> Data Barang</h2>
+                        <div>
+                            <input type="text" id="search-barang" placeholder="Cari barang..." class="search-input">
+                            <button id="tambah-barang-btn" class="btn-primary"><i class="fas fa-plus"></i> Tambah Barang</button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="barang-table">
+                            <thead>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Nama Barang</th>
+                                    <th>Kategori</th>
+                                    <th>Stok</th>
+                                    <th>Satuan</th>
+                                    <th>Min. Stok</th>
+                                    <th>Lokasi</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="barang-table-body">
+                                <tr><td colspan="8" class="loading">Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Barang Masuk Tab -->
+                <div id="barang-masuk" class="tab-content">
+                    <div class="tab-header">
+                        <h2><i class="fas fa-arrow-down"></i> Barang Masuk</h2>
+                        <button id="tambah-masuk-btn" class="btn-primary"><i class="fas fa-plus"></i> Tambah Barang Masuk</button>
+                    </div>
+                    
+                    <div class="filter-container">
+                        <div class="filter-group">
+                            <label for="filter-tanggal-masuk">Filter Tanggal:</label>
+                            <input type="date" id="filter-tanggal-masuk" class="filter-input">
+                        </div>
+                        <div class="filter-group">
+                            <label for="filter-barang-masuk">Filter Barang:</label>
+                            <select id="filter-barang-masuk" class="filter-input">
+                                <option value="">Semua Barang</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="masuk-table">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Kode Barang</th>
+                                    <th>Nama Barang</th>
+                                    <th>Jumlah</th>
+                                    <th>Supplier</th>
+                                    <th>Keterangan</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="masuk-table-body">
+                                <tr><td colspan="7" class="loading">Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Barang Keluar Tab -->
+                <div id="barang-keluar" class="tab-content">
+                    <div class="tab-header">
+                        <h2><i class="fas fa-arrow-up"></i> Barang Keluar</h2>
+                        <button id="tambah-keluar-btn" class="btn-primary"><i class="fas fa-plus"></i> Tambah Barang Keluar</button>
+                    </div>
+                    
+                    <div class="filter-container">
+                        <div class="filter-group">
+                            <label for="filter-tanggal-keluar">Filter Tanggal:</label>
+                            <input type="date" id="filter-tanggal-keluar" class="filter-input">
+                        </div>
+                        <div class="filter-group">
+                            <label for="filter-barang-keluar">Filter Barang:</label>
+                            <select id="filter-barang-keluar" class="filter-input">
+                                <option value="">Semua Barang</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="keluar-table">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Kode Barang</th>
+                                    <th>Nama Barang</th>
+                                    <th>Jumlah</th>
+                                    <th>Penerima</th>
+                                    <th>Keterangan</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="keluar-table-body">
+                                <tr><td colspan="7" class="loading">Memuat data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Laporan Tab -->
+                <div id="laporan" class="tab-content">
+                    <div class="tab-header">
+                        <h2><i class="fas fa-chart-bar"></i> Laporan</h2>
+                        <div>
+                            <button id="export-laporan-btn" class="btn-secondary"><i class="fas fa-file-export"></i> Export PDF</button>
+                            <button id="filter-laporan-btn" class="btn-primary"><i class="fas fa-filter"></i> Filter Laporan</button>
+                        </div>
+                    </div>
+                    
+                    <div class="report-filters" id="report-filters">
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <label for="report-start-date">Dari Tanggal:</label>
+                                <input type="date" id="report-start-date" class="filter-input">
+                            </div>
+                            <div class="filter-group">
+                                <label for="report-end-date">Sampai Tanggal:</label>
+                                <input type="date" id="report-end-date" class="filter-input">
+                            </div>
+                            <div class="filter-group">
+                                <label for="report-type">Jenis Laporan:</label>
+                                <select id="report-type" class="filter-input">
+                                    <option value="all">Semua Transaksi</option>
+                                    <option value="in">Barang Masuk</option>
+                                    <option value="out">Barang Keluar</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table id="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Jenis</th>
+                                    <th>Kode Barang</th>
+                                    <th>Nama Barang</th>
+                                    <th>Jumlah</th>
+                                    <th>Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="report-table-body">
+                                <tr><td colspan="6" class="loading">Pilih filter dan klik "Filter Laporan" untuk menampilkan data</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="report-summary">
+                        <h3>Ringkasan Laporan</h3>
+                        <div class="summary-cards">
+                            <div class="summary-card">
+                                <h4>Total Barang Masuk</h4>
+                                <p id="summary-masuk">0</p>
+                            </div>
+                            <div class="summary-card">
+                                <h4>Total Barang Keluar</h4>
+                                <p id="summary-keluar">0</p>
+                            </div>
+                            <div class="summary-card">
+                                <h4>Periode Laporan</h4>
+                                <p id="summary-period">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kategori Tab -->
+                <div id="kategori" class="tab-content">
+                    <div class="tab-header">
+                        <h2><i class="fas fa-tags"></i> Kategori Barang</h2>
+                        <button id="tambah-kategori-btn" class="btn-primary"><i class="fas fa-plus"></i> Tambah Kategori</button>
+                    </div>
+                    
+                    <div class="kategori-container">
+                        <div class="kategori-list">
+                            <h3>Daftar Kategori</h3>
+                            <ul id="kategori-list">
+                                <li class="loading">Memuat data...</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="kategori-form">
+                            <h3>Tambah/Edit Kategori</h3>
+                            <form id="kategori-form">
+                                <input type="hidden" id="kategori-id">
+                                <div class="form-group">
+                                    <label for="nama-kategori">Nama Kategori *</label>
+                                    <input type="text" id="nama-kategori" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="deskripsi-kategori">Deskripsi</label>
+                                    <textarea id="deskripsi-kategori" rows="3"></textarea>
+                                </div>
+                                <div class="form-buttons">
+                                    <button type="submit" class="btn-primary">Simpan Kategori</button>
+                                    <button type="button" id="reset-kategori-btn" class="btn-secondary">Reset</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Aplikasi Inventori &copy; 2023 - Dibangun dengan Supabase</p>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <div id="modal-tambah-barang" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-box"></i> Tambah Barang Baru</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="form-tambah-barang">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modal-kode-barang">Kode Barang *</label>
+                            <input type="text" id="modal-kode-barang" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="modal-nama-barang">Nama Barang *</label>
+                            <input type="text" id="modal-nama-barang" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modal-kategori-barang">Kategori *</label>
+                            <select id="modal-kategori-barang" required>
+                                <option value="">Pilih Kategori</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="modal-satuan-barang">Satuan *</label>
+                            <input type="text" id="modal-satuan-barang" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modal-stok-barang">Stok Awal *</label>
+                            <input type="number" id="modal-stok-barang" min="0" value="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="modal-min-stok">Minimal Stok *</label>
+                            <input type="number" id="modal-min-stok" min="0" value="5" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modal-lokasi-barang">Lokasi Penyimpanan</label>
+                        <input type="text" id="modal-lokasi-barang" placeholder="Contoh: Rak A, Gudang 1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modal-deskripsi-barang">Deskripsi Barang</label>
+                        <textarea id="modal-deskripsi-barang" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="submit" class="btn-primary">Simpan Barang</button>
+                        <button type="button" class="btn-secondary close-modal">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-tambah-masuk" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-arrow-down"></i> Tambah Barang Masuk</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="form-tambah-masuk">
+                    <div class="form-group">
+                        <label for="modal-barang-masuk">Pilih Barang *</label>
+                        <select id="modal-barang-masuk" required>
+                            <option value="">Pilih Barang</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modal-jumlah-masuk">Jumlah *</label>
+                            <input type="number" id="modal-jumlah-masuk" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="modal-tanggal-masuk">Tanggal *</label>
+                            <input type="date" id="modal-tanggal-masuk" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modal-supplier-masuk">Supplier / Sumber</label>
+                        <input type="text" id="modal-supplier-masuk" placeholder="Nama supplier atau sumber">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modal-keterangan-masuk">Keterangan</label>
+                        <textarea id="modal-keterangan-masuk" rows="3" placeholder="Catatan tambahan..."></textarea>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="submit" class="btn-primary">Simpan Barang Masuk</button>
+                        <button type="button" class="btn-secondary close-modal">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-tambah-keluar" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-arrow-up"></i> Tambah Barang Keluar</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="form-tambah-keluar">
+                    <div class="form-group">
+                        <label for="modal-barang-keluar">Pilih Barang *</label>
+                        <select id="modal-barang-keluar" required>
+                            <option value="">Pilih Barang</option>
+                        </select>
+                        <div class="stok-info" id="stok-info-keluar">Stok tersedia: <span>0</span></div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modal-jumlah-keluar">Jumlah *</label>
+                            <input type="number" id="modal-jumlah-keluar" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="modal-tanggal-keluar">Tanggal *</label>
+                            <input type="date" id="modal-tanggal-keluar" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modal-penerima-keluar">Penerima / Tujuan</label>
+                        <input type="text" id="modal-penerima-keluar" placeholder="Nama penerima atau tujuan">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modal-keterangan-keluar">Keterangan</label>
+                        <textarea id="modal-keterangan-keluar" rows="3" placeholder="Catatan tambahan..."></textarea>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="submit" class="btn-primary">Simpan Barang Keluar</button>
+                        <button type="button" class="btn-secondary close-modal">Batal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="supabase-config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
