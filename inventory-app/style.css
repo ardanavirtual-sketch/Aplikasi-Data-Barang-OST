@@ -366,24 +366,23 @@ tr:hover {
     background-color: #FF9800;
 }
 
-/* Kategori */
-.kategori-container {
+/* Kategori & Satuan */
+.kategori-container, .satuan-container {
     display: flex;
     gap: 20px;
+    flex-wrap: wrap;
 }
 
-.kategori-list {
+.kategori-list, .satuan-list, .satuan-info, .satuan-form {
     flex: 1;
+    min-width: 300px;
     background-color: #f8f9fa;
     padding: 20px;
     border-radius: 10px;
 }
 
-.kategori-form {
-    flex: 2;
+.kategori-form, .satuan-info, .satuan-form {
     background-color: white;
-    padding: 20px;
-    border-radius: 10px;
     border: 1px solid #e1e5eb;
 }
 
@@ -452,6 +451,51 @@ textarea:focus, input:focus, select:focus {
     margin-top: 20px;
 }
 
+/* Konversi Input */
+.konversi-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.konversi-input span {
+    white-space: nowrap;
+}
+
+.konversi-input input {
+    width: 80px;
+}
+
+.konversi-input select {
+    width: 120px;
+}
+
+.konversi-info {
+    background-color: #e8f4fd;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    border-left: 4px solid #2196F3;
+}
+
+.konversi-info p {
+    margin: 5px 0;
+}
+
+/* Stok Info */
+.stok-info {
+    margin-top: 5px;
+    font-size: 0.9rem;
+    color: #666;
+    padding: 5px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.stok-info strong {
+    color: #4A6FA5;
+}
+
 /* Report Summary */
 .report-summary {
     margin-top: 30px;
@@ -515,6 +559,10 @@ textarea:focus, input:focus, select:focus {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
+.wide-modal {
+    max-width: 900px;
+}
+
 .modal-header {
     padding: 20px;
     border-bottom: 1px solid #e1e5eb;
@@ -552,25 +600,90 @@ textarea:focus, input:focus, select:focus {
     gap: 10px;
 }
 
-/* Stok Info */
-.stok-info {
-    margin-top: 5px;
+/* Multi Item Modals */
+.multi-item-header {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.multi-item-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+#multi-masuk-table, #multi-keluar-table {
+    margin-bottom: 20px;
+}
+
+#multi-masuk-table tfoot, #multi-keluar-table tfoot {
+    background-color: #f1f5f9;
+    font-weight: bold;
+}
+
+.multi-item-row {
+    background-color: #fff;
+    transition: background-color 0.2s;
+}
+
+.multi-item-row:hover {
+    background-color: #f8f9fa;
+}
+
+.multi-item-row input, .multi-item-row select {
+    padding: 8px 12px;
     font-size: 0.9rem;
-    color: #666;
 }
 
-.stok-info span {
+.multi-item-row .btn-action {
+    width: 32px;
+    height: 32px;
+}
+
+/* Low stock indicator */
+.low-stock {
+    color: #f44336;
     font-weight: 600;
-    color: #4A6FA5;
+    background-color: #ffebee;
+    padding: 2px 8px;
+    border-radius: 4px;
 }
 
-/* Footer */
-.footer {
-    text-align: center;
-    padding: 20px;
-    color: #666;
-    margin-top: 30px;
-    border-top: 1px solid #e1e5eb;
+/* Badge for report table */
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-in {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badge-out {
+    background-color: #fff3e0;
+    color: #ef6c00;
+}
+
+/* Loading animation */
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+.loading {
+    animation: pulse 1.5s infinite;
+}
+
+/* Cursor pointers */
+.sidebar li, .btn-action, .btn-primary, .btn-secondary, .btn-refresh, .close-modal {
+    cursor: pointer;
 }
 
 /* Responsive */
@@ -584,7 +697,7 @@ textarea:focus, input:focus, select:focus {
         width: 100%;
     }
     
-    .kategori-container {
+    .kategori-container, .satuan-container {
         flex-direction: column;
     }
     
@@ -616,82 +729,16 @@ textarea:focus, input:focus, select:focus {
     .filter-group {
         min-width: 100%;
     }
-}
-
-/* Tambahan CSS untuk interaksi yang lebih baik */
-
-/* Low stock indicator */
-.low-stock {
-    color: #f44336;
-    font-weight: 600;
-}
-
-/* Badge for report table */
-.badge {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.badge-in {
-    background-color: #e8f5e9;
-    color: #2e7d32;
-}
-
-.badge-out {
-    background-color: #fff3e0;
-    color: #ef6c00;
-}
-
-/* Modal backdrop */
-.modal.active {
-    display: flex !important;
-}
-
-/* Improve button feedback */
-.btn-primary:active, .btn-secondary:active, .btn-refresh:active {
-    transform: translateY(0);
-}
-
-/* Improve table row hover */
-tr:hover {
-    background-color: #f8f9fa;
-}
-
-/* Loading animation */
-@keyframes pulse {
-    0% { opacity: 0.6; }
-    50% { opacity: 1; }
-    100% { opacity: 0.6; }
-}
-
-.loading {
-    animation: pulse 1.5s infinite;
-}
-
-/* Cursor pointers for interactive elements */
-.sidebar li, .btn-action, .btn-primary, .btn-secondary, .btn-refresh, .close-modal, .notification-close {
-    cursor: pointer;
-}
-
-/* Disabled state for buttons */
-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-/* Form validation */
-input:invalid, select:invalid {
-    border-color: #f44336;
-}
-
-input:valid, select:valid {
-    border-color: #4CAF50;
-}
-
-/* Responsive improvements */
-@media (max-width: 768px) {
+    
+    .modal-content {
+        width: 95%;
+        margin: 10px;
+    }
+    
+    .wide-modal {
+        max-width: 95%;
+    }
+    
     .action-buttons {
         flex-direction: column;
         gap: 5px;
