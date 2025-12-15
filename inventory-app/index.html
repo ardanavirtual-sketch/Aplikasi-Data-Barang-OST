@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Inventori - Manajemen Barang</title>
+    <title>Aplikasi Inventori - Manajemen Barang Masuk & Keluar</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -68,6 +68,7 @@
                         <li data-tab="barang-keluar"><i class="fas fa-arrow-up"></i> Barang Keluar</li>
                         <li data-tab="laporan"><i class="fas fa-chart-bar"></i> Laporan</li>
                         <li data-tab="kategori"><i class="fas fa-tags"></i> Kategori</li>
+                        <li data-tab="satuan"><i class="fas fa-balance-scale"></i> Satuan</li>
                     </ul>
                 </nav>
             </div>
@@ -111,8 +112,8 @@
                                     <th>Kode</th>
                                     <th>Nama Barang</th>
                                     <th>Kategori</th>
-                                    <th>Stok</th>
-                                    <th>Satuan</th>
+                                    <th>Stok (Pcs)</th>
+                                    <th>Stok (Dus)</th>
                                     <th>Min. Stok</th>
                                     <th>Lokasi</th>
                                     <th>Aksi</th>
@@ -129,7 +130,10 @@
                 <div id="barang-masuk" class="tab-content">
                     <div class="tab-header">
                         <h2><i class="fas fa-arrow-down"></i> Barang Masuk</h2>
-                        <button id="tambah-masuk-btn" class="btn-primary"><i class="fas fa-plus"></i> Tambah Barang Masuk</button>
+                        <div>
+                            <button id="multi-masuk-btn" class="btn-secondary"><i class="fas fa-layer-group"></i> Multi Item</button>
+                            <button id="tambah-masuk-btn" class="btn-primary"><i class="fas fa-plus"></i> Tambah Barang Masuk</button>
+                        </div>
                     </div>
                     
                     <div class="filter-container">
@@ -152,14 +156,15 @@
                                     <th>Tanggal</th>
                                     <th>Kode Barang</th>
                                     <th>Nama Barang</th>
-                                    <th>Jumlah</th>
+                                    <th>Jumlah (Dus)</th>
+                                    <th>Total (Pcs)</th>
                                     <th>Supplier</th>
                                     <th>Keterangan</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="masuk-table-body">
-                                <tr><td colspan="7" class="loading">Memuat data...</td></tr>
+                                <tr><td colspan="8" class="loading">Memuat data...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -169,7 +174,10 @@
                 <div id="barang-keluar" class="tab-content">
                     <div class="tab-header">
                         <h2><i class="fas fa-arrow-up"></i> Barang Keluar</h2>
-                        <button id="tambah-keluar-btn" class="btn-primary"><i class="fas fa-plus"></i> Tambah Barang Keluar</button>
+                        <div>
+                            <button id="multi-keluar-btn" class="btn-secondary"><i class="fas fa-layer-group"></i> Multi Item</button>
+                            <button id="tambah-keluar-btn" class="btn-primary"><i class="fas fa-plus"></i> Tambah Barang Keluar</button>
+                        </div>
                     </div>
                     
                     <div class="filter-container">
@@ -192,6 +200,7 @@
                                     <th>Tanggal</th>
                                     <th>Kode Barang</th>
                                     <th>Nama Barang</th>
+                                    <th>Satuan</th>
                                     <th>Jumlah</th>
                                     <th>Penerima</th>
                                     <th>Keterangan</th>
@@ -199,7 +208,7 @@
                                 </tr>
                             </thead>
                             <tbody id="keluar-table-body">
-                                <tr><td colspan="7" class="loading">Memuat data...</td></tr>
+                                <tr><td colspan="8" class="loading">Memuat data...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -244,12 +253,13 @@
                                     <th>Jenis</th>
                                     <th>Kode Barang</th>
                                     <th>Nama Barang</th>
+                                    <th>Satuan</th>
                                     <th>Jumlah</th>
                                     <th>Keterangan</th>
                                 </tr>
                             </thead>
                             <tbody id="report-table-body">
-                                <tr><td colspan="6" class="loading">Pilih filter dan klik "Filter Laporan" untuk menampilkan data</td></tr>
+                                <tr><td colspan="7" class="loading">Pilih filter dan klik "Filter Laporan" untuk menampilkan data</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -259,11 +269,11 @@
                         <div class="summary-cards">
                             <div class="summary-card">
                                 <h4>Total Barang Masuk</h4>
-                                <p id="summary-masuk">0</p>
+                                <p id="summary-masuk">0 Dus</p>
                             </div>
                             <div class="summary-card">
                                 <h4>Total Barang Keluar</h4>
-                                <p id="summary-keluar">0</p>
+                                <p id="summary-keluar">0 Pcs</p>
                             </div>
                             <div class="summary-card">
                                 <h4>Periode Laporan</h4>
@@ -308,6 +318,82 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Satuan Tab -->
+                <div id="satuan" class="tab-content">
+                    <div class="tab-header">
+                        <h2><i class="fas fa-balance-scale"></i> Konversi Satuan</h2>
+                        <button id="tambah-satuan-btn" class="btn-primary"><i class="fas fa-plus"></i> Tambah Konversi</button>
+                    </div>
+                    
+                    <div class="satuan-container">
+                        <div class="satuan-info">
+                            <h3>Info Konversi Satuan</h3>
+                            <p>Barang masuk menggunakan satuan <strong>Dus</strong>. Barang keluar menggunakan satuan <strong>Pcs, Botol, atau Pack</strong>.</p>
+                            <p>Setiap barang dapat memiliki konversi yang berbeda. Contoh:</p>
+                            <ul>
+                                <li>1 Dus = 24 Pcs (untuk barang A)</li>
+                                <li>1 Dus = 12 Botol (untuk barang B)</li>
+                                <li>1 Dus = 6 Pack (untuk barang C)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="satuan-form">
+                            <h3>Tambah/Edit Konversi Satuan</h3>
+                            <form id="satuan-form">
+                                <input type="hidden" id="satuan-id">
+                                <div class="form-group">
+                                    <label for="barang-satuan">Pilih Barang *</label>
+                                    <select id="barang-satuan" required>
+                                        <option value="">Pilih Barang</option>
+                                    </select>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="satuan-dus">1 Dus =</label>
+                                        <input type="number" id="satuan-dus" min="1" value="1" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="jumlah-satuan">Jumlah</label>
+                                        <input type="number" id="jumlah-satuan" min="1" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="satuan-unit">Satuan Unit *</label>
+                                        <select id="satuan-unit" required>
+                                            <option value="">Pilih Satuan</option>
+                                            <option value="Pcs">Pcs</option>
+                                            <option value="Botol">Botol</option>
+                                            <option value="Pack">Pack</option>
+                                            <option value="Unit">Unit</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-buttons">
+                                    <button type="submit" class="btn-primary">Simpan Konversi</button>
+                                    <button type="button" id="reset-satuan-btn" class="btn-secondary">Reset</button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div class="satuan-list">
+                            <h3>Daftar Konversi Satuan</h3>
+                            <div class="table-container">
+                                <table id="satuan-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Nama Barang</th>
+                                            <th>Konversi</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="satuan-table-body">
+                                        <tr><td colspan="3" class="loading">Memuat data...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -318,6 +404,7 @@
     </div>
 
     <!-- Modals -->
+    <!-- Modal Tambah Barang -->
     <div id="modal-tambah-barang" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -345,19 +432,28 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="modal-satuan-barang">Satuan *</label>
-                            <input type="text" id="modal-satuan-barang" required>
+                            <label for="modal-konversi-default">Konversi Default *</label>
+                            <div class="konversi-input">
+                                <span>1 Dus = </span>
+                                <input type="number" id="modal-konversi-default" min="1" value="24" required>
+                                <select id="modal-satuan-default">
+                                    <option value="Pcs">Pcs</option>
+                                    <option value="Botol">Botol</option>
+                                    <option value="Pack">Pack</option>
+                                    <option value="Unit">Unit</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="modal-stok-barang">Stok Awal *</label>
-                            <input type="number" id="modal-stok-barang" min="0" value="0" required>
+                            <label for="modal-stok-pcs">Stok Awal (Pcs) *</label>
+                            <input type="number" id="modal-stok-pcs" min="0" value="0" required>
                         </div>
                         <div class="form-group">
-                            <label for="modal-min-stok">Minimal Stok *</label>
-                            <input type="number" id="modal-min-stok" min="0" value="5" required>
+                            <label for="modal-min-stok">Minimal Stok (Pcs) *</label>
+                            <input type="number" id="modal-min-stok" min="0" value="24" required>
                         </div>
                     </div>
                     
@@ -380,6 +476,7 @@
         </div>
     </div>
 
+    <!-- Modal Tambah Barang Masuk (Single Item) -->
     <div id="modal-tambah-masuk" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -397,8 +494,8 @@
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="modal-jumlah-masuk">Jumlah *</label>
-                            <input type="number" id="modal-jumlah-masuk" min="1" required>
+                            <label for="modal-jumlah-masuk">Jumlah (Dus) *</label>
+                            <input type="number" id="modal-jumlah-masuk" min="0.01" step="0.01" required>
                         </div>
                         <div class="form-group">
                             <label for="modal-tanggal-masuk">Tanggal *</label>
@@ -416,6 +513,11 @@
                         <textarea id="modal-keterangan-masuk" rows="3" placeholder="Catatan tambahan..."></textarea>
                     </div>
                     
+                    <div class="konversi-info" id="konversi-info-masuk">
+                        <p><i class="fas fa-info-circle"></i> Konversi: <span id="konversi-text-masuk">1 Dus = 24 Pcs</span></p>
+                        <p>Total akan ditambahkan: <strong id="total-pcs-masuk">0</strong> Pcs</p>
+                    </div>
+                    
                     <div class="modal-footer">
                         <button type="submit" class="btn-primary">Simpan Barang Masuk</button>
                         <button type="button" class="btn-secondary close-modal">Batal</button>
@@ -425,6 +527,70 @@
         </div>
     </div>
 
+    <!-- Modal Multi Barang Masuk -->
+    <div id="modal-multi-masuk" class="modal">
+        <div class="modal-content wide-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-layer-group"></i> Multi Item Barang Masuk</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="multi-item-header">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="multi-tanggal-masuk">Tanggal *</label>
+                            <input type="date" id="multi-tanggal-masuk" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="multi-supplier-masuk">Supplier</label>
+                            <input type="text" id="multi-supplier-masuk" placeholder="Nama supplier">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="multi-keterangan-masuk">Keterangan Umum</label>
+                        <textarea id="multi-keterangan-masuk" rows="2" placeholder="Keterangan untuk semua item..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="multi-item-controls">
+                    <button type="button" id="tambah-item-masuk" class="btn-secondary"><i class="fas fa-plus"></i> Tambah Item</button>
+                    <button type="button" id="hitung-total-masuk" class="btn-secondary"><i class="fas fa-calculator"></i> Hitung Total</button>
+                </div>
+                
+                <div class="table-container">
+                    <table id="multi-masuk-table">
+                        <thead>
+                            <tr>
+                                <th>Barang</th>
+                                <th>Jumlah (Dus)</th>
+                                <th>Konversi</th>
+                                <th>Total (Pcs)</th>
+                                <th>Keterangan</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="multi-masuk-body">
+                            <!-- Items will be added here dynamically -->
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3"><strong>TOTAL</strong></td>
+                                <td id="total-all-pcs-masuk"><strong>0</strong> Pcs</td>
+                                <td colspan="2"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" id="simpan-multi-masuk" class="btn-primary">Simpan Semua Item</button>
+                    <button type="button" class="btn-secondary close-modal">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Barang Keluar (Single Item) -->
     <div id="modal-tambah-keluar" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -438,28 +604,46 @@
                         <select id="modal-barang-keluar" required>
                             <option value="">Pilih Barang</option>
                         </select>
-                        <div class="stok-info" id="stok-info-keluar">Stok tersedia: <span>0</span></div>
+                        <div class="stok-info">
+                            <span>Stok tersedia: <strong id="stok-tersedia-pcs">0</strong> Pcs (<span id="stok-tersedia-dus">0</span> Dus)</span>
+                        </div>
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
+                            <label for="modal-satuan-keluar">Satuan Keluar *</label>
+                            <select id="modal-satuan-keluar" required>
+                                <option value="">Pilih Satuan</option>
+                                <option value="Pcs">Pcs</option>
+                                <option value="Botol">Botol</option>
+                                <option value="Pack">Pack</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="modal-jumlah-keluar">Jumlah *</label>
                             <input type="number" id="modal-jumlah-keluar" min="1" required>
                         </div>
+                    </div>
+                    
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="modal-tanggal-keluar">Tanggal *</label>
                             <input type="date" id="modal-tanggal-keluar" required>
                         </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="modal-penerima-keluar">Penerima / Tujuan</label>
-                        <input type="text" id="modal-penerima-keluar" placeholder="Nama penerima atau tujuan">
+                        <div class="form-group">
+                            <label for="modal-penerima-keluar">Penerima / Tujuan</label>
+                            <input type="text" id="modal-penerima-keluar" placeholder="Nama penerima atau tujuan">
+                        </div>
                     </div>
                     
                     <div class="form-group">
                         <label for="modal-keterangan-keluar">Keterangan</label>
                         <textarea id="modal-keterangan-keluar" rows="3" placeholder="Catatan tambahan..."></textarea>
+                    </div>
+                    
+                    <div class="konversi-info" id="konversi-info-keluar">
+                        <p><i class="fas fa-info-circle"></i> Konversi: <span id="konversi-text-keluar">1 Dus = 24 Pcs</span></p>
+                        <p>Total akan dikurangi: <strong id="total-pcs-keluar">0</strong> Pcs</p>
                     </div>
                     
                     <div class="modal-footer">
@@ -470,46 +654,75 @@
             </div>
         </div>
     </div>
-    <!-- Debug console (opsional, hapus saat production) -->
-<div id="debug-console" style="display:none; position:fixed; bottom:10px; right:10px; background:#333; color:#fff; padding:10px; border-radius:5px; max-width:300px; max-height:200px; overflow:auto; z-index:9999; font-size:12px;">
-    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-        <strong>Debug Console</strong>
-        <button onclick="document.getElementById('debug-console').style.display='none'" style="background:none; border:none; color:#fff; cursor:pointer;">×</button>
+
+    <!-- Modal Multi Barang Keluar -->
+    <div id="modal-multi-keluar" class="modal">
+        <div class="modal-content wide-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-layer-group"></i> Multi Item Barang Keluar</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="multi-item-header">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="multi-tanggal-keluar">Tanggal *</label>
+                            <input type="date" id="multi-tanggal-keluar" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="multi-penerima-keluar">Penerima</label>
+                            <input type="text" id="multi-penerima-keluar" placeholder="Nama penerima">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="multi-keterangan-keluar">Keterangan Umum</label>
+                        <textarea id="multi-keterangan-keluar" rows="2" placeholder="Keterangan untuk semua item..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="multi-item-controls">
+                    <button type="button" id="tambah-item-keluar" class="btn-secondary"><i class="fas fa-plus"></i> Tambah Item</button>
+                    <button type="button" id="hitung-total-keluar" class="btn-secondary"><i class="fas fa-calculator"></i> Hitung Total</button>
+                </div>
+                
+                <div class="table-container">
+                    <table id="multi-keluar-table">
+                        <thead>
+                            <tr>
+                                <th>Barang</th>
+                                <th>Satuan</th>
+                                <th>Jumlah</th>
+                                <th>Konversi</th>
+                                <th>Total (Pcs)</th>
+                                <th>Stok Tersedia</th>
+                                <th>Keterangan</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="multi-keluar-body">
+                            <!-- Items will be added here dynamically -->
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4"><strong>TOTAL</strong></td>
+                                <td id="total-all-pcs-keluar"><strong>0</strong> Pcs</td>
+                                <td colspan="3"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" id="simpan-multi-keluar" class="btn-primary">Simpan Semua Item</button>
+                    <button type="button" class="btn-secondary close-modal">Batal</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="debug-log"></div>
-</div>
-
-<script>
-// Fungsi debugging sederhana
-window.debugLog = function(message) {
-    const debugDiv = document.getElementById('debug-log');
-    if (debugDiv) {
-        const logEntry = document.createElement('div');
-        logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
-        debugDiv.appendChild(logEntry);
-        debugDiv.scrollTop = debugDiv.scrollHeight;
-    }
-    console.log(message);
-};
-
-// Tampilkan debug console dengan shortcut Ctrl+Shift+D
-document.addEventListener('keydown', function(e) {
-    if (e.ctrlKey && e.shiftKey && e.key === 'D') {
-        const debugConsole = document.getElementById('debug-console');
-        if (debugConsole) {
-            debugConsole.style.display = debugConsole.style.display === 'none' ? 'block' : 'none';
-        }
-    }
-});
-
-// Log event untuk debugging
-document.addEventListener('DOMContentLoaded', function() {
-    debugLog('DOM fully loaded');
-});
-</script>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/supabase@2"></script>
     <script src="supabase-config.js"></script>
     <script src="app.js"></script>
 </body>
