@@ -349,7 +349,7 @@
             border-radius: 15px;
             padding: 2rem;
             width: 90%;
-            max-width: 500px;
+            max-width: 800px;
             max-height: 90vh;
             overflow-y: auto;
         }
@@ -436,6 +436,259 @@
             margin-top: 2rem;
         }
 
+        /* Multi-item Form Styles */
+        .multi-item-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .item-row {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+        }
+
+        .item-row:hover {
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(67, 97, 238, 0.1);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .item-header h4 {
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .remove-item {
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-item:hover {
+            background: #d11450;
+        }
+
+        .add-item-btn {
+            width: 100%;
+            padding: 12px;
+            background: #e9ecef;
+            border: 2px dashed #adb5bd;
+            border-radius: 8px;
+            color: #495057;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .add-item-btn:hover {
+            background: #dee2e6;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .item-form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-control-small {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .form-control-small:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .item-summary {
+            background: #f1f3f9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .item-summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+
+        .total-section {
+            background: var(--primary);
+            color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .total-section h3 {
+            margin-bottom: 10px;
+        }
+
+        .total-section .total-amount {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .quick-action-btn {
+            padding: 8px 15px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .quick-action-btn:hover {
+            background: var(--light-gray);
+            border-color: var(--primary);
+        }
+
+        /* Summary Card */
+        .summary-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .summary-item {
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .summary-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+
+        /* Responsive Tables */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .data-table th {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Badge Styles */
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .main-layout {
@@ -467,6 +720,15 @@
             
             .main-content {
                 padding: 1rem;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 1rem;
+            }
+            
+            .item-form-row {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -1019,7 +1281,7 @@
             }
         }
 
-        // === OTHER SECTIONS ===
+        // === BARANG SECTION ===
         async function loadBarang() {
             mainContent.innerHTML = `
                 <div style="max-width: 1200px; margin: 0 auto;">
@@ -1063,33 +1325,35 @@
                 
                 container.innerHTML = `
                     <div style="background: white; border-radius: 10px; overflow: hidden;">
-                        <table style="width: 100%; border-collapse: collapse;">
+                        <table class="data-table">
                             <thead>
-                                <tr style="background: #f8f9fa;">
-                                    <th style="padding: 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Kode</th>
-                                    <th style="padding: 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Nama Barang</th>
-                                    <th style="padding: 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Kategori</th>
-                                    <th style="padding: 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Stok</th>
-                                    <th style="padding: 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Min Stok</th>
-                                    <th style="padding: 15px; text-align: left; border-bottom: 2px solid #dee2e6;">Aksi</th>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Nama Barang</th>
+                                    <th>Kategori</th>
+                                    <th>Stok</th>
+                                    <th>Min Stok</th>
+                                    <th>Lokasi</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 ${barang.map(item => `
-                                    <tr style="border-bottom: 1px solid #dee2e6;">
-                                        <td style="padding: 15px;">${item.kode_barang}</td>
-                                        <td style="padding: 15px;">
+                                    <tr>
+                                        <td><strong>${item.kode_barang}</strong></td>
+                                        <td>
                                             <strong>${item.nama_barang}</strong>
                                             ${item.deskripsi ? `<br><small style="color: #666;">${item.deskripsi}</small>` : ''}
                                         </td>
-                                        <td style="padding: 15px;">${item.kategori?.nama_kategori || '-'}</td>
-                                        <td style="padding: 15px;">
-                                            <span style="font-weight: bold; color: ${item.stok_pcs <= (item.min_stok_pcs || 24) ? '#dc3545' : '#28a745'}">
+                                        <td>${item.kategori?.nama_kategori || '-'}</td>
+                                        <td>
+                                            <span class="badge ${item.stok_pcs <= (item.min_stok_pcs || 24) ? 'badge-warning' : 'badge-success'}">
                                                 ${item.stok_pcs} Pcs
                                             </span>
                                         </td>
-                                        <td style="padding: 15px;">${item.min_stok_pcs || 24} Pcs</td>
-                                        <td style="padding: 15px;">
+                                        <td>${item.min_stok_pcs || 24} Pcs</td>
+                                        <td>${item.lokasi || '-'}</td>
+                                        <td>
                                             <button class="btn" style="padding: 5px 10px; margin-right: 5px; background: #f8f9fa;" onclick="editBarang(${item.id})">
                                                 <i class="fas fa-edit"></i>
                                             </button>
@@ -1116,7 +1380,567 @@
             }
         }
 
-        // Modal Functions
+        // === BARANG MASUK SECTION ===
+        async function loadBarangMasuk() {
+            mainContent.innerHTML = `
+                <div style="max-width: 1400px; margin: 0 auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h2><i class="fas fa-sign-in-alt"></i> Barang Masuk</h2>
+                        <div class="quick-actions">
+                            <button class="btn btn-primary" onclick="showAddBarangMasukModal()">
+                                <i class="fas fa-plus"></i> Input Barang Masuk
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter Section -->
+                    <div class="filter-section">
+                        <div class="filter-row">
+                            <div class="form-group">
+                                <label class="form-label">Tanggal Mulai</label>
+                                <input type="date" class="form-control" id="filterMasukStart" value="${new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tanggal Akhir</label>
+                                <input type="date" class="form-control" id="filterMasukEnd" value="${new Date().toISOString().split('T')[0]}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Supplier</label>
+                                <input type="text" class="form-control" id="filterMasukSupplier" placeholder="Semua supplier">
+                            </div>
+                            <button class="btn btn-primary" onclick="loadBarangMasukTable()">
+                                <i class="fas fa-filter"></i> Filter
+                            </button>
+                            <button class="btn" onclick="resetMasukFilter()" style="background: #f8f9fa;">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="barangMasukTableContainer">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Memuat data barang masuk...</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            await loadBarangMasukTable();
+        }
+
+        async function loadBarangMasukTable() {
+            try {
+                const startDate = document.getElementById('filterMasukStart')?.value;
+                const endDate = document.getElementById('filterMasukEnd')?.value;
+                const supplier = document.getElementById('filterMasukSupplier')?.value;
+                
+                const barangMasuk = await window.supabaseFunctions.getBarangMasuk();
+                const container = document.getElementById('barangMasukTableContainer');
+                
+                if (!barangMasuk || barangMasuk.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 40px; background: white; border-radius: 10px;">
+                            <i class="fas fa-inbox" style="font-size: 48px; color: #666;"></i>
+                            <h3 style="margin: 20px 0 10px;">Belum ada data barang masuk</h3>
+                            <p style="color: #666; margin-bottom: 20px;">Tambahkan barang masuk pertama Anda</p>
+                            <button class="btn btn-primary" onclick="showAddBarangMasukModal()">
+                                <i class="fas fa-plus"></i> Input Barang Masuk Pertama
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Filter data
+                let filteredData = barangMasuk.filter(item => {
+                    const itemDate = new Date(item.tanggal);
+                    const start = startDate ? new Date(startDate) : null;
+                    const end = endDate ? new Date(endDate) : null;
+                    
+                    let pass = true;
+                    if (start && itemDate < start) pass = false;
+                    if (end && itemDate > end) pass = false;
+                    if (supplier && item.supplier && !item.supplier.toLowerCase().includes(supplier.toLowerCase())) {
+                        pass = false;
+                    }
+                    return pass;
+                });
+                
+                // Calculate totals
+                const totalDus = filteredData.reduce((sum, item) => sum + parseFloat(item.jumlah_dus), 0);
+                const totalPcs = filteredData.reduce((sum, item) => sum + parseInt(item.total_pcs), 0);
+                
+                container.innerHTML = `
+                    <div class="summary-card">
+                        <h3><i class="fas fa-chart-bar"></i> Ringkasan Barang Masuk</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <div class="summary-value">${filteredData.length}</div>
+                                <div class="summary-label">Total Transaksi</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-value">${totalDus.toFixed(2)}</div>
+                                <div class="summary-label">Total Dus</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-value">${totalPcs}</div>
+                                <div class="summary-label">Total Pcs</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-value">${filteredData.length > 0 ? new Date(Math.max(...filteredData.map(d => new Date(d.tanggal)))).toLocaleDateString('id-ID') : '-'}</div>
+                                <div class="summary-label">Transaksi Terakhir</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Kode Barang</th>
+                                    <th>Nama Barang</th>
+                                    <th>Jumlah (Dus)</th>
+                                    <th>Total (Pcs)</th>
+                                    <th>Supplier</th>
+                                    <th>Keterangan</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${filteredData.map(item => `
+                                    <tr>
+                                        <td>${new Date(item.tanggal).toLocaleDateString('id-ID')}</td>
+                                        <td><strong>${item.barang?.kode_barang || '-'}</strong></td>
+                                        <td>${item.barang?.nama_barang || '-'}</td>
+                                        <td>
+                                            <span class="badge badge-info">${parseFloat(item.jumlah_dus).toFixed(2)} Dus</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-success">${item.total_pcs} Pcs</span>
+                                        </td>
+                                        <td>${item.supplier || '-'}</td>
+                                        <td>${item.keterangan ? item.keterangan.substring(0, 50) + (item.keterangan.length > 50 ? '...' : '') : '-'}</td>
+                                        <td>
+                                            <button class="btn" style="padding: 5px 10px; margin-right: 5px; background: #f8f9fa;" 
+                                                onclick="editBarangMasuk(${item.id})">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn" style="padding: 5px 10px; background: #f8f9fa;" 
+                                                onclick="deleteBarangMasuk(${item.id})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Error loading barang masuk table:', error);
+                document.getElementById('barangMasukTableContainer').innerHTML = `
+                    <div style="text-align: center; padding: 40px; background: white; border-radius: 10px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #dc3545;"></i>
+                        <h3 style="margin: 20px 0 10px;">Gagal memuat data</h3>
+                        <p style="color: #666;">${error.message || 'Terjadi kesalahan'}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // === BARANG KELUAR SECTION ===
+        async function loadBarangKeluar() {
+            mainContent.innerHTML = `
+                <div style="max-width: 1400px; margin: 0 auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h2><i class="fas fa-sign-out-alt"></i> Barang Keluar</h2>
+                        <div class="quick-actions">
+                            <button class="btn btn-primary" onclick="showAddBarangKeluarModal()">
+                                <i class="fas fa-plus"></i> Input Barang Keluar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter Section -->
+                    <div class="filter-section">
+                        <div class="filter-row">
+                            <div class="form-group">
+                                <label class="form-label">Tanggal Mulai</label>
+                                <input type="date" class="form-control" id="filterKeluarStart" value="${new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tanggal Akhir</label>
+                                <input type="date" class="form-control" id="filterKeluarEnd" value="${new Date().toISOString().split('T')[0]}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Penerima</label>
+                                <input type="text" class="form-control" id="filterKeluarPenerima" placeholder="Semua penerima">
+                            </div>
+                            <button class="btn btn-primary" onclick="loadBarangKeluarTable()">
+                                <i class="fas fa-filter"></i> Filter
+                            </button>
+                            <button class="btn" onclick="resetKeluarFilter()" style="background: #f8f9fa;">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="barangKeluarTableContainer">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Memuat data barang keluar...</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            await loadBarangKeluarTable();
+        }
+
+        async function loadBarangKeluarTable() {
+            try {
+                const startDate = document.getElementById('filterKeluarStart')?.value;
+                const endDate = document.getElementById('filterKeluarEnd')?.value;
+                const penerima = document.getElementById('filterKeluarPenerima')?.value;
+                
+                const barangKeluar = await window.supabaseFunctions.getBarangKeluar();
+                const container = document.getElementById('barangKeluarTableContainer');
+                
+                if (!barangKeluar || barangKeluar.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 40px; background: white; border-radius: 10px;">
+                            <i class="fas fa-outbox" style="font-size: 48px; color: #666;"></i>
+                            <h3 style="margin: 20px 0 10px;">Belum ada data barang keluar</h3>
+                            <p style="color: #666; margin-bottom: 20px;">Tambahkan barang keluar pertama Anda</p>
+                            <button class="btn btn-primary" onclick="showAddBarangKeluarModal()">
+                                <i class="fas fa-plus"></i> Input Barang Keluar Pertama
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Filter data
+                let filteredData = barangKeluar.filter(item => {
+                    const itemDate = new Date(item.tanggal);
+                    const start = startDate ? new Date(startDate) : null;
+                    const end = endDate ? new Date(endDate) : null;
+                    
+                    let pass = true;
+                    if (start && itemDate < start) pass = false;
+                    if (end && itemDate > end) pass = false;
+                    if (penerima && item.penerima && !item.penerima.toLowerCase().includes(penerima.toLowerCase())) {
+                        pass = false;
+                    }
+                    return pass;
+                });
+                
+                // Calculate totals
+                const totalItems = filteredData.reduce((sum, item) => sum + parseInt(item.jumlah), 0);
+                const totalPcs = filteredData.reduce((sum, item) => sum + parseInt(item.total_pcs), 0);
+                
+                container.innerHTML = `
+                    <div class="summary-card">
+                        <h3><i class="fas fa-chart-bar"></i> Ringkasan Barang Keluar</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <div class="summary-value">${filteredData.length}</div>
+                                <div class="summary-label">Total Transaksi</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-value">${totalItems}</div>
+                                <div class="summary-label">Total Item</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-value">${totalPcs}</div>
+                                <div class="summary-label">Total Pcs</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-value">${filteredData.length > 0 ? new Date(Math.max(...filteredData.map(d => new Date(d.tanggal)))).toLocaleDateString('id-ID') : '-'}</div>
+                                <div class="summary-label">Transaksi Terakhir</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Kode Barang</th>
+                                    <th>Nama Barang</th>
+                                    <th>Satuan Keluar</th>
+                                    <th>Jumlah</th>
+                                    <th>Total Pcs</th>
+                                    <th>Penerima</th>
+                                    <th>Keterangan</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${filteredData.map(item => `
+                                    <tr>
+                                        <td>${new Date(item.tanggal).toLocaleDateString('id-ID')}</td>
+                                        <td><strong>${item.barang?.kode_barang || '-'}</strong></td>
+                                        <td>${item.barang?.nama_barang || '-'}</td>
+                                        <td>
+                                            <span class="badge badge-info">${item.satuan_keluar}</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-warning">${item.jumlah} ${item.satuan_keluar}</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-success">${item.total_pcs} Pcs</span>
+                                        </td>
+                                        <td>${item.penerima || '-'}</td>
+                                        <td>${item.keterangan ? item.keterangan.substring(0, 50) + (item.keterangan.length > 50 ? '...' : '') : '-'}</td>
+                                        <td>
+                                            <button class="btn" style="padding: 5px 10px; margin-right: 5px; background: #f8f9fa;" 
+                                                onclick="editBarangKeluar(${item.id})">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn" style="padding: 5px 10px; background: #f8f9fa;" 
+                                                onclick="deleteBarangKeluar(${item.id})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Error loading barang keluar table:', error);
+                document.getElementById('barangKeluarTableContainer').innerHTML = `
+                    <div style="text-align: center; padding: 40px; background: white; border-radius: 10px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #dc3545;"></i>
+                        <h3 style="margin: 20px 0 10px;">Gagal memuat data</h3>
+                        <p style="color: #666;">${error.message || 'Terjadi kesalahan'}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // === LAPORAN SECTION ===
+        async function loadLaporan() {
+            mainContent.innerHTML = `
+                <div style="max-width: 1400px; margin: 0 auto;">
+                    <h2 style="margin-bottom: 2rem;"><i class="fas fa-chart-bar"></i> Laporan</h2>
+                    
+                    <div class="filter-section">
+                        <div class="filter-row">
+                            <div class="form-group">
+                                <label class="form-label">Tanggal Mulai</label>
+                                <input type="date" class="form-control" id="filterLaporanStart" value="${new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0]}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Tanggal Akhir</label>
+                                <input type="date" class="form-control" id="filterLaporanEnd" value="${new Date().toISOString().split('T')[0]}">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Jenis Laporan</label>
+                                <select class="form-control" id="filterLaporanJenis">
+                                    <option value="all">Semua</option>
+                                    <option value="in">Barang Masuk</option>
+                                    <option value="out">Barang Keluar</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="loadLaporanData()">
+                                <i class="fas fa-filter"></i> Tampilkan Laporan
+                            </button>
+                            <button class="btn btn-success" onclick="exportLaporan()">
+                                <i class="fas fa-file-export"></i> Export Excel
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="laporanContainer">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            <p>Memuat laporan...</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            await loadLaporanData();
+        }
+
+        async function loadLaporanData() {
+            try {
+                const startDate = document.getElementById('filterLaporanStart')?.value;
+                const endDate = document.getElementById('filterLaporanEnd')?.value;
+                const jenis = document.getElementById('filterLaporanJenis')?.value;
+                
+                const laporan = await window.supabaseFunctions.getLaporan(startDate, endDate, jenis);
+                const container = document.getElementById('laporanContainer');
+                
+                if (!laporan || laporan.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 40px; background: white; border-radius: 10px;">
+                            <i class="fas fa-chart-bar" style="font-size: 48px; color: #666;"></i>
+                            <h3 style="margin: 20px 0 10px;">Tidak ada data laporan</h3>
+                            <p style="color: #666;">Tidak ada transaksi dalam periode yang dipilih</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Calculate totals
+                const totalMasuk = laporan.filter(item => item.jenis === 'MASUK').reduce((sum, item) => sum + parseInt(item.total_pcs), 0);
+                const totalKeluar = laporan.filter(item => item.jenis === 'KELUAR').reduce((sum, item) => sum + parseInt(item.total_pcs), 0);
+                
+                container.innerHTML = `
+                    <div class="summary-card">
+                        <h3><i class="fas fa-chart-pie"></i> Ringkasan Periode</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <div class="summary-value">${laporan.length}</div>
+                                <div class="summary-label">Total Transaksi</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-value">${laporan.filter(item => item.jenis === 'MASUK').length}</div>
+                                <div class="summary-label">Barang Masuk</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-value">${laporan.filter(item => item.jenis === 'KELUAR').length}</div>
+                                <div class="summary-label">Barang Keluar</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-value">${totalMasuk - totalKeluar}</div>
+                                <div class="summary-label">Net Pcs</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Jenis</th>
+                                    <th>Kode Barang</th>
+                                    <th>Nama Barang</th>
+                                    <th>Jumlah</th>
+                                    <th>Total Pcs</th>
+                                    <th>Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${laporan.map(item => `
+                                    <tr>
+                                        <td>${new Date(item.tanggal).toLocaleDateString('id-ID')}</td>
+                                        <td>
+                                            <span class="badge ${item.jenis === 'MASUK' ? 'badge-success' : 'badge-warning'}">
+                                                ${item.jenis}
+                                            </span>
+                                        </td>
+                                        <td><strong>${item.barang?.kode_barang || '-'}</strong></td>
+                                        <td>${item.barang?.nama_barang || '-'}</td>
+                                        <td>
+                                            ${item.jenis === 'MASUK' 
+                                                ? `${item.jumlah_dus} Dus` 
+                                                : `${item.jumlah} ${item.satuan_keluar}`
+                                            }
+                                        </td>
+                                        <td>
+                                            <span class="badge ${item.jenis === 'MASUK' ? 'badge-success' : 'badge-warning'}">
+                                                ${item.total_pcs} Pcs
+                                            </span>
+                                        </td>
+                                        <td>
+                                            ${item.keterangan || item.supplier || item.penerima || '-'}
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Error loading laporan:', error);
+                document.getElementById('laporanContainer').innerHTML = `
+                    <div style="text-align: center; padding: 40px; background: white; border-radius: 10px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #dc3545;"></i>
+                        <h3 style="margin: 20px 0 10px;">Gagal memuat laporan</h3>
+                        <p style="color: #666;">${error.message || 'Terjadi kesalahan'}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function exportLaporan() {
+            showAlert('Fitur export Excel akan segera tersedia', 'info');
+        }
+
+        // === OTHER SECTIONS (Stub) ===
+        async function loadKategori() {
+            mainContent.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <i class="fas fa-tags" style="font-size: 48px; color: #f72585;"></i>
+                    <h2 style="margin: 20px 0 10px;">Kategori</h2>
+                    <p style="color: #666;">Fitur ini akan segera tersedia</p>
+                </div>
+            `;
+        }
+
+        async function loadSatuan() {
+            mainContent.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <i class="fas fa-balance-scale" style="font-size: 48px; color: #3a56d4;"></i>
+                    <h2 style="margin: 20px 0 10px;">Satuan</h2>
+                    <p style="color: #666;">Fitur ini akan segera tersedia</p>
+                </div>
+            `;
+        }
+
+        async function loadInitDB() {
+            mainContent.innerHTML = `
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <h2 style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                        <i class="fas fa-database" style="color: #4361ee;"></i>
+                        Inisialisasi Database
+                    </h2>
+                    
+                    <div style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 15px; color: #333;">Langkah-langkah:</h3>
+                        <ol style="margin-left: 20px; line-height: 1.6; color: #555;">
+                            <li>Buka <a href="https://supabase.com" target="_blank" style="color: #4361ee; text-decoration: none;">Supabase Dashboard</a></li>
+                            <li>Pilih project Anda</li>
+                            <li>Buka menu "SQL Editor"</li>
+                            <li>Copy SQL script di bawah ini</li>
+                            <li>Jalankan script di SQL Editor</li>
+                            <li>Tunggu hingga proses selesai</li>
+                        </ol>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+                        <h4 style="margin-bottom: 10px; color: #333;">SQL Script:</h4>
+                        <pre style="background: white; padding: 15px; border-radius: 5px; overflow-x: auto; font-family: monospace; font-size: 12px; max-height: 300px; overflow-y: auto;">${window.supabaseFunctions.CREATE_TABLES_SQL}</pre>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="copySQL()">
+                            <i class="fas fa-copy"></i> Copy SQL
+                        </button>
+                        <button class="btn btn-success" onclick="checkDatabaseConnection()">
+                            <i class="fas fa-sync-alt"></i> Cek Koneksi
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ============================
+        // MODAL FUNCTIONS
+        // ============================
+
         function showModal(content) {
             modalContainer.querySelector('.modal-content').innerHTML = content;
             modalContainer.classList.add('show');
@@ -1125,6 +1949,10 @@
         function hideModal() {
             modalContainer.classList.remove('show');
         }
+
+        // ============================
+        // BARANG FUNCTIONS
+        // ============================
 
         function showAddBarangModal() {
             showModal(`
@@ -1202,13 +2030,14 @@
             // Convert numeric fields
             barang.stok_pcs = parseInt(barang.stok_pcs) || 0;
             barang.min_stok_pcs = parseInt(barang.min_stok_pcs) || 24;
+            if (barang.kategori_id === '') delete barang.kategori_id;
             
             try {
                 await window.supabaseFunctions.addBarang(barang);
                 showAlert('✅ Barang berhasil ditambahkan', 'success');
                 hideModal();
                 await loadBarangTable();
-                await loadStatistics(); // Refresh dashboard stats
+                await loadDashboardData(); // Refresh dashboard stats
             } catch (error) {
                 showAlert(`❌ Gagal menyimpan barang: ${error.message}`, 'error');
             }
@@ -1275,7 +2104,7 @@
                 showAlert('✅ Barang berhasil diupdate', 'success');
                 hideModal();
                 await loadBarangTable();
-                await loadStatistics();
+                await loadDashboardData();
             } catch (error) {
                 showAlert(`❌ Gagal mengupdate barang: ${error.message}`, 'error');
             }
@@ -1288,101 +2117,929 @@
                 await window.supabaseFunctions.deleteBarang(id);
                 showAlert('✅ Barang berhasil dihapus', 'success');
                 await loadBarangTable();
-                await loadStatistics();
+                await loadDashboardData();
             } catch (error) {
                 showAlert(`❌ Gagal menghapus barang: ${error.message}`, 'error');
             }
         }
 
-        // === OTHER SECTIONS (Stub Functions) ===
-        async function loadBarangMasuk() {
-            mainContent.innerHTML = `
-                <div style="text-align: center; padding: 40px;">
-                    <i class="fas fa-sign-in-alt" style="font-size: 48px; color: #4cc9f0;"></i>
-                    <h2 style="margin: 20px 0 10px;">Barang Masuk</h2>
-                    <p style="color: #666;">Fitur ini akan segera tersedia</p>
-                </div>
-            `;
-        }
+        // ============================
+        // BARANG MASUK FUNCTIONS
+        // ============================
 
-        async function loadBarangKeluar() {
-            mainContent.innerHTML = `
-                <div style="text-align: center; padding: 40px;">
-                    <i class="fas fa-sign-out-alt" style="font-size: 48px; color: #7209b7;"></i>
-                    <h2 style="margin: 20px 0 10px;">Barang Keluar</h2>
-                    <p style="color: #666;">Fitur ini akan segera tersedia</p>
+        function showAddBarangMasukModal() {
+            showModal(`
+                <div class="modal-header">
+                    <h3><i class="fas fa-sign-in-alt"></i> Input Barang Masuk</h3>
+                    <button class="modal-close" onclick="hideModal()">&times;</button>
                 </div>
-            `;
-        }
-
-        async function loadLaporan() {
-            mainContent.innerHTML = `
-                <div style="text-align: center; padding: 40px;">
-                    <i class="fas fa-chart-bar" style="font-size: 48px; color: #f8961e;"></i>
-                    <h2 style="margin: 20px 0 10px;">Laporan</h2>
-                    <p style="color: #666;">Fitur ini akan segera tersedia</p>
-                </div>
-            `;
-        }
-
-        async function loadKategori() {
-            mainContent.innerHTML = `
-                <div style="text-align: center; padding: 40px;">
-                    <i class="fas fa-tags" style="font-size: 48px; color: #f72585;"></i>
-                    <h2 style="margin: 20px 0 10px;">Kategori</h2>
-                    <p style="color: #666;">Fitur ini akan segera tersedia</p>
-                </div>
-            `;
-        }
-
-        async function loadSatuan() {
-            mainContent.innerHTML = `
-                <div style="text-align: center; padding: 40px;">
-                    <i class="fas fa-balance-scale" style="font-size: 48px; color: #3a56d4;"></i>
-                    <h2 style="margin: 20px 0 10px;">Satuan</h2>
-                    <p style="color: #666;">Fitur ini akan segera tersedia</p>
-                </div>
-            `;
-        }
-
-        async function loadInitDB() {
-            mainContent.innerHTML = `
-                <div style="max-width: 800px; margin: 0 auto;">
-                    <h2 style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                        <i class="fas fa-database" style="color: #4361ee;"></i>
-                        Inisialisasi Database
-                    </h2>
-                    
-                    <div style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 20px;">
-                        <h3 style="margin-bottom: 15px; color: #333;">Langkah-langkah:</h3>
-                        <ol style="margin-left: 20px; line-height: 1.6; color: #555;">
-                            <li>Buka <a href="https://supabase.com" target="_blank" style="color: #4361ee; text-decoration: none;">Supabase Dashboard</a></li>
-                            <li>Pilih project Anda</li>
-                            <li>Buka menu "SQL Editor"</li>
-                            <li>Copy SQL script di bawah ini</li>
-                            <li>Jalankan script di SQL Editor</li>
-                            <li>Tunggu hingga proses selesai</li>
-                        </ol>
+                <form id="barangMasukForm" onsubmit="saveBarangMasuk(event)">
+                    <div class="form-group">
+                        <label class="form-label">Tanggal *</label>
+                        <input type="date" class="form-control" name="tanggal" value="${new Date().toISOString().split('T')[0]}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Supplier</label>
+                        <input type="text" class="form-control" name="supplier" placeholder="Nama supplier">
                     </div>
                     
-                    <div style="background: #f8f9fa; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
-                        <h4 style="margin-bottom: 10px; color: #333;">SQL Script:</h4>
-                        <pre style="background: white; padding: 15px; border-radius: 5px; overflow-x: auto; font-family: monospace; font-size: 12px; max-height: 300px; overflow-y: auto;">${window.supabaseFunctions.CREATE_TABLES_SQL}</pre>
-                    </div>
-                    
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button class="btn btn-primary" onclick="copySQL()">
-                            <i class="fas fa-copy"></i> Copy SQL
-                        </button>
-                        <button class="btn btn-success" onclick="checkDatabaseConnection()">
-                            <i class="fas fa-sync-alt"></i> Cek Koneksi
+                    <div class="multi-item-container">
+                        <h4 style="margin-bottom: 15px; color: var(--primary);">
+                            <i class="fas fa-boxes"></i> Detail Barang Masuk
+                        </h4>
+                        <div id="barangMasukItems">
+                            <!-- Item rows will be added here -->
+                        </div>
+                        <button type="button" class="add-item-btn" onclick="addBarangMasukItem()">
+                            <i class="fas fa-plus"></i> Tambah Item Barang
                         </button>
                     </div>
-                </div>
-            `;
+                    
+                    <div class="total-section">
+                        <h3>Total Barang Masuk</h3>
+                        <div class="total-amount">
+                            <span id="totalDusMasuk">0</span> Dus
+                            <span style="margin: 0 10px;">•</span>
+                            <span id="totalPcsMasuk">0</span> Pcs
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Keterangan</label>
+                        <textarea class="form-control" name="keterangan" rows="3" placeholder="Catatan tambahan"></textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Simpan Barang Masuk
+                        </button>
+                        <button type="button" class="btn" onclick="hideModal()" style="background: #f8f9fa;">
+                            Batal
+                        </button>
+                    </div>
+                </form>
+            `);
+            
+            // Add initial item
+            addBarangMasukItem();
         }
 
-        // Helper Functions
+        async function addBarangMasukItem() {
+            try {
+                const itemsContainer = document.getElementById('barangMasukItems');
+                const itemCount = itemsContainer.children.length;
+                const itemId = Date.now() + itemCount;
+                
+                const itemHTML = `
+                    <div class="item-row" id="itemMasuk_${itemId}">
+                        <div class="item-header">
+                            <h4><i class="fas fa-box"></i> Item ${itemCount + 1}</h4>
+                            ${itemCount > 0 ? `<button type="button" class="remove-item" onclick="removeBarangMasukItem(${itemId})">
+                                <i class="fas fa-times"></i>
+                            </button>` : ''}
+                        </div>
+                        <div class="item-form-row">
+                            <div class="form-group">
+                                <label class="form-label">Barang *</label>
+                                <select class="form-control form-control-small" name="items[${itemId}][barang_id]" required
+                                    onchange="updateBarangMasukItem(${itemId})">
+                                    <option value="">Pilih Barang</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Jumlah (Dus) *</label>
+                                <input type="number" class="form-control form-control-small" 
+                                    name="items[${itemId}][jumlah_dus]" step="0.01" min="0.01" value="1" required
+                                    oninput="updateBarangMasukItem(${itemId})">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Isi per Dus (Pcs)</label>
+                                <input type="number" class="form-control form-control-small" 
+                                    name="items[${itemId}][isi_per_dus]" value="24" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Total Pcs</label>
+                                <input type="number" class="form-control form-control-small" 
+                                    name="items[${itemId}][total_pcs]" value="24" readonly>
+                            </div>
+                        </div>
+                        <div class="item-summary">
+                            <div class="item-summary-row">
+                                <span>Konversi:</span>
+                                <span><strong>1 Dus = <span id="isiPerDus_${itemId}">24</span> Pcs</strong></span>
+                            </div>
+                            <div class="item-summary-row">
+                                <span>Stok Awal:</span>
+                                <span><strong id="stokAwal_${itemId}">-</strong> Pcs</span>
+                            </div>
+                            <div class="item-summary-row">
+                                <span>Stok Akhir:</span>
+                                <span><strong id="stokAkhir_${itemId}">-</strong> Pcs</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                itemsContainer.insertAdjacentHTML('beforeend', itemHTML);
+                await populateBarangSelect(itemId, 'masuk');
+                updateBarangMasukTotals();
+                
+            } catch (error) {
+                console.error('Error adding barang masuk item:', error);
+                showAlert('Gagal menambahkan item', 'error');
+            }
+        }
+
+        async function populateBarangSelect(itemId, type = 'masuk') {
+            try {
+                const barang = await window.supabaseFunctions.getBarang();
+                const select = document.querySelector(`#item${type === 'masuk' ? 'Masuk' : 'Keluar'}_${itemId} select[name^="items"]`);
+                
+                if (select && barang && barang.length > 0) {
+                    select.innerHTML = '<option value="">Pilih Barang</option>' +
+                        barang.map(b => 
+                            `<option value="${b.id}" data-stok="${b.stok_pcs}">
+                                ${b.kode_barang} - ${b.nama_barang} (Stok: ${b.stok_pcs} Pcs)
+                            </option>`
+                        ).join('');
+                }
+            } catch (error) {
+                console.error('Error populating barang select:', error);
+            }
+        }
+
+        async function updateBarangMasukItem(itemId) {
+            try {
+                const itemElement = document.getElementById(`itemMasuk_${itemId}`);
+                if (!itemElement) return;
+                
+                const barangId = itemElement.querySelector(`select[name="items[${itemId}][barang_id]"]`).value;
+                const jumlahDus = parseFloat(itemElement.querySelector(`input[name="items[${itemId}][jumlah_dus]"]`).value) || 0;
+                
+                // Default isi per dus
+                let isiPerDus = 24;
+                
+                // If barang is selected, get its conversion if available
+                if (barangId) {
+                    const barang = await window.supabaseFunctions.getBarang();
+                    const selectedBarang = barang.find(b => b.id === parseInt(barangId));
+                    
+                    if (selectedBarang) {
+                        // Display current stock
+                        itemElement.querySelector(`#stokAwal_${itemId}`).textContent = selectedBarang.stok_pcs;
+                        itemElement.querySelector(`#stokAkhir_${itemId}`).textContent = 
+                            selectedBarang.stok_pcs + (jumlahDus * isiPerDus);
+                    }
+                }
+                
+                // Update calculations
+                const totalPcs = jumlahDus * isiPerDus;
+                
+                itemElement.querySelector(`#isiPerDus_${itemId}`).textContent = isiPerDus;
+                itemElement.querySelector(`input[name="items[${itemId}][isi_per_dus]"]`).value = isiPerDus;
+                itemElement.querySelector(`input[name="items[${itemId}][total_pcs]"]`).value = totalPcs;
+                
+                updateBarangMasukTotals();
+                
+            } catch (error) {
+                console.error('Error updating barang masuk item:', error);
+            }
+        }
+
+        function updateBarangMasukTotals() {
+            const itemsContainer = document.getElementById('barangMasukItems');
+            const items = itemsContainer.querySelectorAll('.item-row');
+            
+            let totalDus = 0;
+            let totalPcs = 0;
+            
+            items.forEach(item => {
+                const jumlahDus = parseFloat(item.querySelector('input[name$="[jumlah_dus]"]')?.value) || 0;
+                const itemPcs = parseFloat(item.querySelector('input[name$="[total_pcs]"]')?.value) || 0;
+                
+                totalDus += jumlahDus;
+                totalPcs += itemPcs;
+            });
+            
+            document.getElementById('totalDusMasuk').textContent = totalDus.toFixed(2);
+            document.getElementById('totalPcsMasuk').textContent = totalPcs;
+        }
+
+        function removeBarangMasukItem(itemId) {
+            const itemElement = document.getElementById(`itemMasuk_${itemId}`);
+            if (itemElement) {
+                itemElement.remove();
+                
+                // Renumber remaining items
+                const itemsContainer = document.getElementById('barangMasukItems');
+                const items = itemsContainer.querySelectorAll('.item-row');
+                
+                items.forEach((item, index) => {
+                    const header = item.querySelector('.item-header h4');
+                    if (header) {
+                        header.innerHTML = `<i class="fas fa-box"></i> Item ${index + 1}`;
+                    }
+                });
+                
+                updateBarangMasukTotals();
+            }
+        }
+
+        async function saveBarangMasuk(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const tanggal = formData.get('tanggal');
+            const supplier = formData.get('supplier');
+            const keterangan = formData.get('keterangan');
+            
+            // Collect items
+            const items = [];
+            const itemsContainer = document.getElementById('barangMasukItems');
+            const itemElements = itemsContainer.querySelectorAll('.item-row');
+            
+            for (const itemElement of itemElements) {
+                const barangId = itemElement.querySelector('select[name$="[barang_id]"]')?.value;
+                const jumlahDus = parseFloat(itemElement.querySelector('input[name$="[jumlah_dus]"]')?.value);
+                const totalPcs = parseInt(itemElement.querySelector('input[name$="[total_pcs]"]')?.value);
+                
+                if (barangId && jumlahDus && totalPcs) {
+                    items.push({
+                        barang_id: parseInt(barangId),
+                        jumlah_dus: jumlahDus,
+                        total_pcs: totalPcs,
+                        tanggal: tanggal,
+                        supplier: supplier,
+                        keterangan: keterangan,
+                        created_at: new Date().toISOString()
+                    });
+                }
+            }
+            
+            if (items.length === 0) {
+                showAlert('Minimal satu item harus diisi', 'error');
+                return;
+            }
+            
+            try {
+                // Save each item
+                for (const item of items) {
+                    await window.supabaseFunctions.addBarangMasuk(item);
+                    
+                    // Update stock
+                    const barang = await window.supabaseFunctions.getBarang();
+                    const selectedBarang = barang.find(b => b.id === item.barang_id);
+                    
+                    if (selectedBarang) {
+                        const newStock = selectedBarang.stok_pcs + item.total_pcs;
+                        await window.supabaseFunctions.updateBarang(selectedBarang.id, {
+                            stok_pcs: newStock
+                        });
+                    }
+                }
+                
+                showAlert('✅ Barang masuk berhasil disimpan', 'success');
+                hideModal();
+                await loadBarangMasukTable();
+                await loadDashboardData(); // Refresh dashboard
+                
+            } catch (error) {
+                console.error('Error saving barang masuk:', error);
+                showAlert(`❌ Gagal menyimpan barang masuk: ${error.message}`, 'error');
+            }
+        }
+
+        async function editBarangMasuk(id) {
+            try {
+                const barangMasuk = await window.supabaseFunctions.getBarangMasuk();
+                const item = barangMasuk.find(b => b.id === id);
+                
+                if (!item) {
+                    showAlert('Data barang masuk tidak ditemukan', 'error');
+                    return;
+                }
+                
+                showModal(`
+                    <div class="modal-header">
+                        <h3><i class="fas fa-edit"></i> Edit Barang Masuk</h3>
+                        <button class="modal-close" onclick="hideModal()">&times;</button>
+                    </div>
+                    <form onsubmit="updateBarangMasuk(event, ${id})">
+                        <div class="form-group">
+                            <label class="form-label">Tanggal *</label>
+                            <input type="date" class="form-control" name="tanggal" value="${item.tanggal}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Supplier</label>
+                            <input type="text" class="form-control" name="supplier" value="${item.supplier || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Jumlah (Dus) *</label>
+                            <input type="number" class="form-control" name="jumlah_dus" step="0.01" min="0.01" 
+                                value="${item.jumlah_dus}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Total (Pcs)</label>
+                            <input type="number" class="form-control" name="total_pcs" value="${item.total_pcs}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Keterangan</label>
+                            <textarea class="form-control" name="keterangan" rows="3">${item.keterangan || ''}</textarea>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Update
+                            </button>
+                            <button type="button" class="btn" onclick="hideModal()" style="background: #f8f9fa;">
+                                Batal
+                            </button>
+                        </div>
+                    </form>
+                `);
+                
+            } catch (error) {
+                showAlert(`Gagal memuat data: ${error.message}`, 'error');
+            }
+        }
+
+        async function updateBarangMasuk(event, id) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            data.jumlah_dus = parseFloat(data.jumlah_dus);
+            data.total_pcs = parseInt(data.total_pcs);
+            
+            try {
+                // Get original data first
+                const barangMasuk = await window.supabaseFunctions.getBarangMasuk();
+                const originalItem = barangMasuk.find(b => b.id === id);
+                
+                if (!originalItem) {
+                    throw new Error('Data tidak ditemukan');
+                }
+                
+                // Update in database
+                await window.supabaseFunctions.updateBarangMasuk(id, data);
+                
+                // If barang_id changed or quantity changed, update stock
+                if (originalItem.barang_id && (originalItem.jumlah_dus !== data.jumlah_dus || originalItem.total_pcs !== data.total_pcs)) {
+                    // Revert old stock change
+                    const barang = await window.supabaseFunctions.getBarang();
+                    const selectedBarang = barang.find(b => b.id === originalItem.barang_id);
+                    
+                    if (selectedBarang) {
+                        const stockWithoutOld = selectedBarang.stok_pcs - originalItem.total_pcs;
+                        const newStock = stockWithoutOld + data.total_pcs;
+                        
+                        await window.supabaseFunctions.updateBarang(selectedBarang.id, {
+                            stok_pcs: newStock
+                        });
+                    }
+                }
+                
+                showAlert('✅ Barang masuk berhasil diupdate', 'success');
+                hideModal();
+                await loadBarangMasukTable();
+                await loadDashboardData();
+                
+            } catch (error) {
+                showAlert(`❌ Gagal mengupdate: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteBarangMasuk(id) {
+            if (!confirm('Apakah Anda yakin ingin menghapus data barang masuk ini?')) return;
+            
+            try {
+                // Get data first to adjust stock
+                const barangMasuk = await window.supabaseFunctions.getBarangMasuk();
+                const item = barangMasuk.find(b => b.id === id);
+                
+                if (item) {
+                    // Adjust stock
+                    const barang = await window.supabaseFunctions.getBarang();
+                    const selectedBarang = barang.find(b => b.id === item.barang_id);
+                    
+                    if (selectedBarang) {
+                        const newStock = selectedBarang.stok_pcs - item.total_pcs;
+                        await window.supabaseFunctions.updateBarang(selectedBarang.id, {
+                            stok_pcs: newStock
+                        });
+                    }
+                }
+                
+                await window.supabaseFunctions.deleteBarangMasuk(id);
+                showAlert('✅ Barang masuk berhasil dihapus', 'success');
+                await loadBarangMasukTable();
+                await loadDashboardData();
+                
+            } catch (error) {
+                showAlert(`❌ Gagal menghapus: ${error.message}`, 'error');
+            }
+        }
+
+        function resetMasukFilter() {
+            const start = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+            const end = new Date();
+            
+            document.getElementById('filterMasukStart').value = start.toISOString().split('T')[0];
+            document.getElementById('filterMasukEnd').value = end.toISOString().split('T')[0];
+            document.getElementById('filterMasukSupplier').value = '';
+            
+            loadBarangMasukTable();
+        }
+
+        // ============================
+        // BARANG KELUAR FUNCTIONS
+        // ============================
+
+        function showAddBarangKeluarModal() {
+            showModal(`
+                <div class="modal-header">
+                    <h3><i class="fas fa-sign-out-alt"></i> Input Barang Keluar</h3>
+                    <button class="modal-close" onclick="hideModal()">&times;</button>
+                </div>
+                <form id="barangKeluarForm" onsubmit="saveBarangKeluar(event)">
+                    <div class="form-group">
+                        <label class="form-label">Tanggal *</label>
+                        <input type="date" class="form-control" name="tanggal" value="${new Date().toISOString().split('T')[0]}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Penerima</label>
+                        <input type="text" class="form-control" name="penerima" placeholder="Nama penerima">
+                    </div>
+                    
+                    <div class="multi-item-container">
+                        <h4 style="margin-bottom: 15px; color: var(--primary);">
+                            <i class="fas fa-boxes"></i> Detail Barang Keluar
+                        </h4>
+                        <div id="barangKeluarItems">
+                            <!-- Item rows will be added here -->
+                        </div>
+                        <button type="button" class="add-item-btn" onclick="addBarangKeluarItem()">
+                            <i class="fas fa-plus"></i> Tambah Item Barang
+                        </button>
+                    </div>
+                    
+                    <div class="total-section" style="background: var(--secondary);">
+                        <h3>Total Barang Keluar</h3>
+                        <div class="total-amount">
+                            <span id="totalItemsKeluar">0</span> Item
+                            <span style="margin: 0 10px;">•</span>
+                            <span id="totalPcsKeluar">0</span> Pcs
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Keterangan</label>
+                        <textarea class="form-control" name="keterangan" rows="3" placeholder="Catatan tambahan"></textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Simpan Barang Keluar
+                        </button>
+                        <button type="button" class="btn" onclick="hideModal()" style="background: #f8f9fa;">
+                            Batal
+                        </button>
+                    </div>
+                </form>
+            `);
+            
+            // Add initial item
+            addBarangKeluarItem();
+        }
+
+        async function addBarangKeluarItem() {
+            try {
+                const itemsContainer = document.getElementById('barangKeluarItems');
+                const itemCount = itemsContainer.children.length;
+                const itemId = Date.now() + itemCount;
+                
+                const itemHTML = `
+                    <div class="item-row" id="itemKeluar_${itemId}">
+                        <div class="item-header">
+                            <h4><i class="fas fa-box"></i> Item ${itemCount + 1}</h4>
+                            ${itemCount > 0 ? `<button type="button" class="remove-item" onclick="removeBarangKeluarItem(${itemId})">
+                                <i class="fas fa-times"></i>
+                            </button>` : ''}
+                        </div>
+                        <div class="item-form-row">
+                            <div class="form-group">
+                                <label class="form-label">Barang *</label>
+                                <select class="form-control form-control-small" name="items[${itemId}][barang_id]" required
+                                    onchange="updateBarangKeluarItem(${itemId})">
+                                    <option value="">Pilih Barang</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Satuan Keluar *</label>
+                                <select class="form-control form-control-small" name="items[${itemId}][satuan_keluar]" required
+                                    onchange="updateBarangKeluarItem(${itemId})">
+                                    <option value="Pcs">Pcs</option>
+                                    <option value="Botol">Botol</option>
+                                    <option value="Pack">Pack</option>
+                                    <option value="Unit">Unit</option>
+                                    <option value="Lembar">Lembar</option>
+                                    <option value="Roll">Roll</option>
+                                    <option value="Set">Set</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Jumlah *</label>
+                                <input type="number" class="form-control form-control-small" 
+                                    name="items[${itemId}][jumlah]" min="1" value="1" required
+                                    oninput="updateBarangKeluarItem(${itemId})">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Konversi ke Pcs</label>
+                                <input type="number" class="form-control form-control-small" 
+                                    name="items[${itemId}][konversi_pcs]" value="1" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Total Pcs</label>
+                                <input type="number" class="form-control form-control-small" 
+                                    name="items[${itemId}][total_pcs]" value="1" readonly>
+                            </div>
+                        </div>
+                        <div class="item-summary">
+                            <div class="item-summary-row">
+                                <span>Stok Tersedia:</span>
+                                <span><strong id="stokTersedia_${itemId}">-</strong> Pcs</span>
+                            </div>
+                            <div class="item-summary-row">
+                                <span>Stok Setelah Keluar:</span>
+                                <span><strong id="stokSetelah_${itemId}">-</strong> Pcs</strong></span>
+                            </div>
+                            <div class="item-summary-row">
+                                <span>Status:</span>
+                                <span><strong id="statusStok_${itemId}">-</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                itemsContainer.insertAdjacentHTML('beforeend', itemHTML);
+                await populateBarangSelect(itemId, 'keluar');
+                updateBarangKeluarItem(itemId);
+                updateBarangKeluarTotals();
+                
+            } catch (error) {
+                console.error('Error adding barang keluar item:', error);
+                showAlert('Gagal menambahkan item', 'error');
+            }
+        }
+
+        async function updateBarangKeluarItem(itemId) {
+            try {
+                const itemElement = document.getElementById(`itemKeluar_${itemId}`);
+                if (!itemElement) return;
+                
+                const barangId = itemElement.querySelector(`select[name="items[${itemId}][barang_id]"]`).value;
+                const satuan = itemElement.querySelector(`select[name="items[${itemId}][satuan_keluar]"]`).value;
+                const jumlah = parseInt(itemElement.querySelector(`input[name="items[${itemId}][jumlah]"]`).value) || 0;
+                
+                // Konversi berdasarkan satuan
+                let konversiPcs = 1;
+                switch(satuan) {
+                    case 'Botol':
+                        konversiPcs = 1;
+                        break;
+                    case 'Pack':
+                        konversiPcs = 12;
+                        break;
+                    case 'Unit':
+                        konversiPcs = 1;
+                        break;
+                    case 'Lembar':
+                        konversiPcs = 1;
+                        break;
+                    case 'Roll':
+                        konversiPcs = 1;
+                        break;
+                    case 'Set':
+                        konversiPcs = 1;
+                        break;
+                    default: // Pcs
+                        konversiPcs = 1;
+                }
+                
+                const totalPcs = jumlah * konversiPcs;
+                
+                // Update display
+                if (barangId) {
+                    const barang = await window.supabaseFunctions.getBarang();
+                    const selectedBarang = barang.find(b => b.id === parseInt(barangId));
+                    
+                    if (selectedBarang) {
+                        const stokTersedia = selectedBarang.stok_pcs;
+                        const stokSetelah = stokTersedia - totalPcs;
+                        const status = stokSetelah < 0 ? 'STOK TIDAK CUKUP' : 
+                                      stokSetelah <= (selectedBarang.min_stok_pcs || 24) ? 'STOK RENDAH' : 'STOK AMAN';
+                        const statusColor = stokSetelah < 0 ? '#dc3545' : 
+                                          stokSetelah <= (selectedBarang.min_stok_pcs || 24) ? '#f8961e' : '#28a745';
+                        
+                        itemElement.querySelector(`#stokTersedia_${itemId}`).textContent = stokTersedia;
+                        itemElement.querySelector(`#stokSetelah_${itemId}`).textContent = stokSetelah;
+                        itemElement.querySelector(`#statusStok_${itemId}`).textContent = status;
+                        itemElement.querySelector(`#statusStok_${itemId}`).style.color = statusColor;
+                    }
+                }
+                
+                // Update values
+                itemElement.querySelector(`input[name="items[${itemId}][konversi_pcs]"]`).value = konversiPcs;
+                itemElement.querySelector(`input[name="items[${itemId}][total_pcs]"]`).value = totalPcs;
+                
+                updateBarangKeluarTotals();
+                
+            } catch (error) {
+                console.error('Error updating barang keluar item:', error);
+            }
+        }
+
+        function updateBarangKeluarTotals() {
+            const itemsContainer = document.getElementById('barangKeluarItems');
+            const items = itemsContainer.querySelectorAll('.item-row');
+            
+            let totalItems = 0;
+            let totalPcs = 0;
+            
+            items.forEach(item => {
+                const jumlah = parseInt(item.querySelector('input[name$="[jumlah]"]')?.value) || 0;
+                const itemPcs = parseInt(item.querySelector('input[name$="[total_pcs]"]')?.value) || 0;
+                
+                totalItems += jumlah;
+                totalPcs += itemPcs;
+            });
+            
+            document.getElementById('totalItemsKeluar').textContent = totalItems;
+            document.getElementById('totalPcsKeluar').textContent = totalPcs;
+        }
+
+        function removeBarangKeluarItem(itemId) {
+            const itemElement = document.getElementById(`itemKeluar_${itemId}`);
+            if (itemElement) {
+                itemElement.remove();
+                
+                // Renumber remaining items
+                const itemsContainer = document.getElementById('barangKeluarItems');
+                const items = itemsContainer.querySelectorAll('.item-row');
+                
+                items.forEach((item, index) => {
+                    const header = item.querySelector('.item-header h4');
+                    if (header) {
+                        header.innerHTML = `<i class="fas fa-box"></i> Item ${index + 1}`;
+                    }
+                });
+                
+                updateBarangKeluarTotals();
+            }
+        }
+
+        async function saveBarangKeluar(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const tanggal = formData.get('tanggal');
+            const penerima = formData.get('penerima');
+            const keterangan = formData.get('keterangan');
+            
+            // Collect items
+            const items = [];
+            const itemsContainer = document.getElementById('barangKeluarItems');
+            const itemElements = itemsContainer.querySelectorAll('.item-row');
+            
+            // Validate all items first
+            for (const itemElement of itemElements) {
+                const barangId = itemElement.querySelector('select[name$="[barang_id]"]')?.value;
+                const satuanKeluar = itemElement.querySelector('select[name$="[satuan_keluar]"]')?.value;
+                const jumlah = parseInt(itemElement.querySelector('input[name$="[jumlah]"]')?.value);
+                const totalPcs = parseInt(itemElement.querySelector('input[name$="[total_pcs]"]')?.value);
+                
+                if (!barangId || !satuanKeluar || !jumlah || !totalPcs) {
+                    showAlert('Semua field item harus diisi', 'error');
+                    return;
+                }
+                
+                // Check stock availability
+                const barang = await window.supabaseFunctions.getBarang();
+                const selectedBarang = barang.find(b => b.id === parseInt(barangId));
+                
+                if (selectedBarang && selectedBarang.stok_pcs < totalPcs) {
+                    showAlert(`Stok ${selectedBarang.nama_barang} tidak cukup. Stok tersedia: ${selectedBarang.stok_pcs} Pcs`, 'error');
+                    return;
+                }
+                
+                items.push({
+                    barang_id: parseInt(barangId),
+                    satuan_keluar: satuanKeluar,
+                    jumlah: jumlah,
+                    total_pcs: totalPcs,
+                    tanggal: tanggal,
+                    penerima: penerima,
+                    keterangan: keterangan,
+                    created_at: new Date().toISOString()
+                });
+            }
+            
+            if (items.length === 0) {
+                showAlert('Minimal satu item harus diisi', 'error');
+                return;
+            }
+            
+            try {
+                // Save each item
+                for (const item of items) {
+                    await window.supabaseFunctions.addBarangKeluar(item);
+                    
+                    // Update stock
+                    const barang = await window.supabaseFunctions.getBarang();
+                    const selectedBarang = barang.find(b => b.id === item.barang_id);
+                    
+                    if (selectedBarang) {
+                        const newStock = selectedBarang.stok_pcs - item.total_pcs;
+                        await window.supabaseFunctions.updateBarang(selectedBarang.id, {
+                            stok_pcs: newStock
+                        });
+                    }
+                }
+                
+                showAlert('✅ Barang keluar berhasil disimpan', 'success');
+                hideModal();
+                await loadBarangKeluarTable();
+                await loadDashboardData(); // Refresh dashboard
+                
+            } catch (error) {
+                console.error('Error saving barang keluar:', error);
+                showAlert(`❌ Gagal menyimpan barang keluar: ${error.message}`, 'error');
+            }
+        }
+
+        async function editBarangKeluar(id) {
+            try {
+                const barangKeluar = await window.supabaseFunctions.getBarangKeluar();
+                const item = barangKeluar.find(b => b.id === id);
+                
+                if (!item) {
+                    showAlert('Data barang keluar tidak ditemukan', 'error');
+                    return;
+                }
+                
+                showModal(`
+                    <div class="modal-header">
+                        <h3><i class="fas fa-edit"></i> Edit Barang Keluar</h3>
+                        <button class="modal-close" onclick="hideModal()">&times;</button>
+                    </div>
+                    <form onsubmit="updateBarangKeluar(event, ${id})">
+                        <div class="form-group">
+                            <label class="form-label">Tanggal *</label>
+                            <input type="date" class="form-control" name="tanggal" value="${item.tanggal}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Penerima</label>
+                            <input type="text" class="form-control" name="penerima" value="${item.penerima || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Satuan Keluar *</label>
+                            <select class="form-control" name="satuan_keluar" required>
+                                <option value="Pcs" ${item.satuan_keluar === 'Pcs' ? 'selected' : ''}>Pcs</option>
+                                <option value="Botol" ${item.satuan_keluar === 'Botol' ? 'selected' : ''}>Botol</option>
+                                <option value="Pack" ${item.satuan_keluar === 'Pack' ? 'selected' : ''}>Pack</option>
+                                <option value="Unit" ${item.satuan_keluar === 'Unit' ? 'selected' : ''}>Unit</option>
+                                <option value="Lembar" ${item.satuan_keluar === 'Lembar' ? 'selected' : ''}>Lembar</option>
+                                <option value="Roll" ${item.satuan_keluar === 'Roll' ? 'selected' : ''}>Roll</option>
+                                <option value="Set" ${item.satuan_keluar === 'Set' ? 'selected' : ''}>Set</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Jumlah *</label>
+                            <input type="number" class="form-control" name="jumlah" min="1" 
+                                value="${item.jumlah}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Total Pcs</label>
+                            <input type="number" class="form-control" name="total_pcs" value="${item.total_pcs}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Keterangan</label>
+                            <textarea class="form-control" name="keterangan" rows="3">${item.keterangan || ''}</textarea>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Update
+                            </button>
+                            <button type="button" class="btn" onclick="hideModal()" style="background: #f8f9fa;">
+                                Batal
+                            </button>
+                        </div>
+                    </form>
+                `);
+                
+            } catch (error) {
+                showAlert(`Gagal memuat data: ${error.message}`, 'error');
+            }
+        }
+
+        async function updateBarangKeluar(event, id) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            data.jumlah = parseInt(data.jumlah);
+            data.total_pcs = parseInt(data.total_pcs);
+            
+            try {
+                // Get original data first
+                const barangKeluar = await window.supabaseFunctions.getBarangKeluar();
+                const originalItem = barangKeluar.find(b => b.id === id);
+                
+                if (!originalItem) {
+                    throw new Error('Data tidak ditemukan');
+                }
+                
+                // Calculate new total_pcs based on satuan
+                let konversiPcs = 1;
+                switch(data.satuan_keluar) {
+                    case 'Botol': konversiPcs = 1; break;
+                    case 'Pack': konversiPcs = 12; break;
+                    default: konversiPcs = 1;
+                }
+                data.total_pcs = data.jumlah * konversiPcs;
+                
+                // Update in database
+                await window.supabaseFunctions.updateBarangKeluar(id, data);
+                
+                // If barang_id changed or quantity changed, update stock
+                if (originalItem.barang_id && (originalItem.jumlah !== data.jumlah || originalItem.total_pcs !== data.total_pcs)) {
+                    // Revert old stock change
+                    const barang = await window.supabaseFunctions.getBarang();
+                    const selectedBarang = barang.find(b => b.id === originalItem.barang_id);
+                    
+                    if (selectedBarang) {
+                        const stockWithOld = selectedBarang.stok_pcs + originalItem.total_pcs;
+                        const newStock = stockWithOld - data.total_pcs;
+                        
+                        await window.supabaseFunctions.updateBarang(selectedBarang.id, {
+                            stok_pcs: newStock
+                        });
+                    }
+                }
+                
+                showAlert('✅ Barang keluar berhasil diupdate', 'success');
+                hideModal();
+                await loadBarangKeluarTable();
+                await loadDashboardData();
+                
+            } catch (error) {
+                showAlert(`❌ Gagal mengupdate: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteBarangKeluar(id) {
+            if (!confirm('Apakah Anda yakin ingin menghapus data barang keluar ini?')) return;
+            
+            try {
+                // Get data first to adjust stock
+                const barangKeluar = await window.supabaseFunctions.getBarangKeluar();
+                const item = barangKeluar.find(b => b.id === id);
+                
+                if (item) {
+                    // Adjust stock
+                    const barang = await window.supabaseFunctions.getBarang();
+                    const selectedBarang = barang.find(b => b.id === item.barang_id);
+                    
+                    if (selectedBarang) {
+                        const newStock = selectedBarang.stok_pcs + item.total_pcs;
+                        await window.supabaseFunctions.updateBarang(selectedBarang.id, {
+                            stok_pcs: newStock
+                        });
+                    }
+                }
+                
+                await window.supabaseFunctions.deleteBarangKeluar(id);
+                showAlert('✅ Barang keluar berhasil dihapus', 'success');
+                await loadBarangKeluarTable();
+                await loadDashboardData();
+                
+            } catch (error) {
+                showAlert(`❌ Gagal menghapus: ${error.message}`, 'error');
+            }
+        }
+
+        function resetKeluarFilter() {
+            const start = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+            const end = new Date();
+            
+            document.getElementById('filterKeluarStart').value = start.toISOString().split('T')[0];
+            document.getElementById('filterKeluarEnd').value = end.toISOString().split('T')[0];
+            document.getElementById('filterKeluarPenerima').value = '';
+            
+            loadBarangKeluarTable();
+        }
+
+        // ============================
+        // HELPER FUNCTIONS
+        // ============================
+
         function copySQL() {
             const sql = window.supabaseFunctions.CREATE_TABLES_SQL;
             navigator.clipboard.writeText(sql).then(() => {
@@ -1399,6 +3056,10 @@
             }
         });
 
+        // ============================
+        // GLOBAL WINDOW FUNCTIONS
+        // ============================
+
         // Make functions available globally
         window.showAddBarangModal = showAddBarangModal;
         window.hideModal = hideModal;
@@ -1409,6 +3070,16 @@
         window.loadSection = loadSection;
         window.copySQL = copySQL;
         window.checkDatabaseConnection = checkDatabaseConnection;
+        window.showAddBarangMasukModal = showAddBarangMasukModal;
+        window.showAddBarangKeluarModal = showAddBarangKeluarModal;
+        window.editBarangMasuk = editBarangMasuk;
+        window.editBarangKeluar = editBarangKeluar;
+        window.deleteBarangMasuk = deleteBarangMasuk;
+        window.deleteBarangKeluar = deleteBarangKeluar;
+        window.resetMasukFilter = resetMasukFilter;
+        window.resetKeluarFilter = resetKeluarFilter;
+        window.loadLaporanData = loadLaporanData;
+        window.exportLaporan = exportLaporan;
 
         console.log('✅ Aplikasi siap digunakan');
     </script>
