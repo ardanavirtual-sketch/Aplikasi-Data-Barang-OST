@@ -3,8 +3,8 @@
 
 // Supabase Configuration - PASTIKAN DIISI DENGAN DATA ANDA
 const SUPABASE_CONFIG = {
-  url: 'https://your-project.supabase.co',  // GANTI dengan URL Supabase Anda
-  anonKey: 'your-anon-key-here'             // GANTI dengan Anon Key Anda
+  url: 'https://iltqolfmvhzaiuagtoxt.supabase.co',  // GANTI dengan URL Supabase Anda
+  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsdHFvbGZtdmh6YWl1YWd0b3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyNDE5MjQsImV4cCI6MjA4MDgxNzkyNH0.sGzEQjpKfy7fdw8KBNO7mVzKd2tuxqQaYAdRuTjHVMs'             // GANTI dengan Anon Key Anda
 };
 
 // Global variables
