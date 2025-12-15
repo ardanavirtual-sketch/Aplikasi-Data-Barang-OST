@@ -470,6 +470,43 @@
             </div>
         </div>
     </div>
+    <!-- Debug console (opsional, hapus saat production) -->
+<div id="debug-console" style="display:none; position:fixed; bottom:10px; right:10px; background:#333; color:#fff; padding:10px; border-radius:5px; max-width:300px; max-height:200px; overflow:auto; z-index:9999; font-size:12px;">
+    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+        <strong>Debug Console</strong>
+        <button onclick="document.getElementById('debug-console').style.display='none'" style="background:none; border:none; color:#fff; cursor:pointer;">×</button>
+    </div>
+    <div id="debug-log"></div>
+</div>
+
+<script>
+// Fungsi debugging sederhana
+window.debugLog = function(message) {
+    const debugDiv = document.getElementById('debug-log');
+    if (debugDiv) {
+        const logEntry = document.createElement('div');
+        logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+        debugDiv.appendChild(logEntry);
+        debugDiv.scrollTop = debugDiv.scrollHeight;
+    }
+    console.log(message);
+};
+
+// Tampilkan debug console dengan shortcut Ctrl+Shift+D
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+        const debugConsole = document.getElementById('debug-console');
+        if (debugConsole) {
+            debugConsole.style.display = debugConsole.style.display === 'none' ? 'block' : 'none';
+        }
+    }
+});
+
+// Log event untuk debugging
+document.addEventListener('DOMContentLoaded', function() {
+    debugLog('DOM fully loaded');
+});
+</script>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
