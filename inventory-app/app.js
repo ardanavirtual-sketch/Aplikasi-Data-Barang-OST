@@ -1,12 +1,12 @@
-// Aplikasi Inventori - Main JavaScript
+// Aplikasi Inventori - Main JavaScript (VERSI DIPERBAIKI)
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('Aplikasi Inventori dimuat');
     
-    // Inisialisasi
-    await initializeApp();
-    
-    // Setup event listeners
+    // Setup event listeners terlebih dahulu
     setupEventListeners();
+    
+    // Kemudian inisialisasi aplikasi
+    await initializeApp();
     
     // Load data awal
     loadDashboardData();
@@ -14,112 +14,203 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 // Inisialisasi aplikasi
 async function initializeApp() {
-    // Cek koneksi Supabase
-    const isInitialized = await window.supabaseFunctions.initializeDatabase();
-    
-    if (!isInitialized) {
-        console.error('Gagal menginisialisasi database');
-        return;
-    }
+    console.log('Menginisialisasi aplikasi...');
     
     // Set tanggal default untuk form
     const today = new Date().toISOString().split('T')[0];
-    document.getElementById('modal-tanggal-masuk').value = today;
-    document.getElementById('modal-tanggal-keluar').value = today;
+    
+    // Set tanggal untuk form modal
+    const tanggalMasukInput = document.getElementById('modal-tanggal-masuk');
+    const tanggalKeluarInput = document.getElementById('modal-tanggal-keluar');
+    
+    if (tanggalMasukInput) tanggalMasukInput.value = today;
+    if (tanggalKeluarInput) tanggalKeluarInput.value = today;
     
     // Set tanggal untuk filter laporan (bulan ini)
-    const firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 2).toISOString().split('T')[0];
-    const lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1).toISOString().split('T')[0];
-    document.getElementById('report-start-date').value = firstDay;
-    document.getElementById('report-end-date').value = lastDay;
+    const firstDay = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0];
+    const lastDay = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).toISOString().split('T')[0];
     
-    console.log('Aplikasi siap digunakan');
+    const startDateInput = document.getElementById('report-start-date');
+    const endDateInput = document.getElementById('report-end-date');
+    
+    if (startDateInput) startDateInput.value = firstDay;
+    if (endDateInput) endDateInput.value = lastDay;
+    
+    // Cek koneksi Supabase
+    try {
+        const isInitialized = await window.supabaseFunctions.initializeDatabase();
+        
+        if (!isInitialized) {
+            console.warn('Database belum diinisialisasi. Pastikan tabel sudah dibuat di Supabase.');
+            showNotification('Database belum sepenuhnya diinisialisasi. Pastikan tabel sudah dibuat.', 'warning');
+        }
+        
+        console.log('Aplikasi siap digunakan');
+        showNotification('Aplikasi Inventori siap digunakan!', 'success');
+        
+    } catch (error) {
+        console.error('Error inisialisasi:', error);
+        showNotification('Terjadi kesalahan saat inisialisasi aplikasi', 'error');
+    }
 }
 
 // Setup semua event listener
 function setupEventListeners() {
-    // Navigation tabs
+    console.log('Setting up event listeners...');
+    
+    // Navigation tabs - FIXED
     const navItems = document.querySelectorAll('.sidebar li');
-    navItems.forEach(item => {
+    console.log('Jumlah nav items ditemukan:', navItems.length);
+    
+    navItems.forEach((item, index) => {
         item.addEventListener('click', function() {
             const tabId = this.getAttribute('data-tab');
+            console.log('Tab diklik:', tabId);
             switchTab(tabId);
         });
     });
     
     // Refresh button
-    document.getElementById('refresh-btn').addEventListener('click', function() {
-        loadDashboardData();
-        showNotification('Data diperbarui', 'success');
-    });
+    const refreshBtn = document.getElementById('refresh-btn');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', function() {
+            console.log('Refresh diklik');
+            loadDashboardData();
+            showNotification('Data diperbarui', 'success');
+        });
+    }
     
     // Tambah barang button
-    document.getElementById('tambah-barang-btn').addEventListener('click', function() {
-        openTambahBarangModal();
-    });
+    const tambahBarangBtn = document.getElementById('tambah-barang-btn');
+    if (tambahBarangBtn) {
+        tambahBarangBtn.addEventListener('click', function() {
+            console.log('Tambah barang diklik');
+            openTambahBarangModal();
+        });
+    }
     
     // Tambah barang masuk button
-    document.getElementById('tambah-masuk-btn').addEventListener('click', function() {
-        openTambahMasukModal();
-    });
+    const tambahMasukBtn = document.getElementById('tambah-masuk-btn');
+    if (tambahMasukBtn) {
+        tambahMasukBtn.addEventListener('click', function() {
+            console.log('Tambah barang masuk diklik');
+            openTambahMasukModal();
+        });
+    }
     
     // Tambah barang keluar button
-    document.getElementById('tambah-keluar-btn').addEventListener('click', function() {
-        openTambahKeluarModal();
-    });
+    const tambahKeluarBtn = document.getElementById('tambah-keluar-btn');
+    if (tambahKeluarBtn) {
+        tambahKeluarBtn.addEventListener('click', function() {
+            console.log('Tambah barang keluar diklik');
+            openTambahKeluarModal();
+        });
+    }
     
     // Tambah kategori button
-    document.getElementById('tambah-kategori-btn').addEventListener('click', function() {
-        resetKategoriForm();
-    });
+    const tambahKategoriBtn = document.getElementById('tambah-kategori-btn');
+    if (tambahKategoriBtn) {
+        tambahKategoriBtn.addEventListener('click', function() {
+            console.log('Tambah kategori diklik');
+            resetKategoriForm();
+        });
+    }
     
     // Filter laporan button
-    document.getElementById('filter-laporan-btn').addEventListener('click', function() {
-        loadLaporanData();
-    });
+    const filterLaporanBtn = document.getElementById('filter-laporan-btn');
+    if (filterLaporanBtn) {
+        filterLaporanBtn.addEventListener('click', function() {
+            console.log('Filter laporan diklik');
+            loadLaporanData();
+        });
+    }
     
     // Export laporan button
-    document.getElementById('export-laporan-btn').addEventListener('click', function() {
-        exportLaporanPDF();
-    });
+    const exportLaporanBtn = document.getElementById('export-laporan-btn');
+    if (exportLaporanBtn) {
+        exportLaporanBtn.addEventListener('click', function() {
+            console.log('Export laporan diklik');
+            exportLaporanPDF();
+        });
+    }
     
     // Reset kategori button
-    document.getElementById('reset-kategori-btn').addEventListener('click', function() {
-        resetKategoriForm();
-    });
+    const resetKategoriBtn = document.getElementById('reset-kategori-btn');
+    if (resetKategoriBtn) {
+        resetKategoriBtn.addEventListener('click', function() {
+            console.log('Reset kategori diklik');
+            resetKategoriForm();
+        });
+    }
     
     // Search barang
-    document.getElementById('search-barang').addEventListener('input', function() {
-        filterBarangTable(this.value);
-    });
+    const searchBarang = document.getElementById('search-barang');
+    if (searchBarang) {
+        searchBarang.addEventListener('input', function() {
+            console.log('Search barang:', this.value);
+            filterBarangTable(this.value);
+        });
+    }
     
     // Filter barang masuk
-    document.getElementById('filter-tanggal-masuk').addEventListener('change', function() {
-        loadBarangMasukData();
-    });
+    const filterTanggalMasuk = document.getElementById('filter-tanggal-masuk');
+    if (filterTanggalMasuk) {
+        filterTanggalMasuk.addEventListener('change', function() {
+            console.log('Filter tanggal masuk:', this.value);
+            loadBarangMasukData();
+        });
+    }
     
-    document.getElementById('filter-barang-masuk').addEventListener('change', function() {
-        loadBarangMasukData();
-    });
+    const filterBarangMasuk = document.getElementById('filter-barang-masuk');
+    if (filterBarangMasuk) {
+        filterBarangMasuk.addEventListener('change', function() {
+            console.log('Filter barang masuk:', this.value);
+            loadBarangMasukData();
+        });
+    }
     
     // Filter barang keluar
-    document.getElementById('filter-tanggal-keluar').addEventListener('change', function() {
-        loadBarangKeluarData();
-    });
+    const filterTanggalKeluar = document.getElementById('filter-tanggal-keluar');
+    if (filterTanggalKeluar) {
+        filterTanggalKeluar.addEventListener('change', function() {
+            console.log('Filter tanggal keluar:', this.value);
+            loadBarangKeluarData();
+        });
+    }
     
-    document.getElementById('filter-barang-keluar').addEventListener('change', function() {
-        loadBarangKeluarData();
-    });
+    const filterBarangKeluar = document.getElementById('filter-barang-keluar');
+    if (filterBarangKeluar) {
+        filterBarangKeluar.addEventListener('change', function() {
+            console.log('Filter barang keluar:', this.value);
+            loadBarangKeluarData();
+        });
+    }
     
     // Form submit handlers
-    document.getElementById('form-tambah-barang').addEventListener('submit', handleTambahBarang);
-    document.getElementById('form-tambah-masuk').addEventListener('submit', handleTambahMasuk);
-    document.getElementById('form-tambah-keluar').addEventListener('submit', handleTambahKeluar);
-    document.getElementById('kategori-form').addEventListener('submit', handleKategoriForm);
+    const formTambahBarang = document.getElementById('form-tambah-barang');
+    if (formTambahBarang) {
+        formTambahBarang.addEventListener('submit', handleTambahBarang);
+    }
+    
+    const formTambahMasuk = document.getElementById('form-tambah-masuk');
+    if (formTambahMasuk) {
+        formTambahMasuk.addEventListener('submit', handleTambahMasuk);
+    }
+    
+    const formTambahKeluar = document.getElementById('form-tambah-keluar');
+    if (formTambahKeluar) {
+        formTambahKeluar.addEventListener('submit', handleTambahKeluar);
+    }
+    
+    const kategoriForm = document.getElementById('kategori-form');
+    if (kategoriForm) {
+        kategoriForm.addEventListener('submit', handleKategoriForm);
+    }
     
     // Modal close buttons
     document.querySelectorAll('.close-modal').forEach(button => {
         button.addEventListener('click', function() {
+            console.log('Close modal diklik');
             closeAllModals();
         });
     });
@@ -127,18 +218,36 @@ function setupEventListeners() {
     // Close modal when clicking outside
     window.addEventListener('click', function(event) {
         if (event.target.classList.contains('modal')) {
+            console.log('Modal background diklik');
             closeAllModals();
         }
     });
     
     // Barang keluar - update stok info
-    document.getElementById('modal-barang-keluar').addEventListener('change', function() {
-        updateStokInfoKeluar();
-    });
+    const modalBarangKeluar = document.getElementById('modal-barang-keluar');
+    if (modalBarangKeluar) {
+        modalBarangKeluar.addEventListener('change', function() {
+            console.log('Barang keluar dipilih:', this.value);
+            updateStokInfoKeluar();
+        });
+    }
+    
+    // Barang jumlah keluar - validasi
+    const modalJumlahKeluar = document.getElementById('modal-jumlah-keluar');
+    if (modalJumlahKeluar) {
+        modalJumlahKeluar.addEventListener('input', function() {
+            console.log('Jumlah keluar diubah:', this.value);
+            validateJumlahKeluar();
+        });
+    }
+    
+    console.log('Event listeners setup selesai');
 }
 
 // Fungsi untuk berpindah tab
 function switchTab(tabId) {
+    console.log('Switch ke tab:', tabId);
+    
     // Update active tab in sidebar
     document.querySelectorAll('.sidebar li').forEach(item => {
         item.classList.remove('active');
@@ -156,21 +265,27 @@ function switchTab(tabId) {
             // Load data for the tab
             switch(tabId) {
                 case 'dashboard':
+                    console.log('Loading dashboard data...');
                     loadDashboardData();
                     break;
                 case 'barang':
+                    console.log('Loading barang data...');
                     loadBarangData();
                     break;
                 case 'barang-masuk':
+                    console.log('Loading barang masuk data...');
                     loadBarangMasukData();
                     break;
                 case 'barang-keluar':
+                    console.log('Loading barang keluar data...');
                     loadBarangKeluarData();
                     break;
                 case 'laporan':
+                    console.log('Loading laporan data...');
                     loadLaporanData();
                     break;
                 case 'kategori':
+                    console.log('Loading kategori data...');
                     loadKategoriData();
                     break;
             }
@@ -180,17 +295,31 @@ function switchTab(tabId) {
 
 // Load data dashboard
 async function loadDashboardData() {
+    console.log('Memuat data dashboard...');
+    
     try {
+        // Update status loading
+        document.getElementById('total-barang').textContent = '...';
+        document.getElementById('total-masuk').textContent = '...';
+        document.getElementById('total-keluar').textContent = '...';
+        document.getElementById('total-rendah').textContent = '...';
+        
         // Load data barang untuk statistik
         const barang = await window.supabaseFunctions.getBarang();
         const barangMasuk = await window.supabaseFunctions.getBarangMasuk();
         const barangKeluar = await window.supabaseFunctions.getBarangKeluar();
         
+        console.log('Data loaded:', {
+            barang: barang.length,
+            masuk: barangMasuk.length,
+            keluar: barangKeluar.length
+        });
+        
         // Update statistik
         document.getElementById('total-barang').textContent = barang.length;
         
-        const totalMasuk = barangMasuk.reduce((sum, item) => sum + item.jumlah, 0);
-        const totalKeluar = barangKeluar.reduce((sum, item) => sum + item.jumlah, 0);
+        const totalMasuk = barangMasuk.reduce((sum, item) => sum + (item.jumlah || 0), 0);
+        const totalKeluar = barangKeluar.reduce((sum, item) => sum + (item.jumlah || 0), 0);
         
         document.getElementById('total-masuk').textContent = totalMasuk;
         document.getElementById('total-keluar').textContent = totalKeluar;
@@ -208,14 +337,24 @@ async function loadDashboardData() {
     } catch (error) {
         console.error('Error loading dashboard data:', error);
         showNotification('Gagal memuat data dashboard', 'error');
+        
+        // Set default values jika error
+        document.getElementById('total-barang').textContent = '0';
+        document.getElementById('total-masuk').textContent = '0';
+        document.getElementById('total-keluar').textContent = '0';
+        document.getElementById('total-rendah').textContent = '0';
     }
 }
 
 // Load data barang
 async function loadBarangData() {
+    console.log('Memuat data barang...');
+    
     try {
         const barang = await window.supabaseFunctions.getBarang();
         const kategori = await window.supabaseFunctions.getKategori();
+        
+        console.log('Data barang loaded:', barang.length);
         
         // Create kategori map for lookup
         const kategoriMap = {};
@@ -235,12 +374,12 @@ async function loadBarangData() {
         barang.forEach(item => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${item.kode_barang}</td>
-                <td>${item.nama_barang}</td>
+                <td>${item.kode_barang || '-'}</td>
+                <td>${item.nama_barang || '-'}</td>
                 <td>${kategoriMap[item.kategori_id] || '-'}</td>
-                <td><span class="${item.stok <= item.min_stok ? 'low-stock' : ''}">${item.stok}</span></td>
-                <td>${item.satuan}</td>
-                <td>${item.min_stok}</td>
+                <td><span class="${item.stok <= item.min_stok ? 'low-stock' : ''}">${item.stok || 0}</span></td>
+                <td>${item.satuan || '-'}</td>
+                <td>${item.min_stok || 0}</td>
                 <td>${item.lokasi || '-'}</td>
                 <td>
                     <div class="action-buttons">
@@ -256,7 +395,10 @@ async function loadBarangData() {
             
             // Add low stock class if needed
             if (item.stok <= item.min_stok) {
-                row.querySelector('td:nth-child(4)').classList.add('low-stock');
+                const stokCell = row.querySelector('td:nth-child(4)');
+                if (stokCell) {
+                    stokCell.classList.add('low-stock');
+                }
             }
             
             tbody.appendChild(row);
@@ -266,6 +408,7 @@ async function loadBarangData() {
         document.querySelectorAll('.btn-edit').forEach(button => {
             button.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
+                console.log('Edit barang dengan ID:', id);
                 editBarang(id);
             });
         });
@@ -273,6 +416,7 @@ async function loadBarangData() {
         document.querySelectorAll('.btn-delete').forEach(button => {
             button.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
+                console.log('Hapus barang dengan ID:', id);
                 deleteBarangConfirmation(id);
             });
         });
@@ -280,26 +424,37 @@ async function loadBarangData() {
     } catch (error) {
         console.error('Error loading barang data:', error);
         showNotification('Gagal memuat data barang', 'error');
+        
+        const tbody = document.getElementById('barang-table-body');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="8" class="loading">Error memuat data barang</td></tr>';
+        }
     }
 }
 
 // Load data barang masuk
 async function loadBarangMasukData() {
+    console.log('Memuat data barang masuk...');
+    
     try {
         const filter = {};
-        const tanggalFilter = document.getElementById('filter-tanggal-masuk').value;
-        const barangFilter = document.getElementById('filter-barang-masuk').value;
+        const tanggalFilter = document.getElementById('filter-tanggal-masuk')?.value;
+        const barangFilter = document.getElementById('filter-barang-masuk')?.value;
         
         if (tanggalFilter) filter.tanggal = tanggalFilter;
         if (barangFilter) filter.barang_id = parseInt(barangFilter);
         
         const barangMasuk = await window.supabaseFunctions.getBarangMasuk(filter);
         
+        console.log('Data barang masuk loaded:', barangMasuk.length);
+        
         // Populate barang filter dropdown
         await populateBarangFilter('filter-barang-masuk');
         
         // Render table
         const tbody = document.getElementById('masuk-table-body');
+        if (!tbody) return;
+        
         tbody.innerHTML = '';
         
         if (barangMasuk.length === 0) {
@@ -313,7 +468,7 @@ async function loadBarangMasukData() {
                 <td>${formatDate(item.tanggal)}</td>
                 <td>${item.barang?.kode_barang || '-'}</td>
                 <td>${item.barang?.nama_barang || '-'}</td>
-                <td>${item.jumlah}</td>
+                <td>${item.jumlah || 0}</td>
                 <td>${item.supplier || '-'}</td>
                 <td>${item.keterangan || '-'}</td>
                 <td>
@@ -329,6 +484,7 @@ async function loadBarangMasukData() {
         document.querySelectorAll('#masuk-table-body .btn-delete').forEach(button => {
             button.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
+                console.log('Hapus barang masuk dengan ID:', id);
                 deleteBarangMasukConfirmation(id);
             });
         });
@@ -336,26 +492,37 @@ async function loadBarangMasukData() {
     } catch (error) {
         console.error('Error loading barang masuk data:', error);
         showNotification('Gagal memuat data barang masuk', 'error');
+        
+        const tbody = document.getElementById('masuk-table-body');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="7" class="loading">Error memuat data barang masuk</td></tr>';
+        }
     }
 }
 
 // Load data barang keluar
 async function loadBarangKeluarData() {
+    console.log('Memuat data barang keluar...');
+    
     try {
         const filter = {};
-        const tanggalFilter = document.getElementById('filter-tanggal-keluar').value;
-        const barangFilter = document.getElementById('filter-barang-keluar').value;
+        const tanggalFilter = document.getElementById('filter-tanggal-keluar')?.value;
+        const barangFilter = document.getElementById('filter-barang-keluar')?.value;
         
         if (tanggalFilter) filter.tanggal = tanggalFilter;
         if (barangFilter) filter.barang_id = parseInt(barangFilter);
         
         const barangKeluar = await window.supabaseFunctions.getBarangKeluar(filter);
         
+        console.log('Data barang keluar loaded:', barangKeluar.length);
+        
         // Populate barang filter dropdown
         await populateBarangFilter('filter-barang-keluar');
         
         // Render table
         const tbody = document.getElementById('keluar-table-body');
+        if (!tbody) return;
+        
         tbody.innerHTML = '';
         
         if (barangKeluar.length === 0) {
@@ -369,7 +536,7 @@ async function loadBarangKeluarData() {
                 <td>${formatDate(item.tanggal)}</td>
                 <td>${item.barang?.kode_barang || '-'}</td>
                 <td>${item.barang?.nama_barang || '-'}</td>
-                <td>${item.jumlah}</td>
+                <td>${item.jumlah || 0}</td>
                 <td>${item.penerima || '-'}</td>
                 <td>${item.keterangan || '-'}</td>
                 <td>
@@ -385,6 +552,7 @@ async function loadBarangKeluarData() {
         document.querySelectorAll('#keluar-table-body .btn-delete').forEach(button => {
             button.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
+                console.log('Hapus barang keluar dengan ID:', id);
                 deleteBarangKeluarConfirmation(id);
             });
         });
@@ -392,34 +560,52 @@ async function loadBarangKeluarData() {
     } catch (error) {
         console.error('Error loading barang keluar data:', error);
         showNotification('Gagal memuat data barang keluar', 'error');
+        
+        const tbody = document.getElementById('keluar-table-body');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="7" class="loading">Error memuat data barang keluar</td></tr>';
+        }
     }
 }
 
 // Load data laporan
 async function loadLaporanData() {
+    console.log('Memuat data laporan...');
+    
     try {
-        const startDate = document.getElementById('report-start-date').value;
-        const endDate = document.getElementById('report-end-date').value;
-        const reportType = document.getElementById('report-type').value;
+        const startDate = document.getElementById('report-start-date')?.value;
+        const endDate = document.getElementById('report-end-date')?.value;
+        const reportType = document.getElementById('report-type')?.value;
         
         if (!startDate || !endDate) {
             showNotification('Harap pilih periode laporan', 'warning');
             return;
         }
         
+        console.log('Filter laporan:', { startDate, endDate, reportType });
+        
         const laporan = await window.supabaseFunctions.getLaporan(startDate, endDate, reportType);
+        
+        console.log('Data laporan loaded:', laporan.length);
         
         // Render table
         const tbody = document.getElementById('report-table-body');
+        if (!tbody) return;
+        
         tbody.innerHTML = '';
         
         if (laporan.length === 0) {
             tbody.innerHTML = '<tr><td colspan="6" class="loading">Tidak ada data laporan untuk periode ini</td></tr>';
             
             // Reset summary
-            document.getElementById('summary-masuk').textContent = '0';
-            document.getElementById('summary-keluar').textContent = '0';
-            document.getElementById('summary-period').textContent = `${formatDate(startDate)} - ${formatDate(endDate)}`;
+            const summaryMasuk = document.getElementById('summary-masuk');
+            const summaryKeluar = document.getElementById('summary-keluar');
+            const summaryPeriod = document.getElementById('summary-period');
+            
+            if (summaryMasuk) summaryMasuk.textContent = '0';
+            if (summaryKeluar) summaryKeluar.textContent = '0';
+            if (summaryPeriod) summaryPeriod.textContent = `${formatDate(startDate)} - ${formatDate(endDate)}`;
+            
             return;
         }
         
@@ -434,37 +620,52 @@ async function loadLaporanData() {
                 <td><span class="badge ${item.jenis === 'MASUK' ? 'badge-in' : 'badge-out'}">${item.jenis}</span></td>
                 <td>${item.barang?.kode_barang || '-'}</td>
                 <td>${item.barang?.nama_barang || '-'}</td>
-                <td>${item.jumlah}</td>
+                <td>${item.jumlah || 0}</td>
                 <td>${item.keterangan || '-'}</td>
             `;
             tbody.appendChild(row);
             
             // Update totals
             if (item.jenis === 'MASUK') {
-                totalMasuk += item.jumlah;
+                totalMasuk += item.jumlah || 0;
             } else if (item.jenis === 'KELUAR') {
-                totalKeluar += item.jumlah;
+                totalKeluar += item.jumlah || 0;
             }
         });
         
         // Update summary
-        document.getElementById('summary-masuk').textContent = totalMasuk;
-        document.getElementById('summary-keluar').textContent = totalKeluar;
-        document.getElementById('summary-period').textContent = `${formatDate(startDate)} - ${formatDate(endDate)}`;
+        const summaryMasuk = document.getElementById('summary-masuk');
+        const summaryKeluar = document.getElementById('summary-keluar');
+        const summaryPeriod = document.getElementById('summary-period');
+        
+        if (summaryMasuk) summaryMasuk.textContent = totalMasuk;
+        if (summaryKeluar) summaryKeluar.textContent = totalKeluar;
+        if (summaryPeriod) summaryPeriod.textContent = `${formatDate(startDate)} - ${formatDate(endDate)}`;
         
     } catch (error) {
         console.error('Error loading laporan data:', error);
         showNotification('Gagal memuat data laporan', 'error');
+        
+        const tbody = document.getElementById('report-table-body');
+        if (tbody) {
+            tbody.innerHTML = '<tr><td colspan="6" class="loading">Error memuat data laporan</td></tr>';
+        }
     }
 }
 
 // Load data kategori
 async function loadKategoriData() {
+    console.log('Memuat data kategori...');
+    
     try {
         const kategori = await window.supabaseFunctions.getKategori();
         
+        console.log('Data kategori loaded:', kategori.length);
+        
         // Render kategori list
         const kategoriList = document.getElementById('kategori-list');
+        if (!kategoriList) return;
+        
         kategoriList.innerHTML = '';
         
         if (kategori.length === 0) {
@@ -476,7 +677,7 @@ async function loadKategoriData() {
             const li = document.createElement('li');
             li.innerHTML = `
                 <span>
-                    <strong>${item.nama_kategori}</strong>
+                    <strong>${item.nama_kategori || 'Tanpa nama'}</strong>
                     ${item.deskripsi ? `<br><small>${item.deskripsi}</small>` : ''}
                 </span>
                 <div class="kategori-actions">
@@ -492,6 +693,7 @@ async function loadKategoriData() {
             // Add click event to select kategori for editing
             li.addEventListener('click', function(e) {
                 if (!e.target.closest('.btn-action')) {
+                    console.log('Kategori dipilih untuk edit:', item.id);
                     editKategori(item.id);
                 }
             });
@@ -504,6 +706,7 @@ async function loadKategoriData() {
             button.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const id = this.getAttribute('data-id');
+                console.log('Edit kategori dengan ID:', id);
                 editKategori(id);
             });
         });
@@ -512,6 +715,7 @@ async function loadKategoriData() {
             button.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const id = this.getAttribute('data-id');
+                console.log('Hapus kategori dengan ID:', id);
                 deleteKategoriConfirmation(id);
             });
         });
@@ -522,11 +726,18 @@ async function loadKategoriData() {
     } catch (error) {
         console.error('Error loading kategori data:', error);
         showNotification('Gagal memuat data kategori', 'error');
+        
+        const kategoriList = document.getElementById('kategori-list');
+        if (kategoriList) {
+            kategoriList.innerHTML = '<li class="loading">Error memuat data kategori</li>';
+        }
     }
 }
 
 // Load aktivitas terbaru
 async function loadAktivitasTerbaru() {
+    console.log('Memuat aktivitas terbaru...');
+    
     try {
         // Get recent transactions
         const barangMasuk = await window.supabaseFunctions.getBarangMasuk({});
@@ -540,6 +751,8 @@ async function loadAktivitasTerbaru() {
         
         // Render aktivitas
         const activityList = document.getElementById('activity-list');
+        if (!activityList) return;
+        
         activityList.innerHTML = '';
         
         if (aktivitas.length === 0) {
@@ -554,8 +767,8 @@ async function loadAktivitasTerbaru() {
             const iconClass = item.type === 'in' ? 'activity-in' : 'activity-out';
             const icon = item.type === 'in' ? 'fa-arrow-down' : 'fa-arrow-up';
             const text = item.type === 'in' ? 
-                `Barang masuk: ${item.barang?.nama_barang || 'Barang'} (${item.jumlah})` :
-                `Barang keluar: ${item.barang?.nama_barang || 'Barang'} (${item.jumlah})`;
+                `Barang masuk: ${item.barang?.nama_barang || 'Barang'} (${item.jumlah || 0})` :
+                `Barang keluar: ${item.barang?.nama_barang || 'Barang'} (${item.jumlah || 0})`;
             
             activityDiv.innerHTML = `
                 <div class="activity-icon ${iconClass}">
@@ -572,75 +785,92 @@ async function loadAktivitasTerbaru() {
         
     } catch (error) {
         console.error('Error loading aktivitas:', error);
-        document.getElementById('activity-list').innerHTML = '<div class="loading">Gagal memuat aktivitas</div>';
+        const activityList = document.getElementById('activity-list');
+        if (activityList) {
+            activityList.innerHTML = '<div class="loading">Gagal memuat aktivitas</div>';
+        }
     }
 }
 
 // Load chart data
 function loadChartData(barang) {
-    // Prepare data for chart
-    const labels = barang.slice(0, 10).map(item => item.nama_barang);
-    const stokData = barang.slice(0, 10).map(item => item.stok);
-    const minStokData = barang.slice(0, 10).map(item => item.min_stok);
+    console.log('Memuat chart data...');
     
-    // Get canvas context
-    const ctx = document.getElementById('stokChart').getContext('2d');
-    
-    // Destroy existing chart if any
-    if (window.stokChartInstance) {
-        window.stokChartInstance.destroy();
-    }
-    
-    // Create new chart
-    window.stokChartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: 'Stok Tersedia',
-                    data: stokData,
-                    backgroundColor: '#4A6FA5',
-                    borderColor: '#3a5a8a',
-                    borderWidth: 1
-                },
-                {
-                    label: 'Minimal Stok',
-                    data: minStokData,
-                    backgroundColor: '#FF9800',
-                    borderColor: '#e68900',
-                    borderWidth: 1
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Jumlah'
+    try {
+        // Prepare data for chart
+        const limitedBarang = barang.slice(0, 10); // Limit to 10 items for better visualization
+        const labels = limitedBarang.map(item => item.nama_barang || 'Barang');
+        const stokData = limitedBarang.map(item => item.stok || 0);
+        const minStokData = limitedBarang.map(item => item.min_stok || 0);
+        
+        // Get canvas context
+        const chartCanvas = document.getElementById('stokChart');
+        if (!chartCanvas) {
+            console.warn('Chart canvas tidak ditemukan');
+            return;
+        }
+        
+        const ctx = chartCanvas.getContext('2d');
+        
+        // Destroy existing chart if any
+        if (window.stokChartInstance) {
+            window.stokChartInstance.destroy();
+        }
+        
+        // Create new chart
+        window.stokChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Stok Tersedia',
+                        data: stokData,
+                        backgroundColor: '#4A6FA5',
+                        borderColor: '#3a5a8a',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Minimal Stok',
+                        data: minStokData,
+                        backgroundColor: '#FF9800',
+                        borderColor: '#e68900',
+                        borderWidth: 1
                     }
-                },
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Nama Barang'
-                    }
-                }
+                ]
             },
-            plugins: {
-                legend: {
-                    position: 'top',
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Jumlah'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Nama Barang'
+                        }
+                    }
                 },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
                 }
             }
-        }
-    });
+        });
+        
+    } catch (error) {
+        console.error('Error loading chart data:', error);
+    }
 }
 
 // Populate kategori dropdown
@@ -648,6 +878,8 @@ async function populateKategoriDropdown(dropdownId) {
     try {
         const kategori = await window.supabaseFunctions.getKategori();
         const dropdown = document.getElementById(dropdownId);
+        
+        if (!dropdown) return;
         
         // Clear existing options except the first one
         while (dropdown.options.length > 1) {
@@ -662,6 +894,8 @@ async function populateKategoriDropdown(dropdownId) {
             dropdown.appendChild(option);
         });
         
+        console.log(`Dropdown ${dropdownId} diisi dengan ${kategori.length} kategori`);
+        
     } catch (error) {
         console.error('Error populating kategori dropdown:', error);
     }
@@ -672,6 +906,8 @@ async function populateBarangDropdown(dropdownId, includeEmptyOption = true) {
     try {
         const barang = await window.supabaseFunctions.getBarang();
         const dropdown = document.getElementById(dropdownId);
+        
+        if (!dropdown) return;
         
         // Clear existing options
         dropdown.innerHTML = '';
@@ -688,9 +924,12 @@ async function populateBarangDropdown(dropdownId, includeEmptyOption = true) {
         barang.forEach(item => {
             const option = document.createElement('option');
             option.value = item.id;
-            option.textContent = `${item.kode_barang} - ${item.nama_barang} (Stok: ${item.stok})`;
+            option.textContent = `${item.kode_barang || 'TANPA KODE'} - ${item.nama_barang || 'Tanpa nama'} (Stok: ${item.stok || 0})`;
+            option.setAttribute('data-stok', item.stok || 0);
             dropdown.appendChild(option);
         });
+        
+        console.log(`Dropdown ${dropdownId} diisi dengan ${barang.length} barang`);
         
     } catch (error) {
         console.error('Error populating barang dropdown:', error);
@@ -703,6 +942,8 @@ async function populateBarangFilter(dropdownId) {
         const barang = await window.supabaseFunctions.getBarang();
         const dropdown = document.getElementById(dropdownId);
         
+        if (!dropdown) return;
+        
         // Check if options already exist
         if (dropdown.options.length > 1) return;
         
@@ -710,7 +951,7 @@ async function populateBarangFilter(dropdownId) {
         barang.forEach(item => {
             const option = document.createElement('option');
             option.value = item.id;
-            option.textContent = `${item.kode_barang} - ${item.nama_barang}`;
+            option.textContent = `${item.kode_barang || 'TANPA KODE'} - ${item.nama_barang || 'Tanpa nama'}`;
             dropdown.appendChild(option);
         });
         
@@ -721,90 +962,162 @@ async function populateBarangFilter(dropdownId) {
 
 // Open tambah barang modal
 async function openTambahBarangModal() {
+    console.log('Membuka modal tambah barang');
+    
     // Populate kategori dropdown
     await populateKategoriDropdown('modal-kategori-barang');
     
     // Reset form
-    document.getElementById('form-tambah-barang').reset();
-    document.getElementById('modal-stok-barang').value = 0;
-    document.getElementById('modal-min-stok').value = 5;
+    const form = document.getElementById('form-tambah-barang');
+    if (form) {
+        form.reset();
+        delete form.dataset.editId;
+    }
+    
+    const stokInput = document.getElementById('modal-stok-barang');
+    const minStokInput = document.getElementById('modal-min-stok');
+    
+    if (stokInput) stokInput.value = 0;
+    if (minStokInput) minStokInput.value = 5;
+    
+    // Update modal title and button text
+    const modalTitle = document.querySelector('#modal-tambah-barang .modal-header h3');
+    const submitButton = document.querySelector('#modal-tambah-barang .modal-footer button[type="submit"]');
+    
+    if (modalTitle) modalTitle.innerHTML = '<i class="fas fa-box"></i> Tambah Barang Baru';
+    if (submitButton) submitButton.textContent = 'Simpan Barang';
     
     // Show modal
-    document.getElementById('modal-tambah-barang').classList.add('active');
+    const modal = document.getElementById('modal-tambah-barang');
+    if (modal) {
+        modal.classList.add('active');
+    }
 }
 
 // Open tambah barang masuk modal
 async function openTambahMasukModal() {
+    console.log('Membuka modal tambah barang masuk');
+    
     // Populate barang dropdown
     await populateBarangDropdown('modal-barang-masuk');
     
     // Reset form
-    document.getElementById('form-tambah-masuk').reset();
-    document.getElementById('modal-tanggal-masuk').value = new Date().toISOString().split('T')[0];
+    const form = document.getElementById('form-tambah-masuk');
+    if (form) {
+        form.reset();
+    }
+    
+    // Set tanggal hari ini
+    const tanggalInput = document.getElementById('modal-tanggal-masuk');
+    if (tanggalInput) {
+        tanggalInput.value = new Date().toISOString().split('T')[0];
+    }
     
     // Show modal
-    document.getElementById('modal-tambah-masuk').classList.add('active');
+    const modal = document.getElementById('modal-tambah-masuk');
+    if (modal) {
+        modal.classList.add('active');
+    }
 }
 
 // Open tambah barang keluar modal
 async function openTambahKeluarModal() {
+    console.log('Membuka modal tambah barang keluar');
+    
     // Populate barang dropdown
     await populateBarangDropdown('modal-barang-keluar');
     
     // Reset form
-    document.getElementById('form-tambah-keluar').reset();
-    document.getElementById('modal-tanggal-keluar').value = new Date().toISOString().split('T')[0];
+    const form = document.getElementById('form-tambah-keluar');
+    if (form) {
+        form.reset();
+    }
+    
+    // Set tanggal hari ini
+    const tanggalInput = document.getElementById('modal-tanggal-keluar');
+    if (tanggalInput) {
+        tanggalInput.value = new Date().toISOString().split('T')[0];
+    }
+    
+    // Reset stok info
+    const stokInfo = document.getElementById('stok-info-keluar');
+    if (stokInfo) {
+        stokInfo.innerHTML = 'Stok tersedia: <span>0</span>';
+    }
     
     // Show modal
-    document.getElementById('modal-tambah-keluar').classList.add('active');
+    const modal = document.getElementById('modal-tambah-keluar');
+    if (modal) {
+        modal.classList.add('active');
+    }
 }
 
 // Update stok info for barang keluar
 async function updateStokInfoKeluar() {
-    const barangId = document.getElementById('modal-barang-keluar').value;
+    const barangId = document.getElementById('modal-barang-keluar')?.value;
     
     if (!barangId) {
-        document.getElementById('stok-info-keluar').innerHTML = 'Stok tersedia: <span>0</span>';
+        const stokInfo = document.getElementById('stok-info-keluar');
+        if (stokInfo) {
+            stokInfo.innerHTML = 'Stok tersedia: <span>0</span>';
+        }
         return;
     }
     
     try {
-        // Get barang data
-        const { data: barang, error } = await supabase
-            .from('barang')
-            .select('stok, nama_barang')
-            .eq('id', barangId)
-            .single();
+        // Get barang data from dropdown selected option
+        const dropdown = document.getElementById('modal-barang-keluar');
+        const selectedOption = dropdown.options[dropdown.selectedIndex];
+        const stokTersedia = selectedOption.getAttribute('data-stok') || 0;
         
-        if (error) {
-            console.error('Error getting barang stok:', error);
-            return;
+        const stokInfo = document.getElementById('stok-info-keluar');
+        if (stokInfo) {
+            stokInfo.innerHTML = `Stok tersedia: <span>${stokTersedia}</span>`;
         }
         
-        document.getElementById('stok-info-keluar').innerHTML = `Stok tersedia: <span>${barang.stok}</span>`;
-        
         // Set max value for jumlah input
-        document.getElementById('modal-jumlah-keluar').max = barang.stok;
+        const jumlahInput = document.getElementById('modal-jumlah-keluar');
+        if (jumlahInput) {
+            jumlahInput.max = stokTersedia;
+            jumlahInput.setAttribute('max', stokTersedia);
+        }
         
     } catch (error) {
         console.error('Error updating stok info:', error);
+        const stokInfo = document.getElementById('stok-info-keluar');
+        if (stokInfo) {
+            stokInfo.innerHTML = 'Stok tersedia: <span>Error</span>';
+        }
+    }
+}
+
+// Validate jumlah barang keluar
+function validateJumlahKeluar() {
+    const jumlahInput = document.getElementById('modal-jumlah-keluar');
+    const maxStok = parseInt(jumlahInput.getAttribute('max')) || 0;
+    const jumlah = parseInt(jumlahInput.value) || 0;
+    
+    if (jumlah > maxStok) {
+        jumlahInput.value = maxStok;
+        showNotification(`Jumlah tidak boleh melebihi stok tersedia (${maxStok})`, 'warning');
     }
 }
 
 // Handle tambah barang form submit
 async function handleTambahBarang(e) {
     e.preventDefault();
+    console.log('Form tambah barang disubmit');
     
     // Get form data
     const barang = {
-        kode_barang: document.getElementById('modal-kode-barang').value.trim(),
-        nama_barang: document.getElementById('modal-nama-barang').value.trim(),
-        kategori_id: parseInt(document.getElementById('modal-kategori-barang').value),
-        stok: parseInt(document.getElementById('modal-stok-barang').value),
-        satuan: document.getElementById('modal-satuan-barang').value.trim(),
-        min_stok: parseInt(document.getElementById('modal-min-stok').value),
-        lokasi: document.getElementById('modal-lokasi-barang').value.trim() || null,
-        deskripsi: document.getElementById('modal-deskripsi-barang').value.trim() || null
+        kode_barang: document.getElementById('modal-kode-barang')?.value.trim() || '',
+        nama_barang: document.getElementById('modal-nama-barang')?.value.trim() || '',
+        kategori_id: parseInt(document.getElementById('modal-kategori-barang')?.value) || 0,
+        stok: parseInt(document.getElementById('modal-stok-barang')?.value) || 0,
+        satuan: document.getElementById('modal-satuan-barang')?.value.trim() || '',
+        min_stok: parseInt(document.getElementById('modal-min-stok')?.value) || 5,
+        lokasi: document.getElementById('modal-lokasi-barang')?.value.trim() || null,
+        deskripsi: document.getElementById('modal-deskripsi-barang')?.value.trim() || null
     };
     
     // Validate
@@ -819,49 +1132,55 @@ async function handleTambahBarang(e) {
     }
     
     try {
-        // Check if kode barang already exists
-        const { data: existing, error: checkError } = await supabase
-            .from('barang')
-            .select('id')
-            .eq('kode_barang', barang.kode_barang)
-            .limit(1);
+        const form = e.target;
+        const isEditMode = form.dataset.editId;
         
-        if (checkError) throw checkError;
-        
-        if (existing && existing.length > 0) {
-            showNotification('Kode barang sudah digunakan', 'warning');
-            return;
-        }
-        
-        // Add barang
-        const result = await window.supabaseFunctions.addBarang(barang);
-        
-        if (result) {
-            showNotification('Barang berhasil ditambahkan', 'success');
-            closeAllModals();
-            loadBarangData();
-            loadDashboardData();
+        if (isEditMode) {
+            // Update existing barang
+            console.log('Updating barang dengan ID:', isEditMode);
+            const result = await window.supabaseFunctions.updateBarang(isEditMode, barang);
+            
+            if (result) {
+                showNotification('Barang berhasil diperbarui', 'success');
+                closeAllModals();
+                loadBarangData();
+                loadDashboardData();
+            } else {
+                showNotification('Gagal memperbarui barang', 'error');
+            }
         } else {
-            showNotification('Gagal menambahkan barang', 'error');
+            // Add new barang
+            console.log('Adding new barang:', barang.kode_barang);
+            const result = await window.supabaseFunctions.addBarang(barang);
+            
+            if (result) {
+                showNotification('Barang berhasil ditambahkan', 'success');
+                closeAllModals();
+                loadBarangData();
+                loadDashboardData();
+            } else {
+                showNotification('Gagal menambahkan barang', 'error');
+            }
         }
         
     } catch (error) {
-        console.error('Error adding barang:', error);
-        showNotification('Terjadi kesalahan saat menambahkan barang', 'error');
+        console.error('Error saving barang:', error);
+        showNotification('Terjadi kesalahan saat menyimpan barang', 'error');
     }
 }
 
 // Handle tambah barang masuk form submit
 async function handleTambahMasuk(e) {
     e.preventDefault();
+    console.log('Form tambah barang masuk disubmit');
     
     // Get form data
     const barangMasuk = {
-        barang_id: parseInt(document.getElementById('modal-barang-masuk').value),
-        jumlah: parseInt(document.getElementById('modal-jumlah-masuk').value),
-        tanggal: document.getElementById('modal-tanggal-masuk').value,
-        supplier: document.getElementById('modal-supplier-masuk').value.trim() || null,
-        keterangan: document.getElementById('modal-keterangan-masuk').value.trim() || null
+        barang_id: parseInt(document.getElementById('modal-barang-masuk')?.value) || 0,
+        jumlah: parseInt(document.getElementById('modal-jumlah-masuk')?.value) || 0,
+        tanggal: document.getElementById('modal-tanggal-masuk')?.value || '',
+        supplier: document.getElementById('modal-supplier-masuk')?.value.trim() || null,
+        keterangan: document.getElementById('modal-keterangan-masuk')?.value.trim() || null
     };
     
     // Validate
@@ -876,7 +1195,7 @@ async function handleTambahMasuk(e) {
     }
     
     try {
-        // Add barang masuk
+        console.log('Adding barang masuk:', barangMasuk);
         const result = await window.supabaseFunctions.addBarangMasuk(barangMasuk);
         
         if (result) {
@@ -897,14 +1216,15 @@ async function handleTambahMasuk(e) {
 // Handle tambah barang keluar form submit
 async function handleTambahKeluar(e) {
     e.preventDefault();
+    console.log('Form tambah barang keluar disubmit');
     
     // Get form data
     const barangKeluar = {
-        barang_id: parseInt(document.getElementById('modal-barang-keluar').value),
-        jumlah: parseInt(document.getElementById('modal-jumlah-keluar').value),
-        tanggal: document.getElementById('modal-tanggal-keluar').value,
-        penerima: document.getElementById('modal-penerima-keluar').value.trim() || null,
-        keterangan: document.getElementById('modal-keterangan-keluar').value.trim() || null
+        barang_id: parseInt(document.getElementById('modal-barang-keluar')?.value) || 0,
+        jumlah: parseInt(document.getElementById('modal-jumlah-keluar')?.value) || 0,
+        tanggal: document.getElementById('modal-tanggal-keluar')?.value || '',
+        penerima: document.getElementById('modal-penerima-keluar')?.value.trim() || null,
+        keterangan: document.getElementById('modal-keterangan-keluar')?.value.trim() || null
     };
     
     // Validate
@@ -920,20 +1240,16 @@ async function handleTambahKeluar(e) {
     
     try {
         // Check stok availability
-        const { data: barang, error: checkError } = await supabase
-            .from('barang')
-            .select('stok, nama_barang')
-            .eq('id', barangKeluar.barang_id)
-            .single();
+        const dropdown = document.getElementById('modal-barang-keluar');
+        const selectedOption = dropdown.options[dropdown.selectedIndex];
+        const stokTersedia = parseInt(selectedOption.getAttribute('data-stok')) || 0;
         
-        if (checkError) throw checkError;
-        
-        if (barang.stok < barangKeluar.jumlah) {
-            showNotification(`Stok tidak mencukupi. Stok tersedia: ${barang.stok}`, 'warning');
+        if (stokTersedia < barangKeluar.jumlah) {
+            showNotification(`Stok tidak mencukupi. Stok tersedia: ${stokTersedia}`, 'warning');
             return;
         }
         
-        // Add barang keluar
+        console.log('Adding barang keluar:', barangKeluar);
         const result = await window.supabaseFunctions.addBarangKeluar(barangKeluar);
         
         if (result) {
@@ -954,14 +1270,15 @@ async function handleTambahKeluar(e) {
 // Handle kategori form submit
 async function handleKategoriForm(e) {
     e.preventDefault();
+    console.log('Form kategori disubmit');
     
     // Get form data
     const kategori = {
-        nama_kategori: document.getElementById('nama-kategori').value.trim(),
-        deskripsi: document.getElementById('deskripsi-kategori').value.trim() || null
+        nama_kategori: document.getElementById('nama-kategori')?.value.trim() || '',
+        deskripsi: document.getElementById('deskripsi-kategori')?.value.trim() || null
     };
     
-    const kategoriId = document.getElementById('kategori-id').value;
+    const kategoriId = document.getElementById('kategori-id')?.value;
     
     // Validate
     if (!kategori.nama_kategori) {
@@ -974,6 +1291,7 @@ async function handleKategoriForm(e) {
         
         if (kategoriId) {
             // Update existing kategori
+            console.log('Updating kategori dengan ID:', kategoriId);
             result = await window.supabaseFunctions.updateKategori(kategoriId, kategori);
             if (result) {
                 showNotification('Kategori berhasil diperbarui', 'success');
@@ -983,6 +1301,7 @@ async function handleKategoriForm(e) {
             }
         } else {
             // Add new kategori
+            console.log('Adding new kategori:', kategori.nama_kategori);
             result = await window.supabaseFunctions.addKategori(kategori);
             if (result) {
                 showNotification('Kategori berhasil ditambahkan', 'success');
@@ -1019,12 +1338,12 @@ async function editBarang(id) {
         await populateKategoriDropdown('modal-kategori-barang');
         
         // Fill form with barang data
-        document.getElementById('modal-kode-barang').value = barang.kode_barang;
-        document.getElementById('modal-nama-barang').value = barang.nama_barang;
-        document.getElementById('modal-kategori-barang').value = barang.kategori_id;
-        document.getElementById('modal-stok-barang').value = barang.stok;
-        document.getElementById('modal-satuan-barang').value = barang.satuan;
-        document.getElementById('modal-min-stok').value = barang.min_stok;
+        document.getElementById('modal-kode-barang').value = barang.kode_barang || '';
+        document.getElementById('modal-nama-barang').value = barang.nama_barang || '';
+        document.getElementById('modal-kategori-barang').value = barang.kategori_id || '';
+        document.getElementById('modal-stok-barang').value = barang.stok || 0;
+        document.getElementById('modal-satuan-barang').value = barang.satuan || '';
+        document.getElementById('modal-min-stok').value = barang.min_stok || 5;
         document.getElementById('modal-lokasi-barang').value = barang.lokasi || '';
         document.getElementById('modal-deskripsi-barang').value = barang.deskripsi || '';
         
@@ -1059,11 +1378,14 @@ async function editKategori(id) {
         
         // Fill form with kategori data
         document.getElementById('kategori-id').value = kategori.id;
-        document.getElementById('nama-kategori').value = kategori.nama_kategori;
+        document.getElementById('nama-kategori').value = kategori.nama_kategori || '';
         document.getElementById('deskripsi-kategori').value = kategori.deskripsi || '';
         
         // Scroll to form
-        document.querySelector('.kategori-form').scrollIntoView({ behavior: 'smooth' });
+        const kategoriForm = document.querySelector('.kategori-form');
+        if (kategoriForm) {
+            kategoriForm.scrollIntoView({ behavior: 'smooth' });
+        }
         
     } catch (error) {
         console.error('Error loading kategori for edit:', error);
@@ -1204,8 +1526,15 @@ async function deleteKategori(id) {
 
 // Reset kategori form
 function resetKategoriForm() {
-    document.getElementById('kategori-form').reset();
-    document.getElementById('kategori-id').value = '';
+    const form = document.getElementById('kategori-form');
+    if (form) {
+        form.reset();
+    }
+    
+    const kategoriIdInput = document.getElementById('kategori-id');
+    if (kategoriIdInput) {
+        kategoriIdInput.value = '';
+    }
 }
 
 // Filter barang table
@@ -1226,11 +1555,14 @@ function filterBarangTable(searchTerm) {
 function exportLaporanPDF() {
     // Simple PDF export using window.print()
     // For a more robust solution, consider using a library like jsPDF
+    console.log('Exporting to PDF...');
     window.print();
 }
 
 // Show notification
 function showNotification(message, type = 'info') {
+    console.log(`Notification [${type}]: ${message}`);
+    
     // Remove existing notification
     const existingNotification = document.querySelector('.notification');
     if (existingNotification) {
@@ -1260,7 +1592,7 @@ function showNotification(message, type = 'info') {
         }
     }, 5000);
     
-    // Add CSS for notification
+    // Add CSS for notification if not already added
     if (!document.querySelector('#notification-styles')) {
         const style = document.createElement('style');
         style.id = 'notification-styles';
@@ -1304,23 +1636,38 @@ function showNotification(message, type = 'info') {
 
 // Format date to Indonesian format
 function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('id-ID', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-    });
+    if (!dateString) return '-';
+    
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+    } catch (error) {
+        console.error('Error formatting date:', error, dateString);
+        return dateString;
+    }
 }
 
 // Close all modals
 function closeAllModals() {
+    console.log('Menutup semua modal');
+    
     document.querySelectorAll('.modal').forEach(modal => {
         modal.classList.remove('active');
     });
     
     // Reset form states
     const barangForm = document.getElementById('form-tambah-barang');
-    delete barangForm.dataset.editId;
-    document.querySelector('#modal-tambah-barang .modal-header h3').innerHTML = '<i class="fas fa-box"></i> Tambah Barang Baru';
-    document.querySelector('#modal-tambah-barang .modal-footer button[type="submit"]').textContent = 'Simpan Barang';
+    if (barangForm) {
+        delete barangForm.dataset.editId;
+    }
+    
+    const modalTitle = document.querySelector('#modal-tambah-barang .modal-header h3');
+    const submitButton = document.querySelector('#modal-tambah-barang .modal-footer button[type="submit"]');
+    
+    if (modalTitle) modalTitle.innerHTML = '<i class="fas fa-box"></i> Tambah Barang Baru';
+    if (submitButton) submitButton.textContent = 'Simpan Barang';
 }
