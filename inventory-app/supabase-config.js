@@ -327,6 +327,120 @@ async function deleteBarang(id) {
     }
 }
 
+// Add Barang Masuk
+async function addBarangMasuk(barangMasuk) {
+    try {
+        const { data, error } = await supabase
+            .from('barang_masuk')
+            .insert([barangMasuk])
+            .select()
+            .single();
+        
+        if (error) throw error;
+        
+        return data;
+        
+    } catch (error) {
+        console.error('❌ Error menambahkan barang masuk:', error);
+        throw error;
+    }
+}
+
+// Update Barang Masuk
+async function updateBarangMasuk(id, barangMasuk) {
+    try {
+        const { data, error } = await supabase
+            .from('barang_masuk')
+            .update(barangMasuk)
+            .eq('id', id)
+            .select()
+            .single();
+        
+        if (error) throw error;
+        
+        return data;
+        
+    } catch (error) {
+        console.error('❌ Error mengupdate barang masuk:', error);
+        throw error;
+    }
+}
+
+// Delete Barang Masuk
+async function deleteBarangMasuk(id) {
+    try {
+        const { error } = await supabase
+            .from('barang_masuk')
+            .delete()
+            .eq('id', id);
+        
+        if (error) throw error;
+        
+        return true;
+        
+    } catch (error) {
+        console.error('❌ Error menghapus barang masuk:', error);
+        throw error;
+    }
+}
+
+// Add Barang Keluar
+async function addBarangKeluar(barangKeluar) {
+    try {
+        const { data, error } = await supabase
+            .from('barang_keluar')
+            .insert([barangKeluar])
+            .select()
+            .single();
+        
+        if (error) throw error;
+        
+        return data;
+        
+    } catch (error) {
+        console.error('❌ Error menambahkan barang keluar:', error);
+        throw error;
+    }
+}
+
+// Update Barang Keluar
+async function updateBarangKeluar(id, barangKeluar) {
+    try {
+        const { data, error } = await supabase
+            .from('barang_keluar')
+            .update(barangKeluar)
+            .eq('id', id)
+            .select()
+            .single();
+        
+        if (error) throw error;
+        
+        return data;
+        
+    } catch (error) {
+        console.error('❌ Error mengupdate barang keluar:', error);
+        throw error;
+    }
+}
+
+// Delete Barang Keluar
+async function deleteBarangKeluar(id) {
+    try {
+        const { error } = await supabase
+            .from('barang_keluar')
+            .delete()
+            .eq('id', id);
+        
+        if (error) throw error;
+        
+        return true;
+        
+    } catch (error) {
+        console.error('❌ Error menghapus barang keluar:', error);
+        throw error;
+    }
+}
+
 // Get Laporan
 async function getLaporan(startDate, endDate, type = 'all') {
     try {
@@ -413,7 +527,17 @@ window.supabaseFunctions = {
     // CRUD Operations
     addBarang,
     updateBarang,
-    deleteBarang
+    deleteBarang,
+    
+    // Barang Masuk CRUD
+    addBarangMasuk,
+    updateBarangMasuk,
+    deleteBarangMasuk,
+    
+    // Barang Keluar CRUD
+    addBarangKeluar,
+    updateBarangKeluar,
+    deleteBarangKeluar
 };
 
 console.log('✅ Supabase Functions berhasil dimuat');
