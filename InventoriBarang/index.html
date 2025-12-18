@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Data Barang</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-boxes"></i> Manajemen Data Barang</h1>
+            <p class="subtitle">Monitor barang masuk dan keluar dengan satuan berbeda</p>
+        </header>
+
+        <div class="app-container">
+            <!-- Sidebar Navigasi -->
+            <nav class="sidebar">
+                <div class="nav-section">
+                    <h3><i class="fas fa-tachometer-alt"></i> Dashboard</h3>
+                    <ul>
+                        <li><a href="#" class="nav-link active" data-target="dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                        <li><a href="#" class="nav-link" data-target="barang-masuk"><i class="fas fa-arrow-down"></i> Barang Masuk</a></li>
+                        <li><a href="#" class="nav-link" data-target="barang-keluar"><i class="fas fa-arrow-up"></i> Barang Keluar</a></li>
+                        <li><a href="#" class="nav-link" data-target="master-barang"><i class="fas fa-box-open"></i> Master Barang</a></li>
+                        <li><a href="#" class="nav-link" data-target="stok"><i class="fas fa-clipboard-list"></i> Stok Barang</a></li>
+                    </ul>
+                </div>
+                
+                <div class="nav-section">
+                    <h3><i class="fas fa-cog"></i> Pengaturan</h3>
+                    <ul>
+                        <li><a href="#" class="nav-link" data-target="konversi"><i class="fas fa-exchange-alt"></i> Konversi Satuan</a></li>
+                        <li><a href="#" class="nav-link" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Keluar</a></li>
+                    </ul>
+                </div>
+                
+                <div class="user-info">
+                    <div class="avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <p class="username">Administrator</p>
+                        <p class="role">Manajer Gudang</p>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Konten Utama -->
+            <main class="main-content">
+                <!-- Dashboard -->
+                <section id="dashboard" class="content-section active">
+                    <h2><i class="fas fa-chart-bar"></i> Dashboard</h2>
+                    <div class="dashboard-cards">
+                        <div class="card">
+                            <div class="card-icon bg-primary">
+                                <i class="fas fa-boxes"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Total Jenis Barang</h3>
+                                <p id="total-jenis-barang">0</p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon bg-success">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Barang Masuk (Hari ini)</h3>
+                                <p id="barang-masuk-hari-ini">0</p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon bg-warning">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Barang Keluar (Hari ini)</h3>
+                                <p id="barang-keluar-hari-ini">0</p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-icon bg-danger">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Stok Menipis</h3>
+                                <p id="stok-menipis">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-charts">
+                        <div class="chart-container">
+                            <h3>Aktivitas Barang Masuk/Keluar (7 Hari)</h3>
+                            <canvas id="activityChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Barang dengan Stok Terbanyak</h3>
+                            <div id="top-stock-items"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Barang Masuk -->
+                <section id="barang-masuk" class="content-section">
+                    <h2><i class="fas fa-arrow-down"></i> Barang Masuk</h2>
+                    <div class="form-container">
+                        <form id="form-barang-masuk">
+                            <div class="form-header">
+                                <h3><i class="fas fa-plus-circle"></i> Input Barang Masuk</h3>
+                                <button type="button" id="add-more-masuk" class="btn-secondary">
+                                    <i class="fas fa-plus"></i> Tambah Baris
+                                </button>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="tanggal-masuk"><i class="fas fa-calendar"></i> Tanggal Masuk</label>
+                                <input type="date" id="tanggal-masuk" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="keterangan-masuk"><i class="fas fa-sticky-note"></i> Keterangan</label>
+                                <input type="text" id="keterangan-masuk" placeholder="Contoh: Pembelian dari Supplier A">
+                            </div>
+                            
+                            <div id="items-container-masuk">
+                                <!-- Item akan ditambahkan secara dinamis -->
+                                <div class="item-row">
+                                    <div class="form-group">
+                                        <label>Barang</label>
+                                        <select class="barang-select" required>
+                                            <option value="">Pilih Barang</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Jumlah</label>
+                                        <input type="number" class="jumlah" min="1" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Satuan Besar</label>
+                                        <select class="satuan-besar" required>
+                                            <option value="Dus">Dus</option>
+                                            <option value="Lusin">Lusin</option>
+                                            <option value="Pack">Pack</option>
+                                            <option value="Bungkus">Bungkus</option>
+                                            <option value="KG">KG</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="button" class="btn-danger remove-item-btn" style="margin-top: 24px;">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-save"></i> Simpan Barang Masuk
+                                </button>
+                                <button type="reset" class="btn-secondary">
+                                    <i class="fas fa-redo"></i> Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="table-container">
+                        <h3><i class="fas fa-history"></i> Riwayat Barang Masuk</h3>
+                        <div class="table-responsive">
+                            <table id="table-barang-masuk">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Barang</th>
+                                        <th>Jumlah Besar</th>
+                                        <th>Satuan Besar</th>
+                                        <th>Jumlah Kecil</th>
+                                        <th>Keterangan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data akan diisi oleh JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Barang Keluar -->
+                <section id="barang-keluar" class="content-section">
+                    <h2><i class="fas fa-arrow-up"></i> Barang Keluar</h2>
+                    <div class="form-container">
+                        <form id="form-barang-keluar">
+                            <div class="form-header">
+                                <h3><i class="fas fa-minus-circle"></i> Input Barang Keluar</h3>
+                                <button type="button" id="add-more-keluar" class="btn-secondary">
+                                    <i class="fas fa-plus"></i> Tambah Baris
+                                </button>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="tanggal-keluar"><i class="fas fa-calendar"></i> Tanggal Keluar</label>
+                                <input type="date" id="tanggal-keluar" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="keterangan-keluar"><i class="fas fa-sticky-note"></i> Keterangan</label>
+                                <input type="text" id="keterangan-keluar" placeholder="Contoh: Penjualan ke Toko B">
+                            </div>
+                            
+                            <div id="items-container-keluar">
+                                <!-- Item akan ditambahkan secara dinamis -->
+                                <div class="item-row">
+                                    <div class="form-group">
+                                        <label>Barang</label>
+                                        <select class="barang-select" required>
+                                            <option value="">Pilih Barang</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Jumlah</label>
+                                        <input type="number" class="jumlah" min="1" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Satuan Kecil</label>
+                                        <select class="satuan-kecil" required>
+                                            <option value="Pcs">Pcs</option>
+                                            <option value="Botol">Botol</option>
+                                            <option value="Bungkus">Bungkus</option>
+                                            <option value="KG">KG</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Stok Tersedia</label>
+                                        <input type="text" class="stok-tersedia" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="button" class="btn-danger remove-item-btn" style="margin-top: 24px;">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-save"></i> Simpan Barang Keluar
+                                </button>
+                                <button type="reset" class="btn-secondary">
+                                    <i class="fas fa-redo"></i> Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="table-container">
+                        <h3><i class="fas fa-history"></i> Riwayat Barang Keluar</h3>
+                        <div class="table-responsive">
+                            <table id="table-barang-keluar">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th>Barang</th>
+                                        <th>Jumlah Kecil</th>
+                                        <th>Satuan Kecil</th>
+                                        <th>Keterangan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data akan diisi oleh JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Master Barang -->
+                <section id="master-barang" class="content-section">
+                    <h2><i class="fas fa-box-open"></i> Master Barang</h2>
+                    <div class="form-container">
+                        <form id="form-master-barang">
+                            <div class="form-header">
+                                <h3><i class="fas fa-plus-circle"></i> Tambah/Edit Barang</h3>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="kode-barang"><i class="fas fa-barcode"></i> Kode Barang</label>
+                                <input type="text" id="kode-barang" placeholder="Kode unik barang" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="nama-barang"><i class="fas fa-tag"></i> Nama Barang</label>
+                                <input type="text" id="nama-barang" placeholder="Nama barang" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="kategori"><i class="fas fa-filter"></i> Kategori</label>
+                                <select id="kategori" required>
+                                    <option value="">Pilih Kategori</option>
+                                    <option value="Makanan">Makanan</option>
+                                    <option value="Minuman">Minuman</option>
+                                    <option value="Elektronik">Elektronik</option>
+                                    <option value="Peralatan">Peralatan</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label><i class="fas fa-balance-scale"></i> Konversi Satuan</label>
+                                <div class="conversion-row">
+                                    <div class="conversion-item">
+                                        <input type="number" id="konversi-nilai" placeholder="Jumlah" min="1" required>
+                                    </div>
+                                    <div class="conversion-item">
+                                        <select id="konversi-satuan-besar" required>
+                                            <option value="Dus">Dus</option>
+                                            <option value="Lusin">Lusin</option>
+                                            <option value="Pack">Pack</option>
+                                            <option value="Bungkus">Bungkus</option>
+                                            <option value="KG">KG</option>
+                                        </select>
+                                    </div>
+                                    <div class="conversion-item">
+                                        <span class="equals">=</span>
+                                    </div>
+                                    <div class="conversion-item">
+                                        <input type="number" id="konversi-nilai-kecil" placeholder="Jumlah" min="1" required>
+                                    </div>
+                                    <div class="conversion-item">
+                                        <select id="konversi-satuan-kecil" required>
+                                            <option value="Pcs">Pcs</option>
+                                            <option value="Botol">Botol</option>
+                                            <option value="Bungkus">Bungkus</option>
+                                            <option value="KG">KG</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="foto-barang"><i class="fas fa-camera"></i> Foto Barang</label>
+                                <input type="file" id="foto-barang" accept="image/*">
+                                <div class="image-preview" id="image-preview">
+                                    <i class="fas fa-image"></i>
+                                    <span>Pratinjau gambar akan muncul di sini</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="deskripsi"><i class="fas fa-align-left"></i> Deskripsi</label>
+                                <textarea id="deskripsi" rows="3" placeholder="Deskripsi barang"></textarea>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-save"></i> Simpan Barang
+                                </button>
+                                <button type="reset" class="btn-secondary" id="reset-master">
+                                    <i class="fas fa-redo"></i> Baru
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="table-container">
+                        <h3><i class="fas fa-list"></i> Daftar Master Barang</h3>
+                        <div class="table-responsive">
+                            <table id="table-master-barang">
+                                <thead>
+                                    <tr>
+                                        <th>Kode</th>
+                                        <th>Foto</th>
+                                        <th>Nama Barang</th>
+                                        <th>Kategori</th>
+                                        <th>Konversi</th>
+                                        <th>Stok (Satuan Kecil)</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data akan diisi oleh JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Stok Barang -->
+                <section id="stok" class="content-section">
+                    <h2><i class="fas fa-clipboard-list"></i> Stok Barang</h2>
+                    <div class="filter-container">
+                        <div class="form-group">
+                            <label for="filter-kategori"><i class="fas fa-filter"></i> Filter Kategori</label>
+                            <select id="filter-kategori">
+                                <option value="">Semua Kategori</option>
+                                <option value="Makanan">Makanan</option>
+                                <option value="Minuman">Minuman</option>
+                                <option value="Elektronik">Elektronik</option>
+                                <option value="Peralatan">Peralatan</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="filter-stok"><i class="fas fa-sort"></i> Filter Stok</label>
+                            <select id="filter-stok">
+                                <option value="">Semua Stok</option>
+                                <option value="menipis">Stok Menipis (< 10)</option>
+                                <option value="cukup">Stok Cukup (10-50)</option>
+                                <option value="banyak">Stok Banyak (> 50)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button id="refresh-stok" class="btn-secondary">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <div class="table-responsive">
+                            <table id="table-stok">
+                                <thead>
+                                    <tr>
+                                        <th>Kode</th>
+                                        <th>Foto</th>
+                                        <th>Nama Barang</th>
+                                        <th>Kategori</th>
+                                        <th>Stok Satuan Kecil</th>
+                                        <th>Stok Satuan Besar</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data akan diisi oleh JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Konversi Satuan -->
+                <section id="konversi" class="content-section">
+                    <h2><i class="fas fa-exchange-alt"></i> Konversi Satuan</h2>
+                    <div class="info-card">
+                        <h3><i class="fas fa-info-circle"></i> Informasi Konversi Satuan</h3>
+                        <p>Konversi satuan menentukan bagaimana satuan besar (untuk barang masuk) dikonversi ke satuan kecil (untuk stok dan barang keluar).</p>
+                        
+                        <div class="conversion-examples">
+                            <h4><i class="fas fa-list"></i> Contoh Konversi:</h4>
+                            <ul>
+                                <li><strong>1 Dus</strong> = <strong>24 Pcs</strong> (Contoh: Air Mineral)</li>
+                                <li><strong>1 Lusin</strong> = <strong>12 Pcs</strong> (Contoh: Botol Saus)</li>
+                                <li><strong>1 Pack</strong> = <strong>10 Bungkus</strong> (Contoh: Mie Instan)</li>
+                                <li><strong>1 KG</strong> = <strong>1000 Gram</strong> (Contoh: Gula Pasir)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <h3><i class="fas fa-table"></i> Daftar Konversi Barang</h3>
+                        <div class="table-responsive">
+                            <table id="table-konversi">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Barang</th>
+                                        <th>Konversi</th>
+                                        <th>Contoh Penggunaan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Data akan diisi oleh JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <footer>
+            <p>Aplikasi Manajemen Data Barang &copy; 2023 | Dibuat dengan <i class="fas fa-heart"></i> untuk monitoring stok barang</p>
+        </footer>
+    </div>
+
+    <!-- Modal untuk melihat foto barang -->
+    <div id="fotoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>Foto Barang</h3>
+            <img id="modalFoto" src="" alt="Foto Barang">
+            <p id="modalNamaBarang"></p>
+        </div>
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Memuat data...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
