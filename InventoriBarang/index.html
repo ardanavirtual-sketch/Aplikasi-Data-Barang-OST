@@ -1271,9 +1271,8 @@
             // Setup form dengan tanggal hari ini
             setTodayDate();
             
-            // Setup data dummy untuk demo
-            setupDemoData();
-            
+            // Load data dari Supabase
+            await loadAllData();
             // Untuk penggunaan dengan Supabase sebenarnya, gunakan ini:
             // await loadAllData();
             // setupCharts();
