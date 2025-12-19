@@ -39,88 +39,108 @@ async function initializeApp() {
 function setupNavigationListeners() {
     console.log('Setup navigasi...');
     
-    // Navigasi
-    const navLinks = document.querySelectorAll('.nav-link');
-    console.log('Jumlah link navigasi:', navLinks.length);
-    
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
+    // Navigasi - Gunakan event delegation
+    document.querySelector('.sidebar').addEventListener('click', function(e) {
+        // Cek jika yang diklik adalah nav-link
+        if (e.target.classList.contains('nav-link') || e.target.closest('.nav-link')) {
             e.preventDefault();
-            const target = this.getAttribute('data-target');
-            console.log('Menu diklik:', target);
+            const navLink = e.target.classList.contains('nav-link') ? e.target : e.target.closest('.nav-link');
+            const target = navLink.getAttribute('data-target');
             
-            // Tampilkan section yang dipilih
-            showSection(target);
-            
-            // Update active state
-            navLinks.forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
-        });
+            // Cek jika bukan logout button
+            if (navLink.id !== 'logout-btn') {
+                console.log('Menu diklik:', target);
+                
+                // Tampilkan section yang dipilih
+                showSection(target);
+                
+                // Update active state
+                const navLinks = document.querySelectorAll('.nav-link');
+                navLinks.forEach(l => l.classList.remove('active'));
+                navLink.classList.add('active');
+            }
+        }
     });
 }
 
 // Setup event listeners lainnya
 function setupOtherEventListeners() {
+    console.log('Setup event listeners lainnya...');
+    
     // Form Barang Masuk
     document.getElementById('add-more-masuk').addEventListener('click', function() {
+        console.log('Tombol tambah baris barang masuk diklik');
         addItemRow('masuk');
     });
     
-    document.getElementById('form-barang-masuk').addEventListener('submit', async function(e) {
+    document.getElementById('form-barang-masuk').addEventListener('submit', function(e) {
         e.preventDefault();
-        await simpanBarangMasuk();
+        console.log('Form barang masuk disubmit');
+        simpanBarangMasuk();
     });
     
     // Form Barang Keluar
     document.getElementById('add-more-keluar').addEventListener('click', function() {
+        console.log('Tombol tambah baris barang keluar diklik');
         addItemRow('keluar');
     });
     
-    document.getElementById('form-barang-keluar').addEventListener('submit', async function(e) {
+    document.getElementById('form-barang-keluar').addEventListener('submit', function(e) {
         e.preventDefault();
-        await simpanBarangKeluar();
+        console.log('Form barang keluar disubmit');
+        simpanBarangKeluar();
     });
     
     // Form Master Barang
-    document.getElementById('form-master-barang').addEventListener('submit', async function(e) {
+    document.getElementById('form-master-barang').addEventListener('submit', function(e) {
         e.preventDefault();
-        await simpanMasterBarang();
+        console.log('Form master barang disubmit');
+        simpanMasterBarang();
     });
     
     document.getElementById('reset-master').addEventListener('click', function() {
+        console.log('Tombol reset master diklik');
         resetMasterForm();
     });
     
     // Preview gambar
     document.getElementById('foto-barang').addEventListener('change', function(e) {
+        console.log('File gambar dipilih');
         previewImage(e.target);
     });
     
     // Filter stok
     document.getElementById('filter-kategori').addEventListener('change', function() {
+        console.log('Filter kategori berubah:', this.value);
         filterStokBarang();
     });
     
     document.getElementById('filter-stok').addEventListener('change', function() {
+        console.log('Filter stok berubah:', this.value);
         filterStokBarang();
     });
     
     document.getElementById('refresh-stok').addEventListener('click', function() {
+        console.log('Tombol refresh stok diklik');
         updateStokBarangTable();
         filterStokBarang();
+        alert('Data stok telah direfresh!');
     });
     
     // Logout
-    document.getElementById('logout-btn').addEventListener('click', function() {
-        if (confirm('Apakah Anda yakin ingin keluar?')) {
-            alert('Anda telah keluar dari aplikasi');
-            // Redirect ke halaman login (untuk demo)
-            window.location.href = '#';
+    document.getElementById('logout-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('Tombol logout diklik');
+        if (confirm('Apakah Anda yakin ingin keluar dari aplikasi?')) {
+            alert('Anda telah keluar dari aplikasi. Terima kasih!');
+            // Dalam aplikasi nyata, ini akan redirect ke halaman login
+            // window.location.href = 'login.html';
         }
     });
     
     // Modal
     document.querySelector('.close-modal').addEventListener('click', function() {
+        console.log('Tombol close modal diklik');
         document.getElementById('fotoModal').style.display = 'none';
     });
     
@@ -133,6 +153,38 @@ function setupOtherEventListeners() {
     
     // Set tanggal hari ini di form
     setTodayDate();
+    
+    // Event delegation untuk tombol hapus di item rows
+    document.addEventListener('click', function(e) {
+        // Tombol hapus baris
+        if (e.target.classList.contains('remove-item-btn') || e.target.closest('.remove-item-btn')) {
+            const btn = e.target.classList.contains('remove-item-btn') ? e.target : e.target.closest('.remove-item-btn');
+            const itemRow = btn.closest('.item-row');
+            const container = itemRow.parentElement;
+            
+            if (container.querySelectorAll('.item-row').length > 1) {
+                container.removeChild(itemRow);
+                console.log('Baris item dihapus');
+            } else {
+                alert('Minimal harus ada satu baris item');
+            }
+        }
+        
+        // Tombol edit dan hapus di tabel
+        if (e.target.classList.contains('action-btn') || e.target.closest('.action-btn')) {
+            const actionBtn = e.target.classList.contains('action-btn') ? e.target : e.target.closest('.action-btn');
+            const row = actionBtn.closest('tr');
+            const id = parseInt(row.querySelector('td:first-child').textContent); // Ambil ID dari kolom pertama
+            
+            if (actionBtn.classList.contains('edit-btn')) {
+                console.log('Tombol edit diklik untuk ID:', id);
+                editMasterBarang(id);
+            } else if (actionBtn.classList.contains('delete-btn')) {
+                console.log('Tombol hapus diklik untuk ID:', id);
+                hapusMasterBarang(id);
+            }
+        }
+    });
 }
 
 // Setup data demo untuk testing
@@ -196,6 +248,9 @@ function setupDemoData() {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayStr = yesterday.toISOString().split('T')[0];
+    const twoDaysAgo = new Date();
+    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+    const twoDaysAgoStr = twoDaysAgo.toISOString().split('T')[0];
     
     barangMasuk = [
         {
@@ -239,6 +294,20 @@ function setupDemoData() {
             jumlah_kecil: 2000,
             keterangan: 'Pembelian dari Supplier C',
             master_barang: masterBarang[2]
+        },
+        {
+            id: 4,
+            tanggal: twoDaysAgoStr,
+            barang_id: 4,
+            jumlah: 1,
+            satuan_besar: 'Lusin',
+            konversi_nilai_besar: 1,
+            konversi_satuan_besar: 'Lusin',
+            konversi_nilai_kecil: 12,
+            konversi_satuan_kecil: 'Botol',
+            jumlah_kecil: 12,
+            keterangan: 'Pembelian dari Supplier D',
+            master_barang: masterBarang[3]
         }
     ];
     
@@ -261,6 +330,15 @@ function setupDemoData() {
             satuan_kecil: 'Bungkus',
             keterangan: 'Penjualan ke Toko Y',
             master_barang: masterBarang[1]
+        },
+        {
+            id: 3,
+            tanggal: twoDaysAgoStr,
+            barang_id: 3,
+            jumlah: 500,
+            satuan_kecil: 'Gram',
+            keterangan: 'Penjualan ke Toko Z',
+            master_barang: masterBarang[2]
         }
     ];
     
@@ -300,6 +378,9 @@ function showSection(sectionId) {
             updateDashboard();
         } else if (sectionId === 'stok') {
             filterStokBarang();
+        } else if (sectionId === 'master-barang') {
+            // Reset form master barang saat pindah ke halaman ini
+            resetMasterForm();
         }
         
         console.log('Section', sectionId, 'ditampilkan');
@@ -313,6 +394,7 @@ function setTodayDate() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('tanggal-masuk').value = today;
     document.getElementById('tanggal-keluar').value = today;
+    console.log('Tanggal diatur ke:', today);
 }
 
 // Hitung stok barang
@@ -350,6 +432,8 @@ function calculateStokBarang() {
             stok_besar: stok / barang.konversi_nilai_kecil
         });
     });
+    
+    console.log('Stok barang dihitung:', stokBarang.length, 'item');
 }
 
 // Tambah baris item di form
@@ -370,7 +454,7 @@ function addItemRow(type) {
             </div>
             <div class="form-group">
                 <label>Jumlah</label>
-                <input type="number" class="jumlah" min="1" required>
+                <input type="number" class="jumlah" min="1" value="1" required>
             </div>
             <div class="form-group">
                 <label>Satuan Besar</label>
@@ -398,7 +482,7 @@ function addItemRow(type) {
             </div>
             <div class="form-group">
                 <label>Jumlah</label>
-                <input type="number" class="jumlah" min="1" required>
+                <input type="number" class="jumlah" min="1" value="1" required>
             </div>
             <div class="form-group">
                 <label>Satuan Kecil</label>
@@ -411,7 +495,7 @@ function addItemRow(type) {
             </div>
             <div class="form-group">
                 <label>Stok Tersedia</label>
-                <input type="text" class="stok-tersedia" readonly>
+                <input type="text" class="stok-tersedia" readonly value="0">
             </div>
             <div class="form-group">
                 <button type="button" class="btn-danger remove-item-btn" style="margin-top: 24px;">
@@ -432,15 +516,7 @@ function addItemRow(type) {
     // Populate dropdown barang
     populateBarangSelect(itemRow.querySelector('.barang-select'));
     
-    // Event listener untuk tombol hapus
-    const removeBtn = itemRow.querySelector('.remove-item-btn');
-    removeBtn.addEventListener('click', function() {
-        if (container.querySelectorAll('.item-row').length > 1) {
-            container.removeChild(itemRow);
-        } else {
-            alert('Minimal harus ada satu baris item');
-        }
-    });
+    console.log('Baris item ditambahkan untuk:', type);
 }
 
 // Populate dropdown barang di form
@@ -516,6 +592,8 @@ async function simpanBarangMasuk() {
     
     // Kumpulkan data items
     const items = [];
+    let isValid = true;
+    
     for (const row of itemRows) {
         const barangId = row.querySelector('.barang-select').value;
         const jumlah = parseInt(row.querySelector('.jumlah').value);
@@ -523,20 +601,23 @@ async function simpanBarangMasuk() {
         
         if (!barangId || !jumlah || !satuanBesar) {
             alert('Semua field item harus diisi');
-            return;
+            isValid = false;
+            break;
         }
         
         // Cari barang di master
         const barang = masterBarang.find(b => b.id.toString() === barangId);
         if (!barang) {
             alert('Barang tidak ditemukan');
-            return;
+            isValid = false;
+            break;
         }
         
         // Validasi satuan besar sesuai dengan konversi barang
         if (barang.konversi_satuan_besar !== satuanBesar) {
             alert(`Satuan besar untuk ${barang.nama_barang} harus ${barang.konversi_satuan_besar}`);
-            return;
+            isValid = false;
+            break;
         }
         
         items.push({
@@ -550,6 +631,8 @@ async function simpanBarangMasuk() {
             jumlah_kecil: jumlah * barang.konversi_nilai_kecil
         });
     }
+    
+    if (!isValid) return;
     
     showLoading(true);
     
@@ -628,6 +711,8 @@ async function simpanBarangKeluar() {
     
     // Kumpulkan data items
     const items = [];
+    let isValid = true;
+    
     for (const row of itemRows) {
         const barangId = row.querySelector('.barang-select').value;
         const jumlah = parseInt(row.querySelector('.jumlah').value);
@@ -635,27 +720,31 @@ async function simpanBarangKeluar() {
         
         if (!barangId || !jumlah || !satuanKecil) {
             alert('Semua field item harus diisi');
-            return;
+            isValid = false;
+            break;
         }
         
         // Cari barang di master
         const barang = masterBarang.find(b => b.id.toString() === barangId);
         if (!barang) {
             alert('Barang tidak ditemukan');
-            return;
+            isValid = false;
+            break;
         }
         
         // Validasi satuan kecil sesuai dengan konversi barang
         if (barang.konversi_satuan_kecil !== satuanKecil) {
             alert(`Satuan kecil untuk ${barang.nama_barang} harus ${barang.konversi_satuan_kecil}`);
-            return;
+            isValid = false;
+            break;
         }
         
         // Cek stok tersedia
         const stokBarangItem = stokBarang.find(s => s.id.toString() === barangId);
         if (!stokBarangItem || stokBarangItem.stok_kecil < jumlah) {
             alert(`Stok ${barang.nama_barang} tidak mencukupi. Stok tersedia: ${stokBarangItem ? stokBarangItem.stok_kecil : 0}`);
-            return;
+            isValid = false;
+            break;
         }
         
         items.push({
@@ -664,6 +753,8 @@ async function simpanBarangKeluar() {
             satuan_kecil: satuanKecil
         });
     }
+    
+    if (!isValid) return;
     
     showLoading(true);
     
@@ -822,6 +913,7 @@ function resetMasterForm() {
     document.getElementById('image-preview').innerHTML = '<i class="fas fa-image"></i><span>Pratinjau gambar akan muncul di sini</span>';
     selectedBarangId = null;
     document.querySelector('#submit-master').innerHTML = '<i class="fas fa-save"></i> Simpan Barang';
+    console.log('Form master barang direset');
 }
 
 // Preview gambar sebelum upload
@@ -870,6 +962,8 @@ function editMasterBarang(id) {
     // Scroll ke form
     showSection('master-barang');
     document.getElementById('form-master-barang').scrollIntoView({ behavior: 'smooth' });
+    
+    console.log('Edit master barang:', barang.nama_barang);
 }
 
 // Hapus master barang
@@ -944,7 +1038,7 @@ function updateMasterBarangTable() {
             <td>
                 ${barang.foto_url ? 
                     `<img src="${barang.foto_url}" class="table-foto" alt="Foto" onclick="showFotoModal('${barang.foto_url}', '${barang.nama_barang}')">` : 
-                    `<div class="table-foto" style="display: flex; align-items: center; justify-content: center; background-color: #f0f0f0;">
+                    `<div class="table-foto" style="display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; cursor: pointer;" onclick="showFotoModal('', '${barang.nama_barang}')">
                         <i class="fas fa-box" style="font-size: 1.2rem; color: #999;"></i>
                     </div>`
                 }
@@ -955,10 +1049,10 @@ function updateMasterBarangTable() {
             <td>${stokKecil} ${barang.konversi_satuan_kecil}</td>
             <td>
                 <div class="actions">
-                    <div class="action-btn edit-btn" onclick="editMasterBarang(${barang.id})">
+                    <div class="action-btn edit-btn">
                         <i class="fas fa-edit"></i>
                     </div>
-                    <div class="action-btn delete-btn" onclick="hapusMasterBarang(${barang.id})">
+                    <div class="action-btn delete-btn">
                         <i class="fas fa-trash"></i>
                     </div>
                 </div>
@@ -1052,7 +1146,7 @@ function updateStokBarangTable() {
             <td>
                 ${item.foto_url ? 
                     `<img src="${item.foto_url}" class="table-foto" alt="Foto" onclick="showFotoModal('${item.foto_url}', '${item.nama_barang}')">` : 
-                    `<div class="table-foto" style="display: flex; align-items: center; justify-content: center; background-color: #f0f0f0;">
+                    `<div class="table-foto" style="display: flex; align-items: center; justify-content: center; background-color: #f0f0f0; cursor: pointer;" onclick="showFotoModal('', '${item.nama_barang}')">
                         <i class="fas fa-box" style="font-size: 1.2rem; color: #999;"></i>
                     </div>`
                 }
@@ -1074,6 +1168,7 @@ function filterStokBarang() {
     const filterStok = document.getElementById('filter-stok').value;
     
     const rows = document.querySelectorAll('#table-stok tbody tr');
+    let visibleCount = 0;
     
     rows.forEach(row => {
         const kategori = row.cells[4].textContent; // Kolom ke-5 (0-based index)
@@ -1098,7 +1193,10 @@ function filterStokBarang() {
         }
         
         row.style.display = showRow ? '' : 'none';
+        if (showRow) visibleCount++;
     });
+    
+    console.log('Filter diterapkan:', filterKategori, filterStok, 'Tampil:', visibleCount, 'dari', rows.length);
 }
 
 // Update tabel konversi
@@ -1148,6 +1246,8 @@ function updateDashboard() {
     
     // Update top stok items
     updateTopStokItems();
+    
+    console.log('Dashboard diperbarui');
 }
 
 // Update top stok items di dashboard
