@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StokMaster - Multi Gudang</title>
+    <title>StokMaster Supabase - Konversi Unit</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -11,9 +11,9 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
         .custom-shadow { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); }
-        .tab-active { border-bottom: 3px solid #6366f1; color: #6366f1; font-weight: 700; }
-        .img-preview { width: 48px; height: 48px; object-fit: cover; border-radius: 12px; background-color: #f1f5f9; }
-        .img-large { width: 100%; height: 200px; object-fit: cover; border-radius: 16px; margin-bottom: 1rem; }
+        .tab-active { border-bottom: 3px solid #6366f1; color: #6366f1; }
+        .loader { border: 2px solid #f3f3f3; border-top: 2px solid #6366f1; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="text-slate-800">
@@ -25,15 +25,14 @@
                 <div class="flex justify-between h-16 items-center">
                     <div class="flex items-center space-x-3">
                         <div class="bg-indigo-600 p-2 rounded-lg text-white">
-                            <i class="fas fa-warehouse"></i>
+                            <i class="fas fa-boxes-stacked"></i>
                         </div>
                         <span class="text-xl font-bold tracking-tight">Stok<span class="text-indigo-600">Supa</span></span>
                     </div>
-                    <div class="flex space-x-6 text-sm font-semibold text-slate-500 overflow-x-auto">
-                        <button onclick="switchPage('master')" id="nav-master" class="py-5 px-1 transition-all whitespace-nowrap">Master Barang</button>
-                        <button onclick="switchPage('warehouse')" id="nav-warehouse" class="py-5 px-1 transition-all whitespace-nowrap">Master Gudang</button>
-                        <button onclick="switchPage('transaction')" id="nav-transaction" class="py-5 px-1 transition-all whitespace-nowrap">Input Transaksi</button>
-                        <button onclick="switchPage('report')" id="nav-report" class="py-5 px-1 transition-all whitespace-nowrap">Laporan Stok</button>
+                    <div class="flex space-x-6 text-sm font-semibold text-slate-500">
+                        <button onclick="switchPage('master')" id="nav-master" class="py-5 px-1 transition-all">Master Barang</button>
+                        <button onclick="switchPage('transaction')" id="nav-transaction" class="py-5 px-1 transition-all">Input Transaksi</button>
+                        <button onclick="switchPage('report')" id="nav-report" class="py-5 px-1 transition-all">Laporan Stok</button>
                     </div>
                 </div>
             </div>
@@ -45,7 +44,7 @@
                 <div class="flex justify-between items-end mb-6">
                     <div>
                         <h2 class="text-2xl font-bold">Master Data Barang</h2>
-                        <p class="text-slate-500 text-sm">Kelola spesifikasi unit dan foto produk.</p>
+                        <p class="text-slate-500 text-sm">Kelola spesifikasi unit besar (Grosir) dan unit kecil (Eceran).</p>
                     </div>
                     <button onclick="openMasterModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-indigo-200 transition-all flex items-center gap-2">
                         <i class="fas fa-plus"></i> Tambah Barang
@@ -56,34 +55,17 @@
                     <table class="w-full text-left">
                         <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase tracking-wider">
                             <tr>
-                                <th class="px-6 py-4">Foto</th>
                                 <th class="px-6 py-4">Nama Barang</th>
-                                <th class="px-6 py-4">Satuan</th>
-                                <th class="px-6 py-4">Konversi</th>
+                                <th class="px-6 py-4">Satuan Besar</th>
+                                <th class="px-6 py-4">Satuan Kecil</th>
+                                <th class="px-6 py-4">Konversi (Isi)</th>
                                 <th class="px-6 py-4 text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="master-table-body" class="divide-y divide-slate-100 text-sm">
-                            <tr><td colspan="5" class="px-6 py-10 text-center text-slate-400">Memuat data...</td></tr>
+                            <tr><td colspan="5" class="px-6 py-10 text-center text-slate-400">Menghubungkan ke database...</td></tr>
                         </tbody>
                     </table>
-                </div>
-            </section>
-
-            <!-- PAGE: MASTER WAREHOUSE -->
-            <section id="page-warehouse" class="page-content hidden">
-                <div class="flex justify-between items-end mb-6">
-                    <div>
-                        <h2 class="text-2xl font-bold">Master Gudang / Lokasi</h2>
-                        <p class="text-slate-500 text-sm">Daftar lokasi penyimpanan barang Anda.</p>
-                    </div>
-                    <button onclick="openWarehouseModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-emerald-200 transition-all flex items-center gap-2">
-                        <i class="fas fa-plus"></i> Tambah Gudang
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="warehouse-grid">
-                    <!-- Warehouse cards here -->
                 </div>
             </section>
 
@@ -91,22 +73,27 @@
             <section id="page-transaction" class="page-content hidden">
                 <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
-                        <h2 class="text-2xl font-bold">Input Transaksi</h2>
-                        <p class="text-slate-500 text-sm">Pilih gudang tujuan untuk mutasi stok.</p>
+                        <h2 class="text-2xl font-bold">Transaksi Multi-Item</h2>
+                        <p class="text-slate-500 text-sm">Input banyak barang sekaligus dalam satu transaksi.</p>
                     </div>
-                    <div class="flex bg-slate-200 p-1 rounded-xl">
-                        <button onclick="setTrxType('IN')" id="type-in" class="px-6 py-2 rounded-lg text-sm font-bold transition-all bg-white shadow text-indigo-600">MASUK</button>
-                        <button onclick="setTrxType('OUT')" id="type-out" class="px-6 py-2 rounded-lg text-sm font-bold transition-all text-slate-500">KELUAR</button>
+                    <div class="flex bg-slate-200 p-1 rounded-xl w-full md:w-auto">
+                        <button onclick="setTrxType('IN')" id="type-in" class="flex-1 md:flex-none px-6 py-2 rounded-lg text-sm font-bold transition-all bg-white shadow text-indigo-600">MASUK (Unit Besar)</button>
+                        <button onclick="setTrxType('OUT')" id="type-out" class="flex-1 md:flex-none px-6 py-2 rounded-lg text-sm font-bold transition-all text-slate-500">KELUAR (Unit Kecil)</button>
                     </div>
                 </div>
 
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow mb-8">
-                    <div id="transaction-items-container" class="space-y-3"></div>
-                    <div class="mt-6 flex flex-col md:flex-row justify-between items-center pt-6 border-t border-slate-100 gap-4">
-                        <button onclick="addTransactionRow()" class="text-indigo-600 font-bold text-sm">
-                            <i class="fas fa-plus-circle mr-1"></i> Tambah Baris
+                    <div id="transaction-items-container" class="space-y-3">
+                        <!-- Dynamic Rows -->
+                    </div>
+
+                    <div class="mt-6 flex flex-col md:flex-row justify-between items-center gap-4 pt-6 border-t border-slate-100">
+                        <button onclick="addTransactionRow()" class="text-indigo-600 font-bold text-sm hover:bg-indigo-50 px-4 py-2 rounded-lg transition-all">
+                            <i class="fas fa-plus-circle mr-1"></i> Tambah Baris Baru
                         </button>
-                        <button onclick="processTransaction()" id="btn-save-trx" class="w-full md:w-auto bg-indigo-600 text-white px-10 py-3 rounded-xl font-bold shadow-lg">Simpan Transaksi</button>
+                        <button onclick="processTransaction()" id="btn-save-trx" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-3 shadow-lg shadow-indigo-100">
+                            Simpan Semua Transaksi
+                        </button>
                     </div>
                 </div>
             </section>
@@ -114,29 +101,38 @@
             <!-- PAGE: REPORT -->
             <section id="page-report" class="page-content hidden">
                 <div class="mb-6">
-                    <h2 class="text-2xl font-bold">Laporan Stok Per Gudang</h2>
-                    <p class="text-slate-500 text-sm">Monitoring stok real-time di setiap lokasi penyimpanan.</p>
+                    <h2 class="text-2xl font-bold">Laporan Stok Terkini</h2>
+                    <p class="text-slate-500 text-sm">Monitoring stok otomatis dalam satuan besar dan kecil.</p>
                 </div>
 
-                <div class="space-y-8" id="report-container">
-                    <!-- Report dynamic -->
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden custom-shadow">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase tracking-wider">
+                            <tr>
+                                <th class="px-6 py-4">Nama Barang</th>
+                                <th class="px-6 py-4">Total Stok (Eceran)</th>
+                                <th class="px-6 py-4">Detail Konversi</th>
+                                <th class="px-6 py-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-table-body" class="divide-y divide-slate-100 text-sm">
+                            <!-- Data -->
+                        </tbody>
+                    </table>
                 </div>
             </section>
         </main>
     </div>
 
-    <!-- MODAL MASTER BARANG -->
-    <div id="master-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 items-center justify-center p-4">
-        <div class="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white">
-                <h3 class="text-lg font-bold">Detail Barang</h3>
-                <button onclick="closeMasterModal()" class="text-slate-400"><i class="fas fa-times"></i></button>
+    <!-- MODAL MASTER -->
+    <div id="master-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 items-center justify-center p-4" style="display: none;">
+        <div class="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="text-lg font-bold">Form Master Barang</h3>
+                <button onclick="closeMasterModal()" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times"></i></button>
             </div>
             <form id="master-form" class="p-6 space-y-4">
                 <input type="hidden" id="m-id">
-                <div id="image-container">
-                    <img id="m-img-preview" src="https://via.placeholder.com/400x200?text=No+Image" class="img-large">
-                </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Nama Barang</label>
                     <input type="text" id="m-name" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500">
@@ -144,245 +140,134 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Satuan Besar</label>
-                        <input type="text" id="m-unit-big" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+                        <input type="text" id="m-unit-big" required placeholder="Dus" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Satuan Kecil</label>
-                        <input type="text" id="m-unit-small" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+                        <input type="text" id="m-unit-small" required placeholder="Pcs" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Konversi (Isi per Satuan Besar)</label>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Isi per Satuan Besar</label>
                     <input type="number" id="m-conversion" required min="1" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">URL Foto / AI Generate</label>
-                    <div class="flex gap-2">
-                        <input type="url" id="m-image-url" class="flex-1 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm">
-                        <button type="button" onclick="generateAIImage()" id="btn-ai" class="bg-amber-100 text-amber-700 px-3 rounded-xl"><i class="fas fa-magic"></i></button>
-                    </div>
-                </div>
-                <button type="submit" id="btn-save-master" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold shadow-lg mt-4">Simpan Barang</button>
+                <button type="submit" id="btn-save-master" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 mt-4">Simpan Barang</button>
             </form>
         </div>
     </div>
 
-    <!-- MODAL WAREHOUSE -->
-    <div id="warehouse-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 items-center justify-center p-4">
-        <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl p-6">
-            <h3 class="text-lg font-bold mb-4">Tambah Gudang</h3>
-            <form id="warehouse-form" class="space-y-4">
-                <input type="hidden" id="w-id">
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Nama Gudang</label>
-                    <input type="text" id="w-name" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Lokasi/Alamat</label>
-                    <input type="text" id="w-location" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
-                </div>
-                <div class="flex gap-2 pt-2">
-                    <button type="button" onclick="closeWarehouseModal()" class="flex-1 bg-slate-100 py-3 rounded-xl font-bold">Batal</button>
-                    <button type="submit" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-emerald-100">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Toast -->
+    <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 px-6 py-3 rounded-full bg-slate-900 text-white shadow-2xl opacity-0 translate-y-10 transition-all duration-300 z-[100]">
-        <i id="toast-icon" class="fas fa-check-circle"></i>
+        <i id="toast-icon" class="fas fa-check-circle text-emerald-400"></i>
         <p id="toast-message" class="text-sm font-medium"></p>
     </div>
 
     <script type="module">
-        const apiKey = ""; 
-        const SUPABASE_URL = 'https://iltqolfmvhzaiuagtoxt.supabase.co'; 
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsdHFvbGZtdmh6YWl1YWd0b3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyNDE5MjQsImV4cCI6MjA4MDgxNzkyNH0.sGzEQjpKfy7fdw8KBNO7mVzKd2tuxqQaYAdRuTjHVMs';
+        // ==========================================
+        // 1. KONFIGURASI SUPABASE (WAJIB DIISI)
+        // ==========================================
+        const SUPABASE_URL = 'https://iltqolfmvhzaiuagtoxt.supabase.co'; // Ganti dengan URL Anda
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsdHFvbGZtdmh6YWl1YWd0b3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyNDE5MjQsImV4cCI6MjA4MDgxNzkyNH0.sGzEQjpKfy7fdw8KBNO7mVzKd2tuxqQaYAdRuTjHVMs';    // Ganti dengan Anon Key Anda
 
+        // Inisialisasi Client (Dilakukan secara global di modul ini)
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let masterItems = [];
-        let warehouses = [];
-        let stockData = []; // Combined stock per warehouse
         let trxType = 'IN';
 
-        // --- FETCH DATA ---
-        const fetchData = async () => {
-            const { data: items } = await supabase.from('master_items').select('*').order('name');
-            const { data: whs } = await supabase.from('warehouses').select('*').order('name');
-            const { data: stocks } = await supabase.from('stocks').select('*'); // table: id, item_id, warehouse_id, qty
+        // ==========================================
+        // 2. FUNGSI UTAMA & FETCH DATA
+        // ==========================================
+        const fetchMasterData = async () => {
+            const { data, error } = await supabase
+                .from('master_items')
+                .select('*')
+                .order('name', { ascending: true });
 
-            masterItems = items || [];
-            warehouses = whs || [];
-            stockData = stocks || [];
-
+            if (error) {
+                console.error("Supabase Error:", error);
+                showToast("Koneksi gagal: " + error.message, "error");
+                document.getElementById('master-table-body').innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-red-400">Gagal terhubung ke database. Periksa URL/Key dan RLS.</td></tr>`;
+                return;
+            }
+            masterItems = data || [];
             renderMasterTable();
-            renderWarehouseGrid();
-            renderReports();
+            renderReportTable();
+            updateAllDropdowns();
         };
 
-        // --- WAREHOUSE LOGIC ---
-        window.openWarehouseModal = () => document.getElementById('warehouse-modal').style.display = 'flex';
-        window.closeWarehouseModal = () => {
-            document.getElementById('warehouse-modal').style.display = 'none';
-            document.getElementById('warehouse-form').reset();
+        const init = async () => {
+            if (!SUPABASE_URL || SUPABASE_URL.includes('xyz')) {
+                showToast("URL/Key Supabase belum diatur!", "error");
+                return;
+            }
+            await fetchMasterData();
+            addTransactionRow();
+            switchPage('master');
         };
 
-        const renderWarehouseGrid = () => {
-            const grid = document.getElementById('warehouse-grid');
-            grid.innerHTML = warehouses.map(w => `
-                <div class="bg-white p-5 rounded-3xl border border-slate-200 custom-shadow flex justify-between items-center">
-                    <div>
-                        <h4 class="font-bold text-slate-800">${w.name}</h4>
-                        <p class="text-xs text-slate-500"><i class="fas fa-map-marker-alt mr-1"></i> ${w.location || 'Tanpa Lokasi'}</p>
-                    </div>
-                    <button onclick="deleteWarehouse('${w.id}')" class="text-red-400 hover:bg-red-50 p-2 rounded-lg transition-all"><i class="fas fa-trash"></i></button>
-                </div>
+        // ==========================================
+        // 3. MASTER DATA LOGIC
+        // ==========================================
+        const renderMasterTable = () => {
+            const body = document.getElementById('master-table-body');
+            if (masterItems.length === 0) {
+                body.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-slate-400 text-sm">Belum ada data barang. Klik "Tambah Barang".</td></tr>`;
+                return;
+            }
+            body.innerHTML = masterItems.map(item => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-4 font-bold text-slate-800">${item.name}</td>
+                    <td class="px-6 py-4 text-slate-500">${item.unit_big}</td>
+                    <td class="px-6 py-4 text-slate-500">${item.unit_small}</td>
+                    <td class="px-6 py-4 font-medium">1 ${item.unit_big} = ${item.conversion} ${item.unit_small}</td>
+                    <td class="px-6 py-4 text-right">
+                        <button onclick="editMaster('${item.id}')" class="text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded-lg"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteMaster('${item.id}')" class="text-red-500 hover:bg-red-50 px-2 py-1 rounded-lg ml-1"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                </tr>
             `).join('');
         };
 
-        window.deleteWarehouse = async (id) => {
-            if(confirm("Hapus gudang ini? Pastikan tidak ada stok di dalamnya.")) {
-                await supabase.from('warehouses').delete().eq('id', id);
-                fetchData();
-            }
-        };
+        const saveMaster = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('m-id').value;
+            const payload = {
+                name: document.getElementById('m-name').value,
+                unit_big: document.getElementById('m-unit-big').value,
+                unit_small: document.getElementById('m-unit-small').value,
+                conversion: parseInt(document.getElementById('m-conversion').value)
+            };
 
-        // --- TRANSACTION LOGIC ---
-        let rowCounter = 0;
-        window.addTransactionRow = () => {
-            rowCounter++;
-            const container = document.getElementById('transaction-items-container');
-            const div = document.createElement('div');
-            div.className = "trx-row flex flex-col md:flex-row gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 items-end";
-            div.id = `row-${rowCounter}`;
-            div.innerHTML = `
-                <div class="flex-1 w-full">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Barang</label>
-                    <select class="item-select w-full p-2 bg-white border border-slate-200 rounded-xl text-sm" onchange="updateRowUnit(${rowCounter})">
-                        <option value="">-- Pilih Barang --</option>
-                        ${masterItems.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
-                    </select>
-                </div>
-                <div class="flex-1 w-full">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Gudang</label>
-                    <select class="warehouse-select w-full p-2 bg-white border border-slate-200 rounded-xl text-sm">
-                        ${warehouses.map(w => `<option value="${w.id}">${w.name}</option>`).join('')}
-                    </select>
-                </div>
-                <div class="w-full md:w-32">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Jumlah</label>
-                    <input type="number" class="item-qty w-full p-2 border border-slate-200 rounded-xl text-sm" min="1" value="1">
-                </div>
-                <div class="w-full md:w-24 unit-label font-bold text-xs text-slate-400 p-2 text-center bg-slate-100 rounded-xl h-[38px] flex items-center justify-center">-</div>
-                <button onclick="document.getElementById('row-${rowCounter}').remove()" class="text-red-400 p-2 mb-1"><i class="fas fa-trash"></i></button>
-            `;
-            container.appendChild(div);
-        };
-
-        window.updateRowUnit = (id) => {
-            const row = document.getElementById(`row-${id}`);
-            const itemId = row.querySelector('.item-select').value;
-            const item = masterItems.find(m => m.id == itemId);
-            row.querySelector('.unit-label').textContent = item ? (trxType === 'IN' ? item.unit_big : item.unit_small) : '-';
-        };
-
-        window.processTransaction = async () => {
-            const rows = document.querySelectorAll('.trx-row');
-            const btn = document.getElementById('btn-save-trx');
+            const btn = document.getElementById('btn-save-master');
             btn.disabled = true;
-            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Memproses...`;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...`;
 
             try {
-                for (const row of rows) {
-                    const itemId = row.querySelector('.item-select').value;
-                    const whId = row.querySelector('.warehouse-select').value;
-                    const qty = parseInt(row.querySelector('.item-qty').value);
-                    
-                    if (!itemId || !whId || isNaN(qty)) continue;
-
-                    const item = masterItems.find(m => m.id == itemId);
-                    const actualQtyChange = trxType === 'IN' ? (qty * item.conversion) : -qty;
-
-                    // 1. Log Transaction
-                    await supabase.from('transactions').insert([{
-                        item_id: itemId,
-                        warehouse_id: whId,
-                        type: trxType,
-                        qty: qty,
-                        unit: trxType === 'IN' ? item.unit_big : item.unit_small,
-                        total_small_unit: Math.abs(actualQtyChange)
-                    }]);
-
-                    // 2. Update Stock (Upsert logic in memory/db)
-                    const existing = stockData.find(s => s.item_id == itemId && s.warehouse_id == whId);
-                    if (existing) {
-                        await supabase.from('stocks').update({ qty: existing.qty + actualQtyChange }).eq('id', existing.id);
-                    } else {
-                        await supabase.from('stocks').insert([{ item_id: itemId, warehouse_id: whId, qty: actualQtyChange }]);
-                    }
+                if (id) {
+                    await supabase.from('master_items').update(payload).eq('id', id);
+                } else {
+                    payload.current_stock = 0;
+                    await supabase.from('master_items').insert([payload]);
                 }
-                showToast("Transaksi berhasil disimpan!");
-                document.getElementById('transaction-items-container').innerHTML = '';
-                addTransactionRow();
-                fetchData();
+                showToast("Data barang berhasil disimpan");
+                closeMasterModal();
+                fetchMasterData();
             } catch (err) {
-                showToast("Error memproses transaksi", "error");
+                showToast("Terjadi kesalahan sistem", "error");
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = "Simpan Transaksi";
+                btn.textContent = "Simpan Barang";
             }
         };
 
-        // --- REPORT LOGIC ---
-        const renderReports = () => {
-            const container = document.getElementById('report-container');
-            if (warehouses.length === 0) {
-                container.innerHTML = `<div class="p-10 text-center bg-white rounded-3xl border border-dashed text-slate-400">Belum ada gudang terdaftar.</div>`;
-                return;
-            }
-
-            container.innerHTML = warehouses.map(w => {
-                const wStocks = stockData.filter(s => s.warehouse_id == w.id);
-                return `
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-3">
-                            <div class="h-8 w-1 bg-indigo-600 rounded-full"></div>
-                            <h3 class="text-xl font-bold">${w.name}</h3>
-                            <span class="text-xs font-bold px-2 py-0.5 bg-slate-100 text-slate-500 rounded-lg">${w.location || ''}</span>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            ${wStocks.length === 0 ? `<p class="text-slate-400 text-sm italic col-span-full">Gudang ini masih kosong.</p>` : 
-                                wStocks.map(s => {
-                                    const item = masterItems.find(m => m.id == s.item_id);
-                                    if(!item) return '';
-                                    const big = Math.floor(s.qty / item.conversion);
-                                    const small = s.qty % item.conversion;
-                                    return `
-                                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex gap-4 items-center">
-                                            <img src="${item.image_url || 'https://via.placeholder.com/50'}" class="w-12 h-12 rounded-xl object-cover">
-                                            <div>
-                                                <h5 class="font-bold text-sm">${item.name}</h5>
-                                                <p class="text-indigo-600 font-black text-lg leading-tight">${s.qty} <span class="text-[10px] text-slate-400 font-bold uppercase">${item.unit_small}</span></p>
-                                                <p class="text-[10px] text-slate-400 font-bold">${big} ${item.unit_big} + ${small} ${item.unit_small}</p>
-                                            </div>
-                                        </div>
-                                    `;
-                                }).join('')
-                            }
-                        </div>
-                    </div>
-                `;
-            }).join('<hr class="border-slate-100">');
-        };
-
-        // --- MASTER ITEM & MODALS HELPERS ---
+        // Eksploitasi fungsi ke window agar onclick HTML bekerja
         window.switchPage = (pageId) => {
             document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
             document.getElementById(`page-${pageId}`).classList.remove('hidden');
             document.querySelectorAll('nav button').forEach(b => b.classList.remove('tab-active', 'text-indigo-600'));
-            document.getElementById(`nav-${pageId}`).classList.add('tab-active', 'text-indigo-600');
+            const navBtn = document.getElementById(`nav-${pageId}`);
+            if (navBtn) navBtn.classList.add('tab-active', 'text-indigo-600');
         };
 
         window.openMasterModal = () => document.getElementById('master-modal').style.display = 'flex';
@@ -390,82 +275,231 @@
             document.getElementById('master-modal').style.display = 'none';
             document.getElementById('master-form').reset();
             document.getElementById('m-id').value = '';
-            document.getElementById('m-img-preview').src = 'https://via.placeholder.com/400x200?text=No+Image';
-        };
-
-        const renderMasterTable = () => {
-            const body = document.getElementById('master-table-body');
-            body.innerHTML = masterItems.map(item => `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="px-6 py-4">
-                        <img src="${item.image_url || 'https://via.placeholder.com/100'}" class="img-preview">
-                    </td>
-                    <td class="px-6 py-4 font-bold">${item.name}</td>
-                    <td class="px-6 py-4 text-slate-500">${item.unit_big} / ${item.unit_small}</td>
-                    <td class="px-6 py-4">1 ${item.unit_big} = ${item.conversion} ${item.unit_small}</td>
-                    <td class="px-6 py-4 text-right">
-                        <button onclick="editMaster('${item.id}')" class="text-indigo-600 p-2"><i class="fas fa-edit"></i></button>
-                    </td>
-                </tr>
-            `).join('');
         };
 
         window.editMaster = (id) => {
             const item = masterItems.find(i => i.id == id);
+            if (!item) return;
             document.getElementById('m-id').value = item.id;
             document.getElementById('m-name').value = item.name;
             document.getElementById('m-unit-big').value = item.unit_big;
             document.getElementById('m-unit-small').value = item.unit_small;
             document.getElementById('m-conversion').value = item.conversion;
-            document.getElementById('m-image-url').value = item.image_url || '';
-            document.getElementById('m-img-preview').src = item.image_url || 'https://via.placeholder.com/400x200?text=No+Image';
             window.openMasterModal();
+        };
+
+        window.deleteMaster = async (id) => {
+            if (confirm("Hapus barang ini beserta semua riwayatnya?")) {
+                const { error } = await supabase.from('master_items').delete().eq('id', id);
+                if (!error) {
+                    showToast("Barang berhasil dihapus");
+                    fetchMasterData();
+                } else {
+                    showToast("Gagal menghapus: " + error.message, "error");
+                }
+            }
+        };
+
+        // ==========================================
+        // 4. TRANSAKSI MULTI-ITEM LOGIC
+        // ==========================================
+        let rowCounter = 0;
+        window.addTransactionRow = () => {
+            rowCounter++;
+            const container = document.getElementById('transaction-items-container');
+            const div = document.createElement('div');
+            div.className = "trx-row flex flex-col md:flex-row gap-4 p-4 bg-slate-50 border border-slate-100 rounded-2xl relative group items-end";
+            div.id = `row-${rowCounter}`;
+            div.innerHTML = `
+                <div class="flex-1 w-full">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Pilih Barang</label>
+                    <select class="item-select w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none text-sm" onchange="updateRowUnit(${rowCounter})">
+                        <option value="">-- Cari Barang --</option>
+                        ${masterItems.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="w-full md:w-32">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Jumlah</label>
+                    <input type="number" class="item-qty w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none text-sm" min="1" value="1">
+                </div>
+                <div class="w-full md:w-32">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Satuan</label>
+                    <div class="unit-label w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl text-sm text-center font-bold text-slate-500">-</div>
+                </div>
+                <button onclick="removeRow(${rowCounter})" class="md:mb-1 p-2 text-red-400 hover:text-red-600 transition-colors">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            `;
+            container.appendChild(div);
+        };
+
+        window.removeRow = (id) => {
+            const rows = document.querySelectorAll('.trx-row');
+            if (rows.length > 1) {
+                document.getElementById(`row-${id}`).remove();
+            } else {
+                showToast("Minimal satu barang dalam transaksi", "error");
+            }
+        };
+
+        window.updateRowUnit = (id) => {
+            const row = document.getElementById(`row-${id}`);
+            if (!row) return;
+            const itemId = row.querySelector('.item-select').value;
+            const label = row.querySelector('.unit-label');
+            const item = masterItems.find(m => m.id == itemId);
+            if (item) {
+                label.textContent = trxType === 'IN' ? item.unit_big : item.unit_small;
+            } else {
+                label.textContent = "-";
+            }
         };
 
         window.setTrxType = (type) => {
             trxType = type;
-            document.getElementById('type-in').className = type === 'IN' ? "px-6 py-2 rounded-lg text-sm font-bold bg-white shadow text-indigo-600" : "px-6 py-2 rounded-lg text-sm font-bold text-slate-500";
-            document.getElementById('type-out').className = type === 'OUT' ? "px-6 py-2 rounded-lg text-sm font-bold bg-white shadow text-indigo-600" : "px-6 py-2 rounded-lg text-sm font-bold text-slate-500";
-            document.querySelectorAll('.trx-row').forEach(row => window.updateRowUnit(row.id.split('-')[1]));
+            const btnIn = document.getElementById('type-in');
+            const btnOut = document.getElementById('type-out');
+            if (type === 'IN') {
+                btnIn.className = "flex-1 md:flex-none px-6 py-2 rounded-lg text-sm font-bold transition-all bg-white shadow text-indigo-600";
+                btnOut.className = "flex-1 md:flex-none px-6 py-2 rounded-lg text-sm font-bold transition-all text-slate-500";
+            } else {
+                btnOut.className = "flex-1 md:flex-none px-6 py-2 rounded-lg text-sm font-bold transition-all bg-white shadow text-red-600";
+                btnIn.className = "flex-1 md:flex-none px-6 py-2 rounded-lg text-sm font-bold transition-all text-slate-500";
+            }
+            document.querySelectorAll('.trx-row').forEach(row => {
+                window.updateRowUnit(row.id.split('-')[1]);
+            });
+        };
+
+        window.processTransaction = async () => {
+            const rows = document.querySelectorAll('.trx-row');
+            const btn = document.getElementById('btn-save-trx');
+            let trxQueue = [];
+            let isValid = true;
+
+            for (const row of rows) {
+                const itemId = row.querySelector('.item-select').value;
+                const qtyInput = row.querySelector('.item-qty').value;
+                const qty = parseInt(qtyInput);
+                
+                if (!itemId || isNaN(qty) || qty <= 0) {
+                    showToast("Harap isi semua barang dan jumlah dengan benar", "error");
+                    isValid = false;
+                    break;
+                }
+
+                const item = masterItems.find(m => m.id == itemId);
+                let stockDiff = trxType === 'IN' ? (qty * item.conversion) : -qty;
+
+                if (trxType === 'OUT' && item.current_stock < qty) {
+                    showToast(`Stok ${item.name} tidak cukup (Sisa: ${item.current_stock})`, "error");
+                    isValid = false;
+                    break;
+                }
+
+                trxQueue.push({
+                    itemId: item.id,
+                    newTotalStock: item.current_stock + stockDiff,
+                    log: {
+                        item_id: item.id,
+                        type: trxType,
+                        qty: qty,
+                        unit: trxType === 'IN' ? item.unit_big : item.unit_small,
+                        total_small_unit: Math.abs(stockDiff)
+                    }
+                });
+            }
+
+            if (!isValid || trxQueue.length === 0) return;
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Memproses...`;
+
+            try {
+                for (const op of trxQueue) {
+                    await supabase.from('master_items').update({ current_stock: op.newTotalStock }).eq('id', op.itemId);
+                    await supabase.from('transactions').insert([op.log]);
+                }
+                showToast("Transaksi berhasil disimpan!");
+                document.getElementById('transaction-items-container').innerHTML = '';
+                addTransactionRow();
+                fetchMasterData();
+            } catch (err) {
+                showToast("Gagal memproses transaksi", "error");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Simpan Semua Transaksi";
+            }
+        };
+
+        // ==========================================
+        // 5. REPORT LOGIC
+        // ==========================================
+        const renderReportTable = () => {
+            const body = document.getElementById('report-table-body');
+            body.innerHTML = masterItems.map(item => {
+                const bigUnit = Math.floor(item.current_stock / item.conversion);
+                const smallUnit = item.current_stock % item.conversion;
+                
+                let badgeClass = "bg-emerald-100 text-emerald-600";
+                let statusText = "Tersedia";
+                if (item.current_stock === 0) {
+                    badgeClass = "bg-red-100 text-red-600";
+                    statusText = "Kosong";
+                } else if (item.current_stock < item.conversion) {
+                    badgeClass = "bg-amber-100 text-amber-600";
+                    statusText = "Stok Kritis";
+                }
+
+                return `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-4 font-bold text-slate-800">${item.name}</td>
+                        <td class="px-6 py-4">
+                            <span class="text-indigo-600 font-bold">${item.current_stock}</span> 
+                            <span class="text-slate-400 text-xs font-medium uppercase">${item.unit_small}</span>
+                        </td>
+                        <td class="px-6 py-4 text-slate-500 text-xs">
+                            ${bigUnit > 0 ? `<span class="font-bold">${bigUnit}</span> ${item.unit_big}` : ''}
+                            ${bigUnit > 0 && smallUnit > 0 ? ' + ' : ''}
+                            ${smallUnit > 0 ? `<span class="font-bold">${smallUnit}</span> ${item.unit_small}` : ''}
+                            ${bigUnit === 0 && smallUnit === 0 ? '-' : ''}
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="px-3 py-1 rounded-full text-[10px] font-bold ${badgeClass}">${statusText}</span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        };
+
+        const updateAllDropdowns = () => {
+            document.querySelectorAll('.item-select').forEach(sel => {
+                const current = sel.value;
+                sel.innerHTML = `<option value="">-- Cari Barang --</option>` + 
+                    masterItems.map(m => `<option value="${m.id}" ${current == m.id ? 'selected' : ''}>${m.name}</option>`).join('');
+            });
         };
 
         const showToast = (msg, type = "success") => {
             const t = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
             document.getElementById('toast-message').textContent = msg;
+            if (type === "error") {
+                t.classList.replace('bg-slate-900', 'bg-red-600');
+                icon.className = "fas fa-exclamation-triangle";
+            } else {
+                t.classList.replace('bg-red-600', 'bg-slate-900');
+                icon.className = "fas fa-check-circle text-emerald-400";
+            }
             t.classList.remove('opacity-0', 'translate-y-10');
             setTimeout(() => t.classList.add('opacity-0', 'translate-y-10'), 3000);
         };
 
-        document.getElementById('master-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('m-id').value;
-            const p = {
-                name: document.getElementById('m-name').value,
-                unit_big: document.getElementById('m-unit-big').value,
-                unit_small: document.getElementById('m-unit-small').value,
-                conversion: parseInt(document.getElementById('m-conversion').value),
-                image_url: document.getElementById('m-image-url').value
-            };
-            if(id) await supabase.from('master_items').update(p).eq('id', id);
-            else await supabase.from('master_items').insert([p]);
-            closeMasterModal();
-            fetchData();
-        };
+        // Bind form submit
+        document.getElementById('master-form').onsubmit = saveMaster;
 
-        document.getElementById('warehouse-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const p = { name: document.getElementById('w-name').value, location: document.getElementById('w-location').value };
-            await supabase.from('warehouses').insert([p]);
-            closeWarehouseModal();
-            fetchData();
-        };
-
-        window.generateAIImage = async () => { /* AI Logic from previous version... */ };
-
-        window.onload = () => {
-            fetchData();
-            addTransactionRow();
-        };
+        // Inisialisasi awal
+        window.onload = init;
     </script>
 </body>
 </html>
