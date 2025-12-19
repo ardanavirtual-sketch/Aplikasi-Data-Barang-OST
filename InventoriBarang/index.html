@@ -11,11 +11,9 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
         .custom-shadow { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); }
-        .tab-active { border-bottom: 3px solid #3b82f6; color: #3b82f6; }
-        .loader { border: 2px solid #f3f3f3; border-top: 2px solid #3b82f6; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; }
+        .tab-active { border-bottom: 3px solid #6366f1; color: #6366f1; }
+        .loader { border: 2px solid #f3f3f3; border-top: 2px solid #6366f1; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .page-content { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="text-slate-800">
@@ -27,9 +25,9 @@
                 <div class="flex justify-between h-16 items-center">
                     <div class="flex items-center space-x-3">
                         <div class="bg-indigo-600 p-2 rounded-lg text-white">
-                            <i class="fas fa-box-open"></i>
+                            <i class="fas fa-boxes-stacked"></i>
                         </div>
-                        <span class="text-xl font-bold tracking-tight text-slate-900">Stok<span class="text-indigo-600">Supa</span></span>
+                        <span class="text-xl font-bold tracking-tight">Stok<span class="text-indigo-600">Supa</span></span>
                     </div>
                     <div class="flex space-x-6 text-sm font-semibold text-slate-500">
                         <button onclick="switchPage('master')" id="nav-master" class="py-5 px-1 transition-all">Master Barang</button>
@@ -40,21 +38,15 @@
             </div>
         </nav>
 
-        <!-- Supabase Config Section (Hanya muncul jika URL/Key kosong) -->
-        <div id="config-warning" class="bg-amber-50 border-b border-amber-100 p-3 text-center text-xs text-amber-700 hidden">
-            <i class="fas fa-exclamation-triangle mr-2"></i> Silakan masukkan URL dan API Key Supabase Anda di dalam kode script.
-        </div>
-
         <main class="flex-1 max-w-7xl mx-auto w-full p-4 md:p-8">
-            
             <!-- PAGE: MASTER BARANG -->
             <section id="page-master" class="page-content">
                 <div class="flex justify-between items-end mb-6">
                     <div>
                         <h2 class="text-2xl font-bold">Master Data Barang</h2>
-                        <p class="text-slate-500 text-sm">Kelola spesifikasi unit besar dan unit kecil.</p>
+                        <p class="text-slate-500 text-sm">Kelola spesifikasi unit besar (Grosir) dan unit kecil (Eceran).</p>
                     </div>
-                    <button onclick="openMasterModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2">
+                    <button onclick="openMasterModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-indigo-200 transition-all flex items-center gap-2">
                         <i class="fas fa-plus"></i> Tambah Barang
                     </button>
                 </div>
@@ -64,42 +56,42 @@
                         <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase tracking-wider">
                             <tr>
                                 <th class="px-6 py-4">Nama Barang</th>
-                                <th class="px-6 py-4">Unit Besar</th>
-                                <th class="px-6 py-4">Unit Kecil</th>
+                                <th class="px-6 py-4">Satuan Besar</th>
+                                <th class="px-6 py-4">Satuan Kecil</th>
                                 <th class="px-6 py-4">Konversi (Isi)</th>
                                 <th class="px-6 py-4 text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="master-table-body" class="divide-y divide-slate-100 text-sm">
-                            <tr><td colspan="5" class="px-6 py-10 text-center text-slate-400">Memuat data...</td></tr>
+                            <tr><td colspan="5" class="px-6 py-10 text-center text-slate-400">Menghubungkan ke database...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </section>
 
-            <!-- PAGE: TRANSAKSI -->
+            <!-- PAGE: TRANSACTION -->
             <section id="page-transaction" class="page-content hidden">
-                <div class="mb-6 flex justify-between items-center">
+                <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                     <div>
-                        <h2 class="text-2xl font-bold">Input Transaksi Sekaligus</h2>
-                        <p class="text-slate-500 text-sm">Gunakan baris dinamis untuk input banyak item.</p>
+                        <h2 class="text-2xl font-bold">Transaksi Multi-Item</h2>
+                        <p class="text-slate-500 text-sm">Input banyak barang sekaligus dalam satu transaksi.</p>
                     </div>
-                    <div class="flex bg-slate-200 p-1 rounded-xl">
-                        <button onclick="setTrxType('IN')" id="type-in" class="px-6 py-2 rounded-lg text-sm font-bold transition-all bg-white shadow text-indigo-600">MASUK (Unit Besar)</button>
-                        <button onclick="setTrxType('OUT')" id="type-out" class="px-6 py-2 rounded-lg text-sm font-bold transition-all text-slate-500">KELUAR (Unit Kecil)</button>
+                    <div class="flex bg-slate-200 p-1 rounded-xl w-full md:w-auto">
+                        <button onclick="setTrxType('IN')" id="type-in" class="flex-1 md:flex-none px-6 py-2 rounded-lg text-sm font-bold transition-all bg-white shadow text-indigo-600">MASUK (Unit Besar)</button>
+                        <button onclick="setTrxType('OUT')" id="type-out" class="flex-1 md:flex-none px-6 py-2 rounded-lg text-sm font-bold transition-all text-slate-500">KELUAR (Unit Kecil)</button>
                     </div>
                 </div>
 
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow mb-8">
                     <div id="transaction-items-container" class="space-y-3">
-                        <!-- Baris Transaksi Dinamis -->
+                        <!-- Dynamic Rows -->
                     </div>
 
-                    <div class="mt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-                        <button onclick="addTransactionRow()" class="text-indigo-600 font-bold text-sm hover:underline">
+                    <div class="mt-6 flex flex-col md:flex-row justify-between items-center gap-4 pt-6 border-t border-slate-100">
+                        <button onclick="addTransactionRow()" class="text-indigo-600 font-bold text-sm hover:bg-indigo-50 px-4 py-2 rounded-lg transition-all">
                             <i class="fas fa-plus-circle mr-1"></i> Tambah Baris Baru
                         </button>
-                        <button onclick="processTransaction()" id="btn-save-trx" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-3">
+                        <button onclick="processTransaction()" id="btn-save-trx" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-3 shadow-lg shadow-indigo-100">
                             Simpan Semua Transaksi
                         </button>
                     </div>
@@ -110,7 +102,7 @@
             <section id="page-report" class="page-content hidden">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold">Laporan Stok Terkini</h2>
-                    <p class="text-slate-500 text-sm">Data dihitung berdasarkan satuan terkecil (Eceran).</p>
+                    <p class="text-slate-500 text-sm">Monitoring stok otomatis dalam satuan besar dan kecil.</p>
                 </div>
 
                 <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden custom-shadow">
@@ -119,23 +111,22 @@
                             <tr>
                                 <th class="px-6 py-4">Nama Barang</th>
                                 <th class="px-6 py-4">Total Stok (Eceran)</th>
-                                <th class="px-6 py-4">Detail Unit</th>
+                                <th class="px-6 py-4">Detail Konversi</th>
                                 <th class="px-6 py-4">Status</th>
                             </tr>
                         </thead>
                         <tbody id="report-table-body" class="divide-y divide-slate-100 text-sm">
-                            <!-- Data laporan -->
+                            <!-- Data -->
                         </tbody>
                     </table>
                 </div>
             </section>
-
         </main>
     </div>
 
     <!-- MODAL MASTER -->
-    <div id="master-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 items-center justify-center p-4">
-        <div class="bg-white rounded-3xl w-full max-w-md shadow-2xl scale-95 transition-all">
+    <div id="master-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 items-center justify-center p-4" style="display: none;">
+        <div class="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden">
             <div class="p-6 border-b border-slate-100 flex justify-between items-center">
                 <h3 class="text-lg font-bold">Form Master Barang</h3>
                 <button onclick="closeMasterModal()" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times"></i></button>
@@ -144,56 +135,49 @@
                 <input type="hidden" id="m-id">
                 <div>
                     <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Nama Barang</label>
-                    <input type="text" id="m-name" required placeholder="Contoh: Coca Cola 250ml" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 transition-all">
+                    <input type="text" id="m-name" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Unit Besar</label>
-                        <input type="text" id="m-unit-big" required placeholder="Dus / Box" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Satuan Besar</label>
+                        <input type="text" id="m-unit-big" required placeholder="Dus" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Unit Kecil</label>
-                        <input type="text" id="m-unit-small" required placeholder="Pcs / Btl" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Satuan Kecil</label>
+                        <input type="text" id="m-unit-small" required placeholder="Pcs" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Isi per Unit Besar (Konversi)</label>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Isi per Satuan Besar</label>
                     <input type="number" id="m-conversion" required min="1" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
-                    <p class="text-[10px] text-slate-400 mt-1 italic">* Contoh: Jika 1 Dus isi 24 Pcs, masukkan angka 24.</p>
                 </div>
-                <button type="submit" id="btn-save-master" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all mt-4">Simpan Data</button>
+                <button type="submit" id="btn-save-master" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 mt-4">Simpan Barang</button>
             </form>
         </div>
     </div>
 
-    <!-- Toast -->
+    <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 px-6 py-3 rounded-full bg-slate-900 text-white shadow-2xl opacity-0 translate-y-10 transition-all duration-300 z-[100]">
         <i id="toast-icon" class="fas fa-check-circle text-emerald-400"></i>
         <p id="toast-message" class="text-sm font-medium"></p>
     </div>
 
     <script type="module">
-        // --- KONFIGURASI SUPABASE ---
-        // Ganti dengan URL dan Key dari Dashboard Supabase Anda
-        const SUPABASE_URL = 'https://iltqolfmvhzaiuagtoxt.supabase.co'; 
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsdHFvbGZtdmh6YWl1YWd0b3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyNDE5MjQsImV4cCI6MjA4MDgxNzkyNH0.sGzEQjpKfy7fdw8KBNO7mVzKd2tuxqQaYAdRuTjHVMs';
+        // ==========================================
+        // 1. KONFIGURASI SUPABASE (WAJIB DIISI)
+        // ==========================================
+        const SUPABASE_URL = 'https://iltqolfmvhzaiuagtoxt.supabase.co'; // Ganti dengan URL Anda
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsdHFvbGZtdmh6YWl1YWd0b3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyNDE5MjQsImV4cCI6MjA4MDgxNzkyNH0.sGzEQjpKfy7fdw8KBNO7mVzKd2tuxqQaYAdRuTjHVMs';    // Ganti dengan Anon Key Anda
 
-        if (!SUPABASE_URL || !SUPABASE_KEY) {
-            document.getElementById('config-warning').classList.remove('hidden');
-        }
-
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Inisialisasi Client (Dilakukan secara global di modul ini)
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         let masterItems = [];
-        let trxType = 'IN'; // IN = Unit Besar, OUT = Unit Kecil
+        let trxType = 'IN';
 
-        // Inisialisasi
-        const init = async () => {
-            await fetchMasterData();
-            addTransactionRow();
-            switchPage('master');
-        };
-
+        // ==========================================
+        // 2. FUNGSI UTAMA & FETCH DATA
+        // ==========================================
         const fetchMasterData = async () => {
             const { data, error } = await supabase
                 .from('master_items')
@@ -201,7 +185,9 @@
                 .order('name', { ascending: true });
 
             if (error) {
-                showToast("Gagal mengambil data: " + error.message, "error");
+                console.error("Supabase Error:", error);
+                showToast("Koneksi gagal: " + error.message, "error");
+                document.getElementById('master-table-body').innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-red-400">Gagal terhubung ke database. Periksa URL/Key dan RLS.</td></tr>`;
                 return;
             }
             masterItems = data || [];
@@ -210,32 +196,42 @@
             updateAllDropdowns();
         };
 
-        // --- MASTER DATA LOGIC ---
+        const init = async () => {
+            if (!SUPABASE_URL || SUPABASE_URL.includes('xyz')) {
+                showToast("URL/Key Supabase belum diatur!", "error");
+                return;
+            }
+            await fetchMasterData();
+            addTransactionRow();
+            switchPage('master');
+        };
+
+        // ==========================================
+        // 3. MASTER DATA LOGIC
+        // ==========================================
         const renderMasterTable = () => {
             const body = document.getElementById('master-table-body');
             if (masterItems.length === 0) {
-                body.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-slate-400">Belum ada data barang.</td></tr>`;
+                body.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-slate-400 text-sm">Belum ada data barang. Klik "Tambah Barang".</td></tr>`;
                 return;
             }
             body.innerHTML = masterItems.map(item => `
-                <tr class="hover:bg-slate-50 group">
+                <tr class="hover:bg-slate-50 transition-colors">
                     <td class="px-6 py-4 font-bold text-slate-800">${item.name}</td>
                     <td class="px-6 py-4 text-slate-500">${item.unit_big}</td>
                     <td class="px-6 py-4 text-slate-500">${item.unit_small}</td>
                     <td class="px-6 py-4 font-medium">1 ${item.unit_big} = ${item.conversion} ${item.unit_small}</td>
-                    <td class="px-6 py-4 text-right opacity-0 group-hover:opacity-100 transition-all">
-                        <button onclick="editMaster('${item.id}')" class="text-indigo-600 hover:bg-indigo-50 p-2 rounded-lg"><i class="fas fa-edit"></i></button>
-                        <button onclick="deleteMaster('${item.id}')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg ml-1"><i class="fas fa-trash-alt"></i></button>
+                    <td class="px-6 py-4 text-right">
+                        <button onclick="editMaster('${item.id}')" class="text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded-lg"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteMaster('${item.id}')" class="text-red-500 hover:bg-red-50 px-2 py-1 rounded-lg ml-1"><i class="fas fa-trash-alt"></i></button>
                     </td>
                 </tr>
             `).join('');
         };
 
-        document.getElementById('master-form').onsubmit = async (e) => {
+        const saveMaster = async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('btn-save-master');
             const id = document.getElementById('m-id').value;
-            
             const payload = {
                 name: document.getElementById('m-name').value,
                 unit_big: document.getElementById('m-unit-big').value,
@@ -243,75 +239,94 @@
                 conversion: parseInt(document.getElementById('m-conversion').value)
             };
 
+            const btn = document.getElementById('btn-save-master');
             btn.disabled = true;
             btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...`;
 
-            let error;
-            if (id) {
-                const result = await supabase.from('master_items').update(payload).eq('id', id);
-                error = result.error;
-            } else {
-                payload.current_stock = 0;
-                const result = await supabase.from('master_items').insert([payload]);
-                error = result.error;
-            }
-
-            if (error) {
-                showToast("Kesalahan: " + error.message, "error");
-            } else {
-                showToast("Data master berhasil disimpan!");
+            try {
+                if (id) {
+                    await supabase.from('master_items').update(payload).eq('id', id);
+                } else {
+                    payload.current_stock = 0;
+                    await supabase.from('master_items').insert([payload]);
+                }
+                showToast("Data barang berhasil disimpan");
                 closeMasterModal();
                 fetchMasterData();
+            } catch (err) {
+                showToast("Terjadi kesalahan sistem", "error");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Simpan Barang";
             }
-            btn.disabled = false;
-            btn.textContent = "Simpan Data";
+        };
+
+        // Eksploitasi fungsi ke window agar onclick HTML bekerja
+        window.switchPage = (pageId) => {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`page-${pageId}`).classList.remove('hidden');
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('tab-active', 'text-indigo-600'));
+            const navBtn = document.getElementById(`nav-${pageId}`);
+            if (navBtn) navBtn.classList.add('tab-active', 'text-indigo-600');
+        };
+
+        window.openMasterModal = () => document.getElementById('master-modal').style.display = 'flex';
+        window.closeMasterModal = () => {
+            document.getElementById('master-modal').style.display = 'none';
+            document.getElementById('master-form').reset();
+            document.getElementById('m-id').value = '';
         };
 
         window.editMaster = (id) => {
             const item = masterItems.find(i => i.id == id);
+            if (!item) return;
             document.getElementById('m-id').value = item.id;
             document.getElementById('m-name').value = item.name;
             document.getElementById('m-unit-big').value = item.unit_big;
             document.getElementById('m-unit-small').value = item.unit_small;
             document.getElementById('m-conversion').value = item.conversion;
-            openMasterModal();
+            window.openMasterModal();
         };
 
         window.deleteMaster = async (id) => {
-            if (confirm("Hapus barang ini? Data transaksi terkait mungkin terpengaruh.")) {
+            if (confirm("Hapus barang ini beserta semua riwayatnya?")) {
                 const { error } = await supabase.from('master_items').delete().eq('id', id);
                 if (!error) {
-                    showToast("Barang dihapus");
+                    showToast("Barang berhasil dihapus");
                     fetchMasterData();
+                } else {
+                    showToast("Gagal menghapus: " + error.message, "error");
                 }
             }
         };
 
-        // --- TRANSAKSI MULTI-ITEM ---
-        let rowIdx = 0;
+        // ==========================================
+        // 4. TRANSAKSI MULTI-ITEM LOGIC
+        // ==========================================
+        let rowCounter = 0;
         window.addTransactionRow = () => {
-            rowIdx++;
+            rowCounter++;
             const container = document.getElementById('transaction-items-container');
             const div = document.createElement('div');
             div.className = "trx-row flex flex-col md:flex-row gap-4 p-4 bg-slate-50 border border-slate-100 rounded-2xl relative group items-end";
-            div.id = `row-${rowIdx}`;
+            div.id = `row-${rowCounter}`;
             div.innerHTML = `
                 <div class="flex-1 w-full">
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Nama Barang</label>
-                    <select class="item-select w-full px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none text-sm" onchange="updateRowUnit(${rowIdx})">
-                        <option value="">-- Pilih Barang --</option>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Pilih Barang</label>
+                    <select class="item-select w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none text-sm" onchange="updateRowUnit(${rowCounter})">
+                        <option value="">-- Cari Barang --</option>
                         ${masterItems.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
                     </select>
                 </div>
                 <div class="w-full md:w-32">
                     <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Jumlah</label>
-                    <input type="number" class="item-qty w-full px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none text-sm" min="1" value="1">
+                    <input type="number" class="item-qty w-full px-3 py-2 bg-white border border-slate-200 rounded-xl outline-none text-sm" min="1" value="1">
                 </div>
                 <div class="w-full md:w-32">
                     <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Satuan</label>
-                    <div class="unit-label w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-lg text-sm text-center font-bold text-slate-500">-</div>
+                    <div class="unit-label w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl text-sm text-center font-bold text-slate-500">-</div>
                 </div>
-                <button onclick="removeRow(${rowIdx})" class="md:mb-1 p-2 text-red-400 hover:text-red-600 transition-colors">
+                <button onclick="removeRow(${rowCounter})" class="md:mb-1 p-2 text-red-400 hover:text-red-600 transition-colors">
                     <i class="fas fa-trash-alt"></i>
                 </button>
             `;
@@ -323,12 +338,13 @@
             if (rows.length > 1) {
                 document.getElementById(`row-${id}`).remove();
             } else {
-                showToast("Minimal satu baris harus ada", "error");
+                showToast("Minimal satu barang dalam transaksi", "error");
             }
         };
 
         window.updateRowUnit = (id) => {
             const row = document.getElementById(`row-${id}`);
+            if (!row) return;
             const itemId = row.querySelector('.item-select').value;
             const label = row.querySelector('.unit-label');
             const item = masterItems.find(m => m.id == itemId);
@@ -343,134 +359,124 @@
             trxType = type;
             const btnIn = document.getElementById('type-in');
             const btnOut = document.getElementById('type-out');
-            
             if (type === 'IN') {
-                btnIn.className = "px-6 py-2 rounded-lg text-sm font-bold transition-all bg-white shadow text-indigo-600";
-                btnOut.className = "px-6 py-2 rounded-lg text-sm font-bold transition-all text-slate-500";
+                btnIn.className = "flex-1 md:flex-none px-6 py-2 rounded-lg text-sm font-bold transition-all bg-white shadow text-indigo-600";
+                btnOut.className = "flex-1 md:flex-none px-6 py-2 rounded-lg text-sm font-bold transition-all text-slate-500";
             } else {
-                btnOut.className = "px-6 py-2 rounded-lg text-sm font-bold transition-all bg-white shadow text-red-600";
-                btnIn.className = "px-6 py-2 rounded-lg text-sm font-bold transition-all text-slate-500";
+                btnOut.className = "flex-1 md:flex-none px-6 py-2 rounded-lg text-sm font-bold transition-all bg-white shadow text-red-600";
+                btnIn.className = "flex-1 md:flex-none px-6 py-2 rounded-lg text-sm font-bold transition-all text-slate-500";
             }
-            
             document.querySelectorAll('.trx-row').forEach(row => {
-                const id = row.id.split('-')[1];
-                updateRowUnit(id);
+                window.updateRowUnit(row.id.split('-')[1]);
             });
         };
 
         window.processTransaction = async () => {
             const rows = document.querySelectorAll('.trx-row');
             const btn = document.getElementById('btn-save-trx');
-            let operations = [];
-            let valid = true;
+            let trxQueue = [];
+            let isValid = true;
 
             for (const row of rows) {
                 const itemId = row.querySelector('.item-select').value;
-                const qty = parseInt(row.querySelector('.item-qty').value);
+                const qtyInput = row.querySelector('.item-qty').value;
+                const qty = parseInt(qtyInput);
                 
                 if (!itemId || isNaN(qty) || qty <= 0) {
-                    valid = false;
+                    showToast("Harap isi semua barang dan jumlah dengan benar", "error");
+                    isValid = false;
                     break;
                 }
 
                 const item = masterItems.find(m => m.id == itemId);
-                let smallUnitChange = trxType === 'IN' ? (qty * item.conversion) : -qty;
+                let stockDiff = trxType === 'IN' ? (qty * item.conversion) : -qty;
 
                 if (trxType === 'OUT' && item.current_stock < qty) {
                     showToast(`Stok ${item.name} tidak cukup (Sisa: ${item.current_stock})`, "error");
-                    valid = false;
+                    isValid = false;
                     break;
                 }
 
-                operations.push({
+                trxQueue.push({
                     itemId: item.id,
-                    newStock: item.current_stock + smallUnitChange,
-                    transaction: {
+                    newTotalStock: item.current_stock + stockDiff,
+                    log: {
                         item_id: item.id,
                         type: trxType,
                         qty: qty,
                         unit: trxType === 'IN' ? item.unit_big : item.unit_small,
-                        total_small_unit: Math.abs(smallUnitChange),
-                        created_at: new Date()
+                        total_small_unit: Math.abs(stockDiff)
                     }
                 });
             }
 
-            if (!valid) return;
+            if (!isValid || trxQueue.length === 0) return;
 
             btn.disabled = true;
             btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Memproses...`;
 
             try {
-                // Update Master Items & Log Transaksi (Supabase tidak punya Batch Atomik sederhana via REST, 
-                // kita gunakan loop atau buat RPC. Di sini kita pakai loop untuk kemudahan contoh)
-                for (const op of operations) {
-                    await supabase.from('master_items').update({ current_stock: op.newStock }).eq('id', op.itemId);
-                    await supabase.from('transactions').insert([op.transaction]);
+                for (const op of trxQueue) {
+                    await supabase.from('master_items').update({ current_stock: op.newTotalStock }).eq('id', op.itemId);
+                    await supabase.from('transactions').insert([op.log]);
                 }
-
-                showToast(`Berhasil menyimpan ${operations.length} item!`);
+                showToast("Transaksi berhasil disimpan!");
                 document.getElementById('transaction-items-container').innerHTML = '';
                 addTransactionRow();
                 fetchMasterData();
-            } catch (e) {
-                showToast("Terjadi kesalahan sistem", "error");
+            } catch (err) {
+                showToast("Gagal memproses transaksi", "error");
             } finally {
                 btn.disabled = false;
                 btn.textContent = "Simpan Semua Transaksi";
             }
         };
 
-        // --- REPORTING ---
+        // ==========================================
+        // 5. REPORT LOGIC
+        // ==========================================
         const renderReportTable = () => {
             const body = document.getElementById('report-table-body');
             body.innerHTML = masterItems.map(item => {
-                const bigUnits = Math.floor(item.current_stock / item.conversion);
-                const smallUnits = item.current_stock % item.conversion;
+                const bigUnit = Math.floor(item.current_stock / item.conversion);
+                const smallUnit = item.current_stock % item.conversion;
                 
-                let badge = `<span class="px-2 py-1 rounded-md bg-emerald-100 text-emerald-600 text-[10px] font-bold">STOK AMAN</span>`;
-                if (item.current_stock === 0) badge = `<span class="px-2 py-1 rounded-md bg-red-100 text-red-600 text-[10px] font-bold">KOSONG</span>`;
-                else if (item.current_stock < item.conversion) badge = `<span class="px-2 py-1 rounded-md bg-amber-100 text-amber-600 text-[10px] font-bold">SISA ECERAN</span>`;
+                let badgeClass = "bg-emerald-100 text-emerald-600";
+                let statusText = "Tersedia";
+                if (item.current_stock === 0) {
+                    badgeClass = "bg-red-100 text-red-600";
+                    statusText = "Kosong";
+                } else if (item.current_stock < item.conversion) {
+                    badgeClass = "bg-amber-100 text-amber-600";
+                    statusText = "Stok Kritis";
+                }
 
                 return `
-                    <tr class="hover:bg-slate-50">
-                        <td class="px-6 py-4 font-bold text-slate-700">${item.name}</td>
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-4 font-bold text-slate-800">${item.name}</td>
                         <td class="px-6 py-4">
                             <span class="text-indigo-600 font-bold">${item.current_stock}</span> 
-                            <span class="text-slate-400 text-xs">${item.unit_small}</span>
+                            <span class="text-slate-400 text-xs font-medium uppercase">${item.unit_small}</span>
                         </td>
-                        <td class="px-6 py-4 text-slate-500">
-                            ${bigUnits > 0 ? `<strong>${bigUnits}</strong> ${item.unit_big}` : ''}
-                            ${bigUnits > 0 && smallUnits > 0 ? ' + ' : ''}
-                            ${smallUnits > 0 ? `<strong>${smallUnits}</strong> ${item.unit_small}` : ''}
-                            ${bigUnits === 0 && smallUnits === 0 ? '-' : ''}
+                        <td class="px-6 py-4 text-slate-500 text-xs">
+                            ${bigUnit > 0 ? `<span class="font-bold">${bigUnit}</span> ${item.unit_big}` : ''}
+                            ${bigUnit > 0 && smallUnit > 0 ? ' + ' : ''}
+                            ${smallUnit > 0 ? `<span class="font-bold">${smallUnit}</span> ${item.unit_small}` : ''}
+                            ${bigUnit === 0 && smallUnit === 0 ? '-' : ''}
                         </td>
-                        <td class="px-6 py-4">${badge}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-3 py-1 rounded-full text-[10px] font-bold ${badgeClass}">${statusText}</span>
+                        </td>
                     </tr>
                 `;
             }).join('');
         };
 
-        // --- UI HELPERS ---
-        window.switchPage = (pageId) => {
-            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
-            document.getElementById(`page-${pageId}`).classList.remove('hidden');
-            document.querySelectorAll('nav button').forEach(b => b.classList.remove('tab-active', 'text-indigo-600'));
-            document.getElementById(`nav-${pageId}`).classList.add('tab-active', 'text-indigo-600');
-        };
-
-        window.openMasterModal = () => document.getElementById('master-modal').style.display = 'flex';
-        window.closeMasterModal = () => {
-            document.getElementById('master-modal').style.display = 'none';
-            document.getElementById('master-form').reset();
-            document.getElementById('m-id').value = '';
-        };
-
         const updateAllDropdowns = () => {
             document.querySelectorAll('.item-select').forEach(sel => {
-                const val = sel.value;
-                sel.innerHTML = `<option value="">-- Pilih Barang --</option>` + 
-                    masterItems.map(m => `<option value="${m.id}" ${val == m.id ? 'selected' : ''}>${m.name}</option>`).join('');
+                const current = sel.value;
+                sel.innerHTML = `<option value="">-- Cari Barang --</option>` + 
+                    masterItems.map(m => `<option value="${m.id}" ${current == m.id ? 'selected' : ''}>${m.name}</option>`).join('');
             });
         };
 
@@ -478,19 +484,21 @@
             const t = document.getElementById('toast');
             const icon = document.getElementById('toast-icon');
             document.getElementById('toast-message').textContent = msg;
-            
             if (type === "error") {
                 t.classList.replace('bg-slate-900', 'bg-red-600');
-                icon.className = "fas fa-exclamation-circle";
+                icon.className = "fas fa-exclamation-triangle";
             } else {
                 t.classList.replace('bg-red-600', 'bg-slate-900');
                 icon.className = "fas fa-check-circle text-emerald-400";
             }
-
             t.classList.remove('opacity-0', 'translate-y-10');
             setTimeout(() => t.classList.add('opacity-0', 'translate-y-10'), 3000);
         };
 
+        // Bind form submit
+        document.getElementById('master-form').onsubmit = saveMaster;
+
+        // Inisialisasi awal
         window.onload = init;
     </script>
 </body>
