@@ -105,14 +105,17 @@ function setupOtherEventListeners() {
         filterStokBarang();
     });
     
-    document.getElementById('refresh-stok').addEventListener('click', async function() {
-        await loadStokBarang();
+    document.getElementById('refresh-stok').addEventListener('click', function() {
+        updateStokBarangTable();
+        filterStokBarang();
     });
     
     // Logout
     document.getElementById('logout-btn').addEventListener('click', function() {
         if (confirm('Apakah Anda yakin ingin keluar?')) {
             alert('Anda telah keluar dari aplikasi');
+            // Redirect ke halaman login (untuk demo)
+            window.location.href = '#';
         }
     });
     
@@ -173,14 +176,31 @@ function setupDemoData() {
             konversi_satuan_kecil: 'Gram',
             foto_url: '',
             deskripsi: 'Gula pasir kemasan 1kg'
+        },
+        {
+            id: 4,
+            kode_barang: 'BRG004',
+            nama_barang: 'Saus Tomat',
+            kategori: 'Makanan',
+            konversi_nilai_besar: 1,
+            konversi_satuan_besar: 'Lusin',
+            konversi_nilai_kecil: 12,
+            konversi_satuan_kecil: 'Botol',
+            foto_url: '',
+            deskripsi: 'Saus tomat botol'
         }
     ];
     
     // Data barang masuk contoh
+    const today = new Date().toISOString().split('T')[0];
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    
     barangMasuk = [
         {
             id: 1,
-            tanggal: new Date().toISOString().split('T')[0],
+            tanggal: today,
             barang_id: 1,
             jumlah: 5,
             satuan_besar: 'Dus',
@@ -194,7 +214,7 @@ function setupDemoData() {
         },
         {
             id: 2,
-            tanggal: new Date().toISOString().split('T')[0],
+            tanggal: today,
             barang_id: 2,
             jumlah: 3,
             satuan_besar: 'Pack',
@@ -205,6 +225,20 @@ function setupDemoData() {
             jumlah_kecil: 30,
             keterangan: 'Pembelian dari Supplier B',
             master_barang: masterBarang[1]
+        },
+        {
+            id: 3,
+            tanggal: yesterdayStr,
+            barang_id: 3,
+            jumlah: 2,
+            satuan_besar: 'KG',
+            konversi_nilai_besar: 1,
+            konversi_satuan_besar: 'KG',
+            konversi_nilai_kecil: 1000,
+            konversi_satuan_kecil: 'Gram',
+            jumlah_kecil: 2000,
+            keterangan: 'Pembelian dari Supplier C',
+            master_barang: masterBarang[2]
         }
     ];
     
@@ -212,12 +246,21 @@ function setupDemoData() {
     barangKeluar = [
         {
             id: 1,
-            tanggal: new Date().toISOString().split('T')[0],
+            tanggal: today,
             barang_id: 1,
             jumlah: 12,
             satuan_kecil: 'Botol',
             keterangan: 'Penjualan ke Toko X',
             master_barang: masterBarang[0]
+        },
+        {
+            id: 2,
+            tanggal: yesterdayStr,
+            barang_id: 2,
+            jumlah: 5,
+            satuan_kecil: 'Bungkus',
+            keterangan: 'Penjualan ke Toko Y',
+            master_barang: masterBarang[1]
         }
     ];
     
@@ -553,6 +596,9 @@ async function simpanBarangMasuk() {
         const firstSelect = container.querySelector('.barang-select');
         firstSelect.value = '';
         
+        // Update dropdown di form lain
+        populateBarangSelects();
+        
         alert('Barang masuk berhasil disimpan! (Mode Demo)');
         
     } catch (error) {
@@ -687,6 +733,11 @@ async function simpanMasterBarang() {
         return;
     }
     
+    if (konversiNilaiBesar <= 0 || konversiNilaiKecil <= 0) {
+        alert('Nilai konversi harus lebih besar dari 0');
+        return;
+    }
+    
     // Cek kode barang unik (kecuali sedang edit)
     const isDuplicate = masterBarang.some(b => 
         b.kode_barang === kodeBarang && 
@@ -734,6 +785,8 @@ async function simpanMasterBarang() {
                 const index = masterBarang.findIndex(b => b.id === selectedBarangId);
                 if (index !== -1) {
                     masterBarang[index] = { id: selectedBarangId, ...barangData };
+                    // Update teks tombol submit
+                    document.querySelector('#submit-master').innerHTML = '<i class="fas fa-save"></i> Update Barang';
                 }
             } else {
                 // Tambah barang baru
@@ -768,7 +821,7 @@ function resetMasterForm() {
     document.getElementById('form-master-barang').reset();
     document.getElementById('image-preview').innerHTML = '<i class="fas fa-image"></i><span>Pratinjau gambar akan muncul di sini</span>';
     selectedBarangId = null;
-    document.querySelector('#form-master-barang button[type="submit"]').innerHTML = '<i class="fas fa-save"></i> Simpan Barang';
+    document.querySelector('#submit-master').innerHTML = '<i class="fas fa-save"></i> Simpan Barang';
 }
 
 // Preview gambar sebelum upload
@@ -812,7 +865,7 @@ function editMasterBarang(id) {
     }
     
     // Update teks tombol submit
-    document.querySelector('#form-master-barang button[type="submit"]').innerHTML = '<i class="fas fa-save"></i> Update Barang';
+    document.querySelector('#submit-master').innerHTML = '<i class="fas fa-save"></i> Update Barang';
     
     // Scroll ke form
     showSection('master-barang');
@@ -874,18 +927,19 @@ function updateMasterBarangTable() {
     if (masterBarang.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="7" class="text-center">Tidak ada data master barang</td>
+                <td colspan="8" class="text-center">Tidak ada data master barang</td>
             </tr>
         `;
         return;
     }
     
-    masterBarang.forEach(barang => {
+    masterBarang.forEach((barang, index) => {
         const stokItem = stokBarang.find(s => s.id === barang.id);
         const stokKecil = stokItem ? stokItem.stok_kecil : 0;
         
         const row = document.createElement('tr');
         row.innerHTML = `
+            <td>${index + 1}</td>
             <td>${barang.kode_barang}</td>
             <td>
                 ${barang.foto_url ? 
@@ -923,15 +977,16 @@ function updateBarangMasukTable() {
     if (barangMasuk.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="6" class="text-center">Tidak ada data barang masuk</td>
+                <td colspan="7" class="text-center">Tidak ada data barang masuk</td>
             </tr>
         `;
         return;
     }
     
-    barangMasuk.forEach(item => {
+    barangMasuk.forEach((item, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
+            <td>${index + 1}</td>
             <td>${formatDate(item.tanggal)}</td>
             <td>${item.master_barang ? item.master_barang.nama_barang : 'Barang dihapus'}</td>
             <td>${item.jumlah}</td>
@@ -952,15 +1007,16 @@ function updateBarangKeluarTable() {
     if (barangKeluar.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="5" class="text-center">Tidak ada data barang keluar</td>
+                <td colspan="6" class="text-center">Tidak ada data barang keluar</td>
             </tr>
         `;
         return;
     }
     
-    barangKeluar.forEach(item => {
+    barangKeluar.forEach((item, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
+            <td>${index + 1}</td>
             <td>${formatDate(item.tanggal)}</td>
             <td>${item.master_barang ? item.master_barang.nama_barang : 'Barang dihapus'}</td>
             <td>${item.jumlah}</td>
@@ -980,17 +1036,18 @@ function updateStokBarangTable() {
     if (stokBarang.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="7" class="text-center">Tidak ada data stok barang</td>
+                <td colspan="8" class="text-center">Tidak ada data stok barang</td>
             </tr>
         `;
         return;
     }
     
-    stokBarang.forEach(item => {
+    stokBarang.forEach((item, index) => {
         const status = getStatusStok(item.stok_kecil);
         
         const row = document.createElement('tr');
         row.innerHTML = `
+            <td>${index + 1}</td>
             <td>${item.kode_barang}</td>
             <td>
                 ${item.foto_url ? 
@@ -1019,8 +1076,8 @@ function filterStokBarang() {
     const rows = document.querySelectorAll('#table-stok tbody tr');
     
     rows.forEach(row => {
-        const kategori = row.cells[3].textContent;
-        const stokText = row.cells[4].textContent;
+        const kategori = row.cells[4].textContent; // Kolom ke-5 (0-based index)
+        const stokText = row.cells[5].textContent; // Kolom ke-6 (stok kecil)
         const stokMatch = stokText.match(/\d+/);
         const stok = stokMatch ? parseInt(stokMatch[0]) : 0;
         
@@ -1052,15 +1109,16 @@ function updateKonversiTable() {
     if (masterBarang.length === 0) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="3" class="text-center">Tidak ada data konversi</td>
+                <td colspan="4" class="text-center">Tidak ada data konversi</td>
             </tr>
         `;
         return;
     }
     
-    masterBarang.forEach(barang => {
+    masterBarang.forEach((barang, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
+            <td>${index + 1}</td>
             <td>${barang.nama_barang}</td>
             <td>${barang.konversi_nilai_besar} ${barang.konversi_satuan_besar} = ${barang.konversi_nilai_kecil} ${barang.konversi_satuan_kecil}</td>
             <td>Contoh: Barang masuk ${barang.konversi_nilai_besar} ${barang.konversi_satuan_besar}, stok bertambah ${barang.konversi_nilai_kecil} ${barang.konversi_satuan_kecil}</td>
@@ -1100,7 +1158,7 @@ function updateTopStokItems() {
     const sortedStok = [...stokBarang].sort((a, b) => b.stok_kecil - a.stok_kecil).slice(0, 5);
     
     if (sortedStok.length === 0) {
-        container.innerHTML = '<p>Tidak ada data stok</p>';
+        container.innerHTML = '<p style="text-align: center; color: #666;">Tidak ada data stok</p>';
         return;
     }
     
@@ -1111,7 +1169,7 @@ function updateTopStokItems() {
         html += `
             <li style="margin-bottom: 15px; padding: 10px; background-color: #f9f9f9; border-radius: 6px;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-weight: bold;">${item.nama_barang}</span>
+                    <span style="font-weight: bold; font-size: 0.9rem;">${item.nama_barang}</span>
                     <span style="font-size: 0.9rem; color: #666;">${item.stok_kecil} ${item.konversi_satuan_kecil}</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; margin-top: 5px;">
