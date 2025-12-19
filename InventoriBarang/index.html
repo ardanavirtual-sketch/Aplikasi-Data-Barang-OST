@@ -8,6 +8,24 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* Tambahan untuk tombol yang tidak aktif */
+        .nav-link.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary:disabled,
+        .btn-secondary:disabled,
+        .btn-danger:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .action-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
         /* Reset dan Base Styles */
 * {
     margin: 0;
@@ -112,6 +130,7 @@ header h1 {
     color: var(--dark-color);
     border-radius: 6px;
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .nav-link:hover {
@@ -122,6 +141,16 @@ header h1 {
 .nav-link.active {
     background-color: var(--primary-color);
     color: white;
+}
+
+.nav-link.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.nav-link.disabled:hover {
+    background-color: transparent;
+    color: var(--dark-color);
 }
 
 .user-info {
@@ -405,6 +434,15 @@ header h1 {
     background-color: #2980b9;
 }
 
+.btn-primary:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+}
+
+.btn-primary:disabled:hover {
+    background-color: #bdc3c7;
+}
+
 .btn-secondary {
     background-color: var(--light-color);
     color: var(--dark-color);
@@ -414,6 +452,16 @@ header h1 {
     background-color: #d5dbdb;
 }
 
+.btn-secondary:disabled {
+    background-color: #ecf0f1;
+    color: #bdc3c7;
+    cursor: not-allowed;
+}
+
+.btn-secondary:disabled:hover {
+    background-color: #ecf0f1;
+}
+
 .btn-danger {
     background-color: var(--danger-color);
     color: white;
@@ -421,6 +469,15 @@ header h1 {
 
 .btn-danger:hover {
     background-color: #c0392b;
+}
+
+.btn-danger:disabled {
+    background-color: #f5b7b1;
+    cursor: not-allowed;
+}
+
+.btn-danger:disabled:hover {
+    background-color: #f5b7b1;
 }
 
 /* Table Styles */
@@ -551,6 +608,12 @@ table td {
 .delete-btn:hover {
     background-color: var(--danger-color);
     color: white;
+}
+
+.action-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 /* Filter Container */
@@ -761,18 +824,18 @@ footer i.fa-heart {
                 <div class="nav-section">
                     <h3><i class="fas fa-tachometer-alt"></i> Dashboard</h3>
                     <ul>
-                        <li><a href="#" class="nav-link active" data-target="dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
-                        <li><a href="#" class="nav-link" data-target="barang-masuk"><i class="fas fa-arrow-down"></i> Barang Masuk</a></li>
-                        <li><a href="#" class="nav-link" data-target="barang-keluar"><i class="fas fa-arrow-up"></i> Barang Keluar</a></li>
-                        <li><a href="#" class="nav-link" data-target="master-barang"><i class="fas fa-box-open"></i> Master Barang</a></li>
-                        <li><a href="#" class="nav-link" data-target="stok"><i class="fas fa-clipboard-list"></i> Stok Barang</a></li>
+                        <li><a href="#dashboard" class="nav-link active" data-target="dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                        <li><a href="#barang-masuk" class="nav-link" data-target="barang-masuk"><i class="fas fa-arrow-down"></i> Barang Masuk</a></li>
+                        <li><a href="#barang-keluar" class="nav-link" data-target="barang-keluar"><i class="fas fa-arrow-up"></i> Barang Keluar</a></li>
+                        <li><a href="#master-barang" class="nav-link" data-target="master-barang"><i class="fas fa-box-open"></i> Master Barang</a></li>
+                        <li><a href="#stok" class="nav-link" data-target="stok"><i class="fas fa-clipboard-list"></i> Stok Barang</a></li>
                     </ul>
                 </div>
                 
                 <div class="nav-section">
                     <h3><i class="fas fa-cog"></i> Pengaturan</h3>
                     <ul>
-                        <li><a href="#" class="nav-link" data-target="konversi"><i class="fas fa-exchange-alt"></i> Konversi Satuan</a></li>
+                        <li><a href="#konversi" class="nav-link" data-target="konversi"><i class="fas fa-exchange-alt"></i> Konversi Satuan</a></li>
                         <li><a href="#" class="nav-link" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Keluar</a></li>
                     </ul>
                 </div>
@@ -877,7 +940,7 @@ footer i.fa-heart {
                                     </div>
                                     <div class="form-group">
                                         <label>Jumlah</label>
-                                        <input type="number" class="jumlah" min="1" required>
+                                        <input type="number" class="jumlah" min="1" value="1" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Satuan Besar</label>
@@ -964,7 +1027,7 @@ footer i.fa-heart {
                                     </div>
                                     <div class="form-group">
                                         <label>Jumlah</label>
-                                        <input type="number" class="jumlah" min="1" required>
+                                        <input type="number" class="jumlah" min="1" value="1" required>
                                     </div>
                                     <div class="form-group">
                                         <label>Satuan Kecil</label>
@@ -977,7 +1040,7 @@ footer i.fa-heart {
                                     </div>
                                     <div class="form-group">
                                         <label>Stok Tersedia</label>
-                                        <input type="text" class="stok-tersedia" readonly>
+                                        <input type="text" class="stok-tersedia" readonly value="0">
                                     </div>
                                     <div class="form-group">
                                         <button type="button" class="btn-danger remove-item-btn" style="margin-top: 24px;">
@@ -1055,7 +1118,7 @@ footer i.fa-heart {
                                 <label><i class="fas fa-balance-scale"></i> Konversi Satuan</label>
                                 <div class="conversion-row">
                                     <div class="conversion-item">
-                                        <input type="number" id="konversi-nilai" placeholder="Jumlah" min="1" required>
+                                        <input type="number" id="konversi-nilai" placeholder="Jumlah" min="1" value="1" required>
                                     </div>
                                     <div class="conversion-item">
                                         <select id="konversi-satuan-besar" required>
@@ -1070,7 +1133,7 @@ footer i.fa-heart {
                                         <span class="equals">=</span>
                                     </div>
                                     <div class="conversion-item">
-                                        <input type="number" id="konversi-nilai-kecil" placeholder="Jumlah" min="1" required>
+                                        <input type="number" id="konversi-nilai-kecil" placeholder="Jumlah" min="1" value="24" required>
                                     </div>
                                     <div class="conversion-item">
                                         <select id="konversi-satuan-kecil" required>
@@ -1101,7 +1164,7 @@ footer i.fa-heart {
                                 <button type="submit" class="btn-primary" id="submit-master">
                                     <i class="fas fa-save"></i> Simpan Barang
                                 </button>
-                                <button type="reset" class="btn-secondary" id="reset-master">
+                                <button type="button" class="btn-secondary" id="reset-master">
                                     <i class="fas fa-redo"></i> Baru
                                 </button>
                             </div>
@@ -1159,7 +1222,7 @@ footer i.fa-heart {
                         </div>
                         
                         <div class="form-group">
-                            <button id="refresh-stok" class="btn-secondary">
+                            <button type="button" id="refresh-stok" class="btn-secondary">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
                         </div>
