@@ -3,1317 +3,495 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manajemen Data Barang</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>StokMaster Supabase - Konversi Unit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Tambahan untuk tombol yang tidak aktif */
-        .nav-link.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .btn-primary:disabled,
-        .btn-secondary:disabled,
-        .btn-danger:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .action-btn.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-        /* Reset dan Base Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-:root {
-    --primary-color: #3498db;
-    --secondary-color: #2c3e50;
-    --success-color: #27ae60;
-    --warning-color: #f39c12;
-    --danger-color: #e74c3c;
-    --light-color: #ecf0f1;
-    --dark-color: #34495e;
-    --gray-color: #95a5a6;
-    --border-color: #ddd;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --border-radius: 8px;
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f7fa;
-    color: #333;
-    line-height: 1.6;
-}
-
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-/* Header */
-header {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
-    padding: 25px;
-    border-radius: var(--border-radius);
-    margin-bottom: 30px;
-    box-shadow: var(--shadow);
-}
-
-header h1 {
-    font-size: 2.2rem;
-    margin-bottom: 8px;
-}
-
-.subtitle {
-    font-size: 1rem;
-    opacity: 0.9;
-}
-
-/* Layout */
-.app-container {
-    display: flex;
-    gap: 30px;
-    margin-bottom: 30px;
-}
-
-/* Sidebar */
-.sidebar {
-    width: 250px;
-    background-color: white;
-    border-radius: var(--border-radius);
-    padding: 20px;
-    box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
-}
-
-.nav-section {
-    margin-bottom: 30px;
-}
-
-.nav-section h3 {
-    color: var(--secondary-color);
-    font-size: 1rem;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.nav-section ul {
-    list-style: none;
-}
-
-.nav-section li {
-    margin-bottom: 8px;
-}
-
-.nav-link {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 15px;
-    text-decoration: none;
-    color: var(--dark-color);
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.nav-link:hover {
-    background-color: var(--light-color);
-    color: var(--primary-color);
-}
-
-.nav-link.active {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-.nav-link.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.nav-link.disabled:hover {
-    background-color: transparent;
-    color: var(--dark-color);
-}
-
-.user-info {
-    margin-top: auto;
-    padding-top: 20px;
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.avatar {
-    width: 50px;
-    height: 50px;
-    background-color: var(--primary-color);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.5rem;
-}
-
-.user-details .username {
-    font-weight: bold;
-    color: var(--secondary-color);
-}
-
-.user-details .role {
-    font-size: 0.85rem;
-    color: var(--gray-color);
-}
-
-/* Main Content */
-.main-content {
-    flex: 1;
-    background-color: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    padding: 25px;
-    overflow: hidden;
-}
-
-.content-section {
-    display: none;
-}
-
-.content-section.active {
-    display: block;
-    animation: fadeIn 0.5s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.main-content h2 {
-    color: var(--secondary-color);
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid var(--light-color);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* Dashboard Cards */
-.dashboard-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-.card {
-    background-color: white;
-    border-radius: var(--border-radius);
-    padding: 20px;
-    box-shadow: var(--shadow);
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    transition: transform 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-}
-
-.card-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
-    color: white;
-}
-
-.bg-primary { background-color: var(--primary-color); }
-.bg-success { background-color: var(--success-color); }
-.bg-warning { background-color: var(--warning-color); }
-.bg-danger { background-color: var(--danger-color); }
-
-.card-info h3 {
-    font-size: 0.9rem;
-    color: var(--gray-color);
-    margin-bottom: 5px;
-}
-
-.card-info p {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: var(--secondary-color);
-}
-
-/* Dashboard Charts */
-.dashboard-charts {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 30px;
-}
-
-.chart-container {
-    background-color: white;
-    border-radius: var(--border-radius);
-    padding: 20px;
-    box-shadow: var(--shadow);
-}
-
-.chart-container h3 {
-    color: var(--secondary-color);
-    margin-bottom: 20px;
-    font-size: 1.1rem;
-}
-
-/* Form Styles */
-.form-container {
-    background-color: #f9f9f9;
-    border-radius: var(--border-radius);
-    padding: 25px;
-    margin-bottom: 30px;
-    box-shadow: var(--shadow);
-}
-
-.form-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.form-header h3 {
-    color: var(--secondary-color);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: var(--dark-color);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    border-color: var(--primary-color);
-    outline: none;
-}
-
-.form-group input[readonly] {
-    background-color: #f5f5f5;
-    cursor: not-allowed;
-}
-
-/* Item Rows untuk input multiple */
-.item-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr auto;
-    gap: 15px;
-    align-items: end;
-    padding: 15px;
-    background-color: white;
-    border-radius: 6px;
-    margin-bottom: 15px;
-    border: 1px solid var(--border-color);
-}
-
-.item-row:last-child {
-    margin-bottom: 0;
-}
-
-.conversion-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr auto 1fr 1fr;
-    gap: 15px;
-    align-items: center;
-}
-
-.conversion-item .equals {
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-align: center;
-    display: block;
-}
-
-/* Image Preview */
-.image-preview {
-    width: 150px;
-    height: 150px;
-    border: 2px dashed var(--border-color);
-    border-radius: var(--border-radius);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: var(--gray-color);
-    margin-top: 10px;
-    overflow: hidden;
-}
-
-.image-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* Form Actions */
-.form-actions {
-    display: flex;
-    gap: 15px;
-    margin-top: 25px;
-}
-
-/* Buttons */
-.btn-primary,
-.btn-secondary,
-.btn-danger {
-    padding: 12px 25px;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: all 0.3s ease;
-}
-
-.btn-primary {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: #2980b9;
-}
-
-.btn-primary:disabled {
-    background-color: #bdc3c7;
-    cursor: not-allowed;
-}
-
-.btn-primary:disabled:hover {
-    background-color: #bdc3c7;
-}
-
-.btn-secondary {
-    background-color: var(--light-color);
-    color: var(--dark-color);
-}
-
-.btn-secondary:hover {
-    background-color: #d5dbdb;
-}
-
-.btn-secondary:disabled {
-    background-color: #ecf0f1;
-    color: #bdc3c7;
-    cursor: not-allowed;
-}
-
-.btn-secondary:disabled:hover {
-    background-color: #ecf0f1;
-}
-
-.btn-danger {
-    background-color: var(--danger-color);
-    color: white;
-}
-
-.btn-danger:hover {
-    background-color: #c0392b;
-}
-
-.btn-danger:disabled {
-    background-color: #f5b7b1;
-    cursor: not-allowed;
-}
-
-.btn-danger:disabled:hover {
-    background-color: #f5b7b1;
-}
-
-/* Table Styles */
-.table-container {
-    margin-top: 30px;
-}
-
-.table-container h3 {
-    color: var(--secondary-color);
-    margin-bottom: 20px;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.table-responsive {
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: white;
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    box-shadow: var(--shadow);
-}
-
-table thead {
-    background-color: var(--secondary-color);
-    color: white;
-}
-
-table th {
-    padding: 15px;
-    text-align: left;
-    font-weight: 600;
-}
-
-table tbody tr {
-    border-bottom: 1px solid var(--border-color);
-    transition: background-color 0.3s ease;
-}
-
-table tbody tr:hover {
-    background-color: #f9f9f9;
-}
-
-table td {
-    padding: 15px;
-}
-
-.text-center {
-    text-align: center;
-}
-
-/* Foto barang di tabel */
-.table-foto {
-    width: 50px;
-    height: 50px;
-    border-radius: 6px;
-    object-fit: cover;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.table-foto:hover {
-    transform: scale(1.1);
-}
-
-/* Status stok */
-.status-stok {
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    display: inline-block;
-}
-
-.status-menipis {
-    background-color: #ffebee;
-    color: var(--danger-color);
-}
-
-.status-cukup {
-    background-color: #e8f5e9;
-    color: var(--success-color);
-}
-
-.status-banyak {
-    background-color: #e3f2fd;
-    color: var(--primary-color);
-}
-
-/* Action buttons */
-.actions {
-    display: flex;
-    gap: 8px;
-}
-
-.action-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.edit-btn {
-    background-color: #e3f2fd;
-    color: var(--primary-color);
-}
-
-.edit-btn:hover {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-.delete-btn {
-    background-color: #ffebee;
-    color: var(--danger-color);
-}
-
-.delete-btn:hover {
-    background-color: var(--danger-color);
-    color: white;
-}
-
-.action-btn.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
-/* Filter Container */
-.filter-container {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-
-.filter-container .form-group {
-    margin-bottom: 0;
-}
-
-.filter-container select {
-    min-width: 200px;
-}
-
-/* Info Card */
-.info-card {
-    background-color: #e3f2fd;
-    border-radius: var(--border-radius);
-    padding: 25px;
-    margin-bottom: 30px;
-    border-left: 5px solid var(--primary-color);
-}
-
-.info-card h3 {
-    color: var(--secondary-color);
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.conversion-examples {
-    margin-top: 20px;
-}
-
-.conversion-examples h4 {
-    color: var(--secondary-color);
-    margin-bottom: 10px;
-}
-
-.conversion-examples ul {
-    margin-left: 20px;
-}
-
-.conversion-examples li {
-    margin-bottom: 8px;
-    color: var(--dark-color);
-}
-
-/* Modal */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: white;
-    padding: 30px;
-    border-radius: var(--border-radius);
-    max-width: 600px;
-    width: 90%;
-    position: relative;
-}
-
-.close-modal {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 1.8rem;
-    cursor: pointer;
-    color: var(--gray-color);
-    transition: color 0.3s ease;
-}
-
-.close-modal:hover {
-    color: var(--danger-color);
-}
-
-.modal-content h3 {
-    color: var(--secondary-color);
-    margin-bottom: 20px;
-}
-
-.modal-content img {
-    width: 100%;
-    max-height: 400px;
-    object-fit: contain;
-    border-radius: var(--border-radius);
-    margin-bottom: 15px;
-}
-
-/* Loading Overlay */
-.loading-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.9);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-}
-
-.loading-content {
-    text-align: center;
-}
-
-.spinner {
-    width: 60px;
-    height: 60px;
-    border: 6px solid var(--light-color);
-    border-top: 6px solid var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 20px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Footer */
-footer {
-    text-align: center;
-    padding: 20px;
-    color: var(--gray-color);
-    font-size: 0.9rem;
-    border-top: 1px solid var(--border-color);
-}
-
-footer i.fa-heart {
-    color: var(--danger-color);
-}
-
-/* Responsive */
-@media (max-width: 1200px) {
-    .dashboard-charts {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 992px) {
-    .app-container {
-        flex-direction: column;
-    }
-    
-    .sidebar {
-        width: 100%;
-    }
-    
-    .item-row {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-@media (max-width: 768px) {
-    .dashboard-cards {
-        grid-template-columns: 1fr;
-    }
-    
-    .filter-container {
-        flex-direction: column;
-    }
-    
-    .form-actions {
-        flex-direction: column;
-    }
-    
-    .item-row {
-        grid-template-columns: 1fr;
-    }
-    
-    .conversion-row {
-        grid-template-columns: 1fr;
-    }
-    
-    .conversion-item .equals {
-        display: none;
-    }
-}
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .custom-shadow { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); }
+        .tab-active { border-bottom: 3px solid #3b82f6; color: #3b82f6; }
+        .loader { border: 2px solid #f3f3f3; border-top: 2px solid #3b82f6; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .page-content { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-boxes"></i> Manajemen Data Barang</h1>
-            <p class="subtitle">Monitor barang masuk dan keluar dengan satuan berbeda</p>
-        </header>
+<body class="text-slate-800">
 
-        <div class="app-container">
-            <!-- Sidebar Navigasi -->
-            <nav class="sidebar">
-                <div class="nav-section">
-                    <h3><i class="fas fa-tachometer-alt"></i> Dashboard</h3>
-                    <ul>
-                        <li><a href="#dashboard" class="nav-link active" data-target="dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
-                        <li><a href="#barang-masuk" class="nav-link" data-target="barang-masuk"><i class="fas fa-arrow-down"></i> Barang Masuk</a></li>
-                        <li><a href="#barang-keluar" class="nav-link" data-target="barang-keluar"><i class="fas fa-arrow-up"></i> Barang Keluar</a></li>
-                        <li><a href="#master-barang" class="nav-link" data-target="master-barang"><i class="fas fa-box-open"></i> Master Barang</a></li>
-                        <li><a href="#stok" class="nav-link" data-target="stok"><i class="fas fa-clipboard-list"></i> Stok Barang</a></li>
-                    </ul>
+    <div class="min-h-screen flex flex-col">
+        <!-- Navigation -->
+        <nav class="bg-white border-b border-slate-200 sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16 items-center">
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-indigo-600 p-2 rounded-lg text-white">
+                            <i class="fas fa-box-open"></i>
+                        </div>
+                        <span class="text-xl font-bold tracking-tight text-slate-900">Stok<span class="text-indigo-600">Supa</span></span>
+                    </div>
+                    <div class="flex space-x-6 text-sm font-semibold text-slate-500">
+                        <button onclick="switchPage('master')" id="nav-master" class="py-5 px-1 transition-all">Master Barang</button>
+                        <button onclick="switchPage('transaction')" id="nav-transaction" class="py-5 px-1 transition-all">Input Transaksi</button>
+                        <button onclick="switchPage('report')" id="nav-report" class="py-5 px-1 transition-all">Laporan Stok</button>
+                    </div>
                 </div>
+            </div>
+        </nav>
+
+        <!-- Supabase Config Section (Hanya muncul jika URL/Key kosong) -->
+        <div id="config-warning" class="bg-amber-50 border-b border-amber-100 p-3 text-center text-xs text-amber-700 hidden">
+            <i class="fas fa-exclamation-triangle mr-2"></i> Silakan masukkan URL dan API Key Supabase Anda di dalam kode script.
+        </div>
+
+        <main class="flex-1 max-w-7xl mx-auto w-full p-4 md:p-8">
+            
+            <!-- PAGE: MASTER BARANG -->
+            <section id="page-master" class="page-content">
+                <div class="flex justify-between items-end mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold">Master Data Barang</h2>
+                        <p class="text-slate-500 text-sm">Kelola spesifikasi unit besar dan unit kecil.</p>
+                    </div>
+                    <button onclick="openMasterModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2">
+                        <i class="fas fa-plus"></i> Tambah Barang
+                    </button>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden custom-shadow">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase tracking-wider">
+                            <tr>
+                                <th class="px-6 py-4">Nama Barang</th>
+                                <th class="px-6 py-4">Unit Besar</th>
+                                <th class="px-6 py-4">Unit Kecil</th>
+                                <th class="px-6 py-4">Konversi (Isi)</th>
+                                <th class="px-6 py-4 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="master-table-body" class="divide-y divide-slate-100 text-sm">
+                            <tr><td colspan="5" class="px-6 py-10 text-center text-slate-400">Memuat data...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PAGE: TRANSAKSI -->
+            <section id="page-transaction" class="page-content hidden">
+                <div class="mb-6 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-bold">Input Transaksi Sekaligus</h2>
+                        <p class="text-slate-500 text-sm">Gunakan baris dinamis untuk input banyak item.</p>
+                    </div>
+                    <div class="flex bg-slate-200 p-1 rounded-xl">
+                        <button onclick="setTrxType('IN')" id="type-in" class="px-6 py-2 rounded-lg text-sm font-bold transition-all bg-white shadow text-indigo-600">MASUK (Unit Besar)</button>
+                        <button onclick="setTrxType('OUT')" id="type-out" class="px-6 py-2 rounded-lg text-sm font-bold transition-all text-slate-500">KELUAR (Unit Kecil)</button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 custom-shadow mb-8">
+                    <div id="transaction-items-container" class="space-y-3">
+                        <!-- Baris Transaksi Dinamis -->
+                    </div>
+
+                    <div class="mt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+                        <button onclick="addTransactionRow()" class="text-indigo-600 font-bold text-sm hover:underline">
+                            <i class="fas fa-plus-circle mr-1"></i> Tambah Baris Baru
+                        </button>
+                        <button onclick="processTransaction()" id="btn-save-trx" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-3">
+                            Simpan Semua Transaksi
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE: REPORT -->
+            <section id="page-report" class="page-content hidden">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold">Laporan Stok Terkini</h2>
+                    <p class="text-slate-500 text-sm">Data dihitung berdasarkan satuan terkecil (Eceran).</p>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden custom-shadow">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase tracking-wider">
+                            <tr>
+                                <th class="px-6 py-4">Nama Barang</th>
+                                <th class="px-6 py-4">Total Stok (Eceran)</th>
+                                <th class="px-6 py-4">Detail Unit</th>
+                                <th class="px-6 py-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-table-body" class="divide-y divide-slate-100 text-sm">
+                            <!-- Data laporan -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL MASTER -->
+    <div id="master-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-md shadow-2xl scale-95 transition-all">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="text-lg font-bold">Form Master Barang</h3>
+                <button onclick="closeMasterModal()" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="master-form" class="p-6 space-y-4">
+                <input type="hidden" id="m-id">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Nama Barang</label>
+                    <input type="text" id="m-name" required placeholder="Contoh: Coca Cola 250ml" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 transition-all">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Unit Besar</label>
+                        <input type="text" id="m-unit-big" required placeholder="Dus / Box" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Unit Kecil</label>
+                        <input type="text" id="m-unit-small" required placeholder="Pcs / Btl" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Isi per Unit Besar (Konversi)</label>
+                    <input type="number" id="m-conversion" required min="1" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl outline-none">
+                    <p class="text-[10px] text-slate-400 mt-1 italic">* Contoh: Jika 1 Dus isi 24 Pcs, masukkan angka 24.</p>
+                </div>
+                <button type="submit" id="btn-save-master" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all mt-4">Simpan Data</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 px-6 py-3 rounded-full bg-slate-900 text-white shadow-2xl opacity-0 translate-y-10 transition-all duration-300 z-[100]">
+        <i id="toast-icon" class="fas fa-check-circle text-emerald-400"></i>
+        <p id="toast-message" class="text-sm font-medium"></p>
+    </div>
+
+    <script type="module">
+        // --- KONFIGURASI SUPABASE ---
+        // Ganti dengan URL dan Key dari Dashboard Supabase Anda
+        const SUPABASE_URL = 'https://iltqolfmvhzaiuagtoxt.supabase.co'; 
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsdHFvbGZtdmh6YWl1YWd0b3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyNDE5MjQsImV4cCI6MjA4MDgxNzkyNH0.sGzEQjpKfy7fdw8KBNO7mVzKd2tuxqQaYAdRuTjHVMs';
+
+        if (!SUPABASE_URL || !SUPABASE_KEY) {
+            document.getElementById('config-warning').classList.remove('hidden');
+        }
+
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let masterItems = [];
+        let trxType = 'IN'; // IN = Unit Besar, OUT = Unit Kecil
+
+        // Inisialisasi
+        const init = async () => {
+            await fetchMasterData();
+            addTransactionRow();
+            switchPage('master');
+        };
+
+        const fetchMasterData = async () => {
+            const { data, error } = await supabase
+                .from('master_items')
+                .select('*')
+                .order('name', { ascending: true });
+
+            if (error) {
+                showToast("Gagal mengambil data: " + error.message, "error");
+                return;
+            }
+            masterItems = data || [];
+            renderMasterTable();
+            renderReportTable();
+            updateAllDropdowns();
+        };
+
+        // --- MASTER DATA LOGIC ---
+        const renderMasterTable = () => {
+            const body = document.getElementById('master-table-body');
+            if (masterItems.length === 0) {
+                body.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-slate-400">Belum ada data barang.</td></tr>`;
+                return;
+            }
+            body.innerHTML = masterItems.map(item => `
+                <tr class="hover:bg-slate-50 group">
+                    <td class="px-6 py-4 font-bold text-slate-800">${item.name}</td>
+                    <td class="px-6 py-4 text-slate-500">${item.unit_big}</td>
+                    <td class="px-6 py-4 text-slate-500">${item.unit_small}</td>
+                    <td class="px-6 py-4 font-medium">1 ${item.unit_big} = ${item.conversion} ${item.unit_small}</td>
+                    <td class="px-6 py-4 text-right opacity-0 group-hover:opacity-100 transition-all">
+                        <button onclick="editMaster('${item.id}')" class="text-indigo-600 hover:bg-indigo-50 p-2 rounded-lg"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteMaster('${item.id}')" class="text-red-500 hover:bg-red-50 p-2 rounded-lg ml-1"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        };
+
+        document.getElementById('master-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-save-master');
+            const id = document.getElementById('m-id').value;
+            
+            const payload = {
+                name: document.getElementById('m-name').value,
+                unit_big: document.getElementById('m-unit-big').value,
+                unit_small: document.getElementById('m-unit-small').value,
+                conversion: parseInt(document.getElementById('m-conversion').value)
+            };
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...`;
+
+            let error;
+            if (id) {
+                const result = await supabase.from('master_items').update(payload).eq('id', id);
+                error = result.error;
+            } else {
+                payload.current_stock = 0;
+                const result = await supabase.from('master_items').insert([payload]);
+                error = result.error;
+            }
+
+            if (error) {
+                showToast("Kesalahan: " + error.message, "error");
+            } else {
+                showToast("Data master berhasil disimpan!");
+                closeMasterModal();
+                fetchMasterData();
+            }
+            btn.disabled = false;
+            btn.textContent = "Simpan Data";
+        };
+
+        window.editMaster = (id) => {
+            const item = masterItems.find(i => i.id == id);
+            document.getElementById('m-id').value = item.id;
+            document.getElementById('m-name').value = item.name;
+            document.getElementById('m-unit-big').value = item.unit_big;
+            document.getElementById('m-unit-small').value = item.unit_small;
+            document.getElementById('m-conversion').value = item.conversion;
+            openMasterModal();
+        };
+
+        window.deleteMaster = async (id) => {
+            if (confirm("Hapus barang ini? Data transaksi terkait mungkin terpengaruh.")) {
+                const { error } = await supabase.from('master_items').delete().eq('id', id);
+                if (!error) {
+                    showToast("Barang dihapus");
+                    fetchMasterData();
+                }
+            }
+        };
+
+        // --- TRANSAKSI MULTI-ITEM ---
+        let rowIdx = 0;
+        window.addTransactionRow = () => {
+            rowIdx++;
+            const container = document.getElementById('transaction-items-container');
+            const div = document.createElement('div');
+            div.className = "trx-row flex flex-col md:flex-row gap-4 p-4 bg-slate-50 border border-slate-100 rounded-2xl relative group items-end";
+            div.id = `row-${rowIdx}`;
+            div.innerHTML = `
+                <div class="flex-1 w-full">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Nama Barang</label>
+                    <select class="item-select w-full px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none text-sm" onchange="updateRowUnit(${rowIdx})">
+                        <option value="">-- Pilih Barang --</option>
+                        ${masterItems.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="w-full md:w-32">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Jumlah</label>
+                    <input type="number" class="item-qty w-full px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none text-sm" min="1" value="1">
+                </div>
+                <div class="w-full md:w-32">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Satuan</label>
+                    <div class="unit-label w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-lg text-sm text-center font-bold text-slate-500">-</div>
+                </div>
+                <button onclick="removeRow(${rowIdx})" class="md:mb-1 p-2 text-red-400 hover:text-red-600 transition-colors">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            `;
+            container.appendChild(div);
+        };
+
+        window.removeRow = (id) => {
+            const rows = document.querySelectorAll('.trx-row');
+            if (rows.length > 1) {
+                document.getElementById(`row-${id}`).remove();
+            } else {
+                showToast("Minimal satu baris harus ada", "error");
+            }
+        };
+
+        window.updateRowUnit = (id) => {
+            const row = document.getElementById(`row-${id}`);
+            const itemId = row.querySelector('.item-select').value;
+            const label = row.querySelector('.unit-label');
+            const item = masterItems.find(m => m.id == itemId);
+            if (item) {
+                label.textContent = trxType === 'IN' ? item.unit_big : item.unit_small;
+            } else {
+                label.textContent = "-";
+            }
+        };
+
+        window.setTrxType = (type) => {
+            trxType = type;
+            const btnIn = document.getElementById('type-in');
+            const btnOut = document.getElementById('type-out');
+            
+            if (type === 'IN') {
+                btnIn.className = "px-6 py-2 rounded-lg text-sm font-bold transition-all bg-white shadow text-indigo-600";
+                btnOut.className = "px-6 py-2 rounded-lg text-sm font-bold transition-all text-slate-500";
+            } else {
+                btnOut.className = "px-6 py-2 rounded-lg text-sm font-bold transition-all bg-white shadow text-red-600";
+                btnIn.className = "px-6 py-2 rounded-lg text-sm font-bold transition-all text-slate-500";
+            }
+            
+            document.querySelectorAll('.trx-row').forEach(row => {
+                const id = row.id.split('-')[1];
+                updateRowUnit(id);
+            });
+        };
+
+        window.processTransaction = async () => {
+            const rows = document.querySelectorAll('.trx-row');
+            const btn = document.getElementById('btn-save-trx');
+            let operations = [];
+            let valid = true;
+
+            for (const row of rows) {
+                const itemId = row.querySelector('.item-select').value;
+                const qty = parseInt(row.querySelector('.item-qty').value);
                 
-                <div class="nav-section">
-                    <h3><i class="fas fa-cog"></i> Pengaturan</h3>
-                    <ul>
-                        <li><a href="#konversi" class="nav-link" data-target="konversi"><i class="fas fa-exchange-alt"></i> Konversi Satuan</a></li>
-                        <li><a href="#" class="nav-link" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Keluar</a></li>
-                    </ul>
-                </div>
+                if (!itemId || isNaN(qty) || qty <= 0) {
+                    valid = false;
+                    break;
+                }
+
+                const item = masterItems.find(m => m.id == itemId);
+                let smallUnitChange = trxType === 'IN' ? (qty * item.conversion) : -qty;
+
+                if (trxType === 'OUT' && item.current_stock < qty) {
+                    showToast(`Stok ${item.name} tidak cukup (Sisa: ${item.current_stock})`, "error");
+                    valid = false;
+                    break;
+                }
+
+                operations.push({
+                    itemId: item.id,
+                    newStock: item.current_stock + smallUnitChange,
+                    transaction: {
+                        item_id: item.id,
+                        type: trxType,
+                        qty: qty,
+                        unit: trxType === 'IN' ? item.unit_big : item.unit_small,
+                        total_small_unit: Math.abs(smallUnitChange),
+                        created_at: new Date()
+                    }
+                });
+            }
+
+            if (!valid) return;
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> Memproses...`;
+
+            try {
+                // Update Master Items & Log Transaksi (Supabase tidak punya Batch Atomik sederhana via REST, 
+                // kita gunakan loop atau buat RPC. Di sini kita pakai loop untuk kemudahan contoh)
+                for (const op of operations) {
+                    await supabase.from('master_items').update({ current_stock: op.newStock }).eq('id', op.itemId);
+                    await supabase.from('transactions').insert([op.transaction]);
+                }
+
+                showToast(`Berhasil menyimpan ${operations.length} item!`);
+                document.getElementById('transaction-items-container').innerHTML = '';
+                addTransactionRow();
+                fetchMasterData();
+            } catch (e) {
+                showToast("Terjadi kesalahan sistem", "error");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Simpan Semua Transaksi";
+            }
+        };
+
+        // --- REPORTING ---
+        const renderReportTable = () => {
+            const body = document.getElementById('report-table-body');
+            body.innerHTML = masterItems.map(item => {
+                const bigUnits = Math.floor(item.current_stock / item.conversion);
+                const smallUnits = item.current_stock % item.conversion;
                 
-                <div class="user-info">
-                    <div class="avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="user-details">
-                        <p class="username">Administrator</p>
-                        <p class="role">Manajer Gudang</p>
-                    </div>
-                </div>
-            </nav>
+                let badge = `<span class="px-2 py-1 rounded-md bg-emerald-100 text-emerald-600 text-[10px] font-bold">STOK AMAN</span>`;
+                if (item.current_stock === 0) badge = `<span class="px-2 py-1 rounded-md bg-red-100 text-red-600 text-[10px] font-bold">KOSONG</span>`;
+                else if (item.current_stock < item.conversion) badge = `<span class="px-2 py-1 rounded-md bg-amber-100 text-amber-600 text-[10px] font-bold">SISA ECERAN</span>`;
 
-            <!-- Konten Utama -->
-            <main class="main-content">
-                <!-- Dashboard -->
-                <section id="dashboard" class="content-section active">
-                    <h2><i class="fas fa-chart-bar"></i> Dashboard</h2>
-                    <div class="dashboard-cards">
-                        <div class="card">
-                            <div class="card-icon bg-primary">
-                                <i class="fas fa-boxes"></i>
-                            </div>
-                            <div class="card-info">
-                                <h3>Total Jenis Barang</h3>
-                                <p id="total-jenis-barang">0</p>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-icon bg-success">
-                                <i class="fas fa-arrow-down"></i>
-                            </div>
-                            <div class="card-info">
-                                <h3>Barang Masuk (Hari ini)</h3>
-                                <p id="barang-masuk-hari-ini">0</p>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-icon bg-warning">
-                                <i class="fas fa-arrow-up"></i>
-                            </div>
-                            <div class="card-info">
-                                <h3>Barang Keluar (Hari ini)</h3>
-                                <p id="barang-keluar-hari-ini">0</p>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-icon bg-danger">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </div>
-                            <div class="card-info">
-                                <h3>Stok Menipis</h3>
-                                <p id="stok-menipis">0</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="dashboard-charts">
-                        <div class="chart-container">
-                            <h3>Aktivitas Barang Masuk/Keluar (7 Hari)</h3>
-                            <canvas id="activityChart"></canvas>
-                        </div>
-                        <div class="chart-container">
-                            <h3>Barang dengan Stok Terbanyak</h3>
-                            <div id="top-stock-items"></div>
-                        </div>
-                    </div>
-                </section>
+                return `
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-6 py-4 font-bold text-slate-700">${item.name}</td>
+                        <td class="px-6 py-4">
+                            <span class="text-indigo-600 font-bold">${item.current_stock}</span> 
+                            <span class="text-slate-400 text-xs">${item.unit_small}</span>
+                        </td>
+                        <td class="px-6 py-4 text-slate-500">
+                            ${bigUnits > 0 ? `<strong>${bigUnits}</strong> ${item.unit_big}` : ''}
+                            ${bigUnits > 0 && smallUnits > 0 ? ' + ' : ''}
+                            ${smallUnits > 0 ? `<strong>${smallUnits}</strong> ${item.unit_small}` : ''}
+                            ${bigUnits === 0 && smallUnits === 0 ? '-' : ''}
+                        </td>
+                        <td class="px-6 py-4">${badge}</td>
+                    </tr>
+                `;
+            }).join('');
+        };
 
-                <!-- Barang Masuk -->
-                <section id="barang-masuk" class="content-section">
-                    <h2><i class="fas fa-arrow-down"></i> Barang Masuk</h2>
-                    <div class="form-container">
-                        <form id="form-barang-masuk">
-                            <div class="form-header">
-                                <h3><i class="fas fa-plus-circle"></i> Input Barang Masuk</h3>
-                                <button type="button" id="add-more-masuk" class="btn-secondary">
-                                    <i class="fas fa-plus"></i> Tambah Baris
-                                </button>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="tanggal-masuk"><i class="fas fa-calendar"></i> Tanggal Masuk</label>
-                                <input type="date" id="tanggal-masuk" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="keterangan-masuk"><i class="fas fa-sticky-note"></i> Keterangan</label>
-                                <input type="text" id="keterangan-masuk" placeholder="Contoh: Pembelian dari Supplier A">
-                            </div>
-                            
-                            <div id="items-container-masuk">
-                                <!-- Item akan ditambahkan secara dinamis -->
-                                <div class="item-row">
-                                    <div class="form-group">
-                                        <label>Barang</label>
-                                        <select class="barang-select" required>
-                                            <option value="">Pilih Barang</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Jumlah</label>
-                                        <input type="number" class="jumlah" min="1" value="1" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Satuan Besar</label>
-                                        <select class="satuan-besar" required>
-                                            <option value="Dus">Dus</option>
-                                            <option value="Lusin">Lusin</option>
-                                            <option value="Pack">Pack</option>
-                                            <option value="Bungkus">Bungkus</option>
-                                            <option value="KG">KG</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="button" class="btn-danger remove-item-btn" style="margin-top: 24px;">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="form-actions">
-                                <button type="submit" class="btn-primary">
-                                    <i class="fas fa-save"></i> Simpan Barang Masuk
-                                </button>
-                                <button type="reset" class="btn-secondary">
-                                    <i class="fas fa-redo"></i> Reset
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    
-                    <div class="table-container">
-                        <h3><i class="fas fa-history"></i> Riwayat Barang Masuk</h3>
-                        <div class="table-responsive">
-                            <table id="table-barang-masuk">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Tanggal</th>
-                                        <th>Barang</th>
-                                        <th>Jumlah Besar</th>
-                                        <th>Satuan Besar</th>
-                                        <th>Jumlah Kecil</th>
-                                        <th>Keterangan</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Data akan diisi oleh JavaScript -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
+        // --- UI HELPERS ---
+        window.switchPage = (pageId) => {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`page-${pageId}`).classList.remove('hidden');
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('tab-active', 'text-indigo-600'));
+            document.getElementById(`nav-${pageId}`).classList.add('tab-active', 'text-indigo-600');
+        };
 
-                <!-- Barang Keluar -->
-                <section id="barang-keluar" class="content-section">
-                    <h2><i class="fas fa-arrow-up"></i> Barang Keluar</h2>
-                    <div class="form-container">
-                        <form id="form-barang-keluar">
-                            <div class="form-header">
-                                <h3><i class="fas fa-minus-circle"></i> Input Barang Keluar</h3>
-                                <button type="button" id="add-more-keluar" class="btn-secondary">
-                                    <i class="fas fa-plus"></i> Tambah Baris
-                                </button>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="tanggal-keluar"><i class="fas fa-calendar"></i> Tanggal Keluar</label>
-                                <input type="date" id="tanggal-keluar" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="keterangan-keluar"><i class="fas fa-sticky-note"></i> Keterangan</label>
-                                <input type="text" id="keterangan-keluar" placeholder="Contoh: Penjualan ke Toko B">
-                            </div>
-                            
-                            <div id="items-container-keluar">
-                                <!-- Item akan ditambahkan secara dinamis -->
-                                <div class="item-row">
-                                    <div class="form-group">
-                                        <label>Barang</label>
-                                        <select class="barang-select" required>
-                                            <option value="">Pilih Barang</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Jumlah</label>
-                                        <input type="number" class="jumlah" min="1" value="1" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Satuan Kecil</label>
-                                        <select class="satuan-kecil" required>
-                                            <option value="Pcs">Pcs</option>
-                                            <option value="Botol">Botol</option>
-                                            <option value="Bungkus">Bungkus</option>
-                                            <option value="KG">KG</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Stok Tersedia</label>
-                                        <input type="text" class="stok-tersedia" readonly value="0">
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="button" class="btn-danger remove-item-btn" style="margin-top: 24px;">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="form-actions">
-                                <button type="submit" class="btn-primary">
-                                    <i class="fas fa-save"></i> Simpan Barang Keluar
-                                </button>
-                                <button type="reset" class="btn-secondary">
-                                    <i class="fas fa-redo"></i> Reset
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    
-                    <div class="table-container">
-                        <h3><i class="fas fa-history"></i> Riwayat Barang Keluar</h3>
-                        <div class="table-responsive">
-                            <table id="table-barang-keluar">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Tanggal</th>
-                                        <th>Barang</th>
-                                        <th>Jumlah Kecil</th>
-                                        <th>Satuan Kecil</th>
-                                        <th>Keterangan</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Data akan diisi oleh JavaScript -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
+        window.openMasterModal = () => document.getElementById('master-modal').style.display = 'flex';
+        window.closeMasterModal = () => {
+            document.getElementById('master-modal').style.display = 'none';
+            document.getElementById('master-form').reset();
+            document.getElementById('m-id').value = '';
+        };
 
-                <!-- Master Barang -->
-                <section id="master-barang" class="content-section">
-                    <h2><i class="fas fa-box-open"></i> Master Barang</h2>
-                    <div class="form-container">
-                        <form id="form-master-barang">
-                            <div class="form-header">
-                                <h3><i class="fas fa-plus-circle"></i> Tambah/Edit Barang</h3>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="kode-barang"><i class="fas fa-barcode"></i> Kode Barang</label>
-                                <input type="text" id="kode-barang" placeholder="Kode unik barang" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="nama-barang"><i class="fas fa-tag"></i> Nama Barang</label>
-                                <input type="text" id="nama-barang" placeholder="Nama barang" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="kategori"><i class="fas fa-filter"></i> Kategori</label>
-                                <select id="kategori" required>
-                                    <option value="">Pilih Kategori</option>
-                                    <option value="Makanan">Makanan</option>
-                                    <option value="Minuman">Minuman</option>
-                                    <option value="Elektronik">Elektronik</option>
-                                    <option value="Peralatan">Peralatan</option>
-                                    <option value="Lainnya">Lainnya</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label><i class="fas fa-balance-scale"></i> Konversi Satuan</label>
-                                <div class="conversion-row">
-                                    <div class="conversion-item">
-                                        <input type="number" id="konversi-nilai" placeholder="Jumlah" min="1" value="1" required>
-                                    </div>
-                                    <div class="conversion-item">
-                                        <select id="konversi-satuan-besar" required>
-                                            <option value="Dus">Dus</option>
-                                            <option value="Lusin">Lusin</option>
-                                            <option value="Pack">Pack</option>
-                                            <option value="Bungkus">Bungkus</option>
-                                            <option value="KG">KG</option>
-                                        </select>
-                                    </div>
-                                    <div class="conversion-item">
-                                        <span class="equals">=</span>
-                                    </div>
-                                    <div class="conversion-item">
-                                        <input type="number" id="konversi-nilai-kecil" placeholder="Jumlah" min="1" value="24" required>
-                                    </div>
-                                    <div class="conversion-item">
-                                        <select id="konversi-satuan-kecil" required>
-                                            <option value="Pcs">Pcs</option>
-                                            <option value="Botol">Botol</option>
-                                            <option value="Bungkus">Bungkus</option>
-                                            <option value="KG">KG</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="foto-barang"><i class="fas fa-camera"></i> Foto Barang</label>
-                                <input type="file" id="foto-barang" accept="image/*">
-                                <div class="image-preview" id="image-preview">
-                                    <i class="fas fa-image"></i>
-                                    <span>Pratinjau gambar akan muncul di sini</span>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="deskripsi"><i class="fas fa-align-left"></i> Deskripsi</label>
-                                <textarea id="deskripsi" rows="3" placeholder="Deskripsi barang"></textarea>
-                            </div>
-                            
-                            <div class="form-actions">
-                                <button type="submit" class="btn-primary" id="submit-master">
-                                    <i class="fas fa-save"></i> Simpan Barang
-                                </button>
-                                <button type="button" class="btn-secondary" id="reset-master">
-                                    <i class="fas fa-redo"></i> Baru
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    
-                    <div class="table-container">
-                        <h3><i class="fas fa-list"></i> Daftar Master Barang</h3>
-                        <div class="table-responsive">
-                            <table id="table-master-barang">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Kode</th>
-                                        <th>Foto</th>
-                                        <th>Nama Barang</th>
-                                        <th>Kategori</th>
-                                        <th>Konversi</th>
-                                        <th>Stok (Satuan Kecil)</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Data akan diisi oleh JavaScript -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
+        const updateAllDropdowns = () => {
+            document.querySelectorAll('.item-select').forEach(sel => {
+                const val = sel.value;
+                sel.innerHTML = `<option value="">-- Pilih Barang --</option>` + 
+                    masterItems.map(m => `<option value="${m.id}" ${val == m.id ? 'selected' : ''}>${m.name}</option>`).join('');
+            });
+        };
 
-                <!-- Stok Barang -->
-                <section id="stok" class="content-section">
-                    <h2><i class="fas fa-clipboard-list"></i> Stok Barang</h2>
-                    <div class="filter-container">
-                        <div class="form-group">
-                            <label for="filter-kategori"><i class="fas fa-filter"></i> Filter Kategori</label>
-                            <select id="filter-kategori">
-                                <option value="">Semua Kategori</option>
-                                <option value="Makanan">Makanan</option>
-                                <option value="Minuman">Minuman</option>
-                                <option value="Elektronik">Elektronik</option>
-                                <option value="Peralatan">Peralatan</option>
-                                <option value="Lainnya">Lainnya</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="filter-stok"><i class="fas fa-sort"></i> Filter Stok</label>
-                            <select id="filter-stok">
-                                <option value="">Semua Stok</option>
-                                <option value="menipis">Stok Menipis (< 10)</option>
-                                <option value="cukup">Stok Cukup (10-50)</option>
-                                <option value="banyak">Stok Banyak (> 50)</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <button type="button" id="refresh-stok" class="btn-secondary">
-                                <i class="fas fa-sync-alt"></i> Refresh
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="table-container">
-                        <div class="table-responsive">
-                            <table id="table-stok">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Kode</th>
-                                        <th>Foto</th>
-                                        <th>Nama Barang</th>
-                                        <th>Kategori</th>
-                                        <th>Stok Satuan Kecil</th>
-                                        <th>Stok Satuan Besar</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Data akan diisi oleh JavaScript -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
+        const showToast = (msg, type = "success") => {
+            const t = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            document.getElementById('toast-message').textContent = msg;
+            
+            if (type === "error") {
+                t.classList.replace('bg-slate-900', 'bg-red-600');
+                icon.className = "fas fa-exclamation-circle";
+            } else {
+                t.classList.replace('bg-red-600', 'bg-slate-900');
+                icon.className = "fas fa-check-circle text-emerald-400";
+            }
 
-                <!-- Konversi Satuan -->
-                <section id="konversi" class="content-section">
-                    <h2><i class="fas fa-exchange-alt"></i> Konversi Satuan</h2>
-                    <div class="info-card">
-                        <h3><i class="fas fa-info-circle"></i> Informasi Konversi Satuan</h3>
-                        <p>Konversi satuan menentukan bagaimana satuan besar (untuk barang masuk) dikonversi ke satuan kecil (untuk stok dan barang keluar).</p>
-                        
-                        <div class="conversion-examples">
-                            <h4><i class="fas fa-list"></i> Contoh Konversi:</h4>
-                            <ul>
-                                <li><strong>1 Dus</strong> = <strong>24 Pcs</strong> (Contoh: Air Mineral)</li>
-                                <li><strong>1 Lusin</strong> = <strong>12 Pcs</strong> (Contoh: Botol Saus)</li>
-                                <li><strong>1 Pack</strong> = <strong>10 Bungkus</strong> (Contoh: Mie Instan)</li>
-                                <li><strong>1 KG</strong> = <strong>1000 Gram</strong> (Contoh: Gula Pasir)</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="table-container">
-                        <h3><i class="fas fa-table"></i> Daftar Konversi Barang</h3>
-                        <div class="table-responsive">
-                            <table id="table-konversi">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Nama Barang</th>
-                                        <th>Konversi</th>
-                                        <th>Contoh Penggunaan</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Data akan diisi oleh JavaScript -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-            </main>
-        </div>
+            t.classList.remove('opacity-0', 'translate-y-10');
+            setTimeout(() => t.classList.add('opacity-0', 'translate-y-10'), 3000);
+        };
 
-        <footer>
-            <p>Aplikasi Manajemen Data Barang &copy; 2023 | Dibuat dengan <i class="fas fa-heart"></i> untuk monitoring stok barang</p>
-        </footer>
-    </div>
-
-    <!-- Modal untuk melihat foto barang -->
-    <div id="fotoModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h3>Foto Barang</h3>
-            <img id="modalFoto" src="" alt="Foto Barang">
-            <p id="modalNamaBarang"></p>
-        </div>
-    </div>
-
-    <!-- Loading overlay -->
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="loading-content">
-            <div class="spinner"></div>
-            <p>Memuat data...</p>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+        window.onload = init;
+    </script>
 </body>
 </html>
