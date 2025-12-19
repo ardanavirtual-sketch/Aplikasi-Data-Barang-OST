@@ -1244,8 +1244,8 @@
 
     <script>
         // Konfigurasi Supabase
-        const SUPABASE_URL = 'https://iltqolfmvhzaiuagtoxt.supabase.co'; // Ganti dengan URL Supabase Anda
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlsdHFvbGZtdmh6YWl1YWd0b3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUyNDE5MjQsImV4cCI6MjA4MDgxNzkyNH0.sGzEQjpKfy7fdw8KBNO7mVzKd2tuxqQaYAdRuTjHVMs'; // Ganti dengan kunci anon Supabase Anda
+        const SUPABASE_URL = 'https://your-project.supabase.co'; // Ganti dengan URL Supabase Anda
+        const SUPABASE_ANON_KEY = 'your-anon-key'; // Ganti dengan kunci anon Supabase Anda
 
         // Inisialisasi Supabase client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -1258,34 +1258,49 @@
         let selectedBarangId = null;
         let activityChart = null;
 
-        // Inisialisasi aplikasi
+        // Inisialisasi aplikasi saat halaman dimuat
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('Aplikasi dimuat...');
             initializeApp();
         });
 
         // Fungsi inisialisasi aplikasi
         async function initializeApp() {
-            // Setup event listeners
-            setupEventListeners();
+            console.log('Menginisialisasi aplikasi...');
+            
+            // Setup event listeners untuk navigasi
+            setupNavigationListeners();
+            
+            // Setup event listeners lainnya
+            setupOtherEventListeners();
             
             // Setup form dengan tanggal hari ini
             setTodayDate();
             
-            // Load data dari Supabase
-            await loadAllData();
-            // Untuk penggunaan dengan Supabase sebenarnya, gunakan ini:
-            // await loadAllData();
-            // setupCharts();
+            // Setup data dummy untuk demo
+            setupDemoData();
+            
+            // Setup chart
+            setupCharts();
+            
+            console.log('Aplikasi siap digunakan!');
         }
 
-        // Setup event listeners
-        function setupEventListeners() {
+        // Setup event listeners untuk navigasi
+        function setupNavigationListeners() {
+            console.log('Setup navigasi...');
+            
             // Navigasi
             const navLinks = document.querySelectorAll('.nav-link');
+            console.log('Jumlah link navigasi:', navLinks.length);
+            
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     const target = this.getAttribute('data-target');
+                    console.log('Menu diklik:', target);
+                    
+                    // Tampilkan section yang dipilih
                     showSection(target);
                     
                     // Update active state
@@ -1293,7 +1308,10 @@
                     this.classList.add('active');
                 });
             });
-            
+        }
+
+        // Setup event listeners lainnya
+        function setupOtherEventListeners() {
             // Form Barang Masuk
             document.getElementById('add-more-masuk').addEventListener('click', function() {
                 addItemRow('masuk');
@@ -1364,6 +1382,8 @@
 
         // Setup data demo untuk testing
         function setupDemoData() {
+            console.log('Setup data demo...');
+            
             // Data master barang contoh
             masterBarang = [
                 {
@@ -1460,11 +1480,14 @@
             updateDashboard();
             populateBarangSelects();
             updateKonversiTable();
-            setupCharts();
+            
+            console.log('Data demo siap!');
         }
 
         // Menampilkan section tertentu
         function showSection(sectionId) {
+            console.log('Menampilkan section:', sectionId);
+            
             // Sembunyikan semua section
             const sections = document.querySelectorAll('.content-section');
             sections.forEach(section => {
@@ -1482,6 +1505,10 @@
                 } else if (sectionId === 'stok') {
                     filterStokBarang();
                 }
+                
+                console.log('Section', sectionId, 'ditampilkan');
+            } else {
+                console.error('Section tidak ditemukan:', sectionId);
             }
         }
 
@@ -2349,7 +2376,14 @@
         // Setup charts
         function setupCharts() {
             // Setup activity chart (7 hari terakhir)
-            const ctx = document.getElementById('activityChart').getContext('2d');
+            const ctx = document.getElementById('activityChart');
+            
+            if (!ctx) {
+                console.error('Canvas element tidak ditemukan!');
+                return;
+            }
+            
+            const ctx2d = ctx.getContext('2d');
             
             // Generate data untuk 7 hari terakhir
             const labels = [];
@@ -2377,7 +2411,7 @@
                 activityChart.destroy();
             }
             
-            activityChart = new Chart(ctx, {
+            activityChart = new Chart(ctx2d, {
                 type: 'line',
                 data: {
                     labels: labels,
@@ -2420,6 +2454,8 @@
                     }
                 }
             });
+            
+            console.log('Chart berhasil dibuat!');
         }
 
         // Update charts setelah data berubah
@@ -2455,6 +2491,7 @@
         window.editMasterBarang = editMasterBarang;
         window.hapusMasterBarang = hapusMasterBarang;
         window.showFotoModal = showFotoModal;
+        window.showSection = showSection;
     </script>
 </body>
 </html>
