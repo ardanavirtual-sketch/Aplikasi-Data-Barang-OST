@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-    /* Reset dan Base Styles */
+    <style>
+        /* Reset dan Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -474,6 +474,10 @@ table td {
     padding: 15px;
 }
 
+.text-center {
+    text-align: center;
+}
+
 /* Foto barang di tabel */
 .table-foto {
     width: 50px;
@@ -742,7 +746,7 @@ footer i.fa-heart {
         display: none;
     }
 }
-</style>
+    </style>
 </head>
 <body>
     <div class="container">
@@ -910,6 +914,7 @@ footer i.fa-heart {
                             <table id="table-barang-masuk">
                                 <thead>
                                     <tr>
+                                        <th>No</th>
                                         <th>Tanggal</th>
                                         <th>Barang</th>
                                         <th>Jumlah Besar</th>
@@ -999,6 +1004,7 @@ footer i.fa-heart {
                             <table id="table-barang-keluar">
                                 <thead>
                                     <tr>
+                                        <th>No</th>
                                         <th>Tanggal</th>
                                         <th>Barang</th>
                                         <th>Jumlah Kecil</th>
@@ -1092,7 +1098,7 @@ footer i.fa-heart {
                             </div>
                             
                             <div class="form-actions">
-                                <button type="submit" class="btn-primary">
+                                <button type="submit" class="btn-primary" id="submit-master">
                                     <i class="fas fa-save"></i> Simpan Barang
                                 </button>
                                 <button type="reset" class="btn-secondary" id="reset-master">
@@ -1108,6 +1114,7 @@ footer i.fa-heart {
                             <table id="table-master-barang">
                                 <thead>
                                     <tr>
+                                        <th>No</th>
                                         <th>Kode</th>
                                         <th>Foto</th>
                                         <th>Nama Barang</th>
@@ -1163,6 +1170,7 @@ footer i.fa-heart {
                             <table id="table-stok">
                                 <thead>
                                     <tr>
+                                        <th>No</th>
                                         <th>Kode</th>
                                         <th>Foto</th>
                                         <th>Nama Barang</th>
@@ -1204,6 +1212,7 @@ footer i.fa-heart {
                             <table id="table-konversi">
                                 <thead>
                                     <tr>
+                                        <th>No</th>
                                         <th>Nama Barang</th>
                                         <th>Konversi</th>
                                         <th>Contoh Penggunaan</th>
