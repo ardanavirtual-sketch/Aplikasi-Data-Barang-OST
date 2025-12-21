@@ -420,9 +420,13 @@
 
         async function deleteData(table, id, callback) {
             if(confirm("Hapus data ini?")) {
-                await sb.from(table).delete().eq('id', id);
-                callback();
-                toast("Data dihapus", "danger");
+                const { error } = await sb.from(table).delete().eq('id', id);
+                if (error) {
+                    toast("Gagal menghapus data: " + error.message, "danger");
+                } else {
+                    callback();
+                    toast("Data dihapus", "danger");
+                }
             }
         }
 
