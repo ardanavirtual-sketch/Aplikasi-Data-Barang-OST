@@ -49,7 +49,6 @@
         .badge-success { background: #d4edda; color: #155724; }
         .badge-danger { background: #f8d7da; color: #721c24; }
         .badge-warning { background: #fff3cd; color: #856404; }
-        .badge-info { background: #d1ecf1; color: #0c5460; }
         .badge-dark { background: #e2e8f0; color: #475569; border: 1px solid #cbd5e1; }
 
         .btn { padding: 10px 18px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; }
@@ -58,9 +57,7 @@
         .btn-danger { background: var(--danger); color: white; }
         .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
 
-        .stock-format { display: flex; flex-direction: column; }
         .stock-main { font-weight: bold; font-size: 1.1rem; color: var(--dark); }
-        .stock-sub { font-size: 0.8rem; color: var(--gray); }
 
         /* Modal */
         #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
@@ -131,7 +128,7 @@
             </header>
             <div class="card">
                 <table>
-                    <thead><tr><th>Nama Barang</th><th>Aturan Konversi</th><th>Satuan Kerja</th><th>Total Stok Global</th><th>Aksi</th></tr></thead>
+                    <thead><tr><th>Nama Barang</th><th>Konversi</th><th>Total Stok Global</th><th>Aksi</th></tr></thead>
                     <tbody id="body-barang"></tbody>
                 </table>
             </div>
@@ -149,7 +146,7 @@
             </header>
             <div class="card">
                 <table>
-                    <thead><tr><th>Gudang</th><th>Nama Produk</th><th>Jumlah Stok (Unit Terkecil)</th><th>Format Distribusi</th><th>Status Stok</th></tr></thead>
+                    <thead><tr><th>Gudang</th><th>Nama Produk</th><th>Jumlah Stok (Eceran)</th><th>Status</th></tr></thead>
                     <tbody id="body-stok-gudang"></tbody>
                 </table>
             </div>
@@ -158,12 +155,12 @@
         <!-- Barang Masuk/Keluar -->
         <div id="section-masuk" class="app-section" style="display:none;">
             <header><h2>Riwayat Barang Masuk</h2><button class="btn btn-success" onclick="openModal('transaksi', {type:'IN'})">Input Masuk</button></header>
-            <div class="card"><table id="table-in"><thead><tr><th>Tanggal</th><th>Barang</th><th>Tujuan Gudang</th><th>Kuantitas</th><th>Aksi</th></tr></thead><tbody id="body-masuk"></tbody></table></div>
+            <div class="card"><table id="table-in"><thead><tr><th>Tanggal</th><th>Barang</th><th>Tujuan Gudang</th><th>Jumlah</th><th>Aksi</th></tr></thead><tbody id="body-masuk"></tbody></table></div>
         </div>
 
         <div id="section-keluar" class="app-section" style="display:none;">
             <header><h2>Riwayat Barang Keluar</h2><button class="btn btn-danger" onclick="openModal('transaksi', {type:'OUT'})">Input Keluar</button></header>
-            <div class="card"><table id="table-out"><thead><tr><th>Tanggal</th><th>Barang</th><th>Asal Gudang</th><th>Kuantitas</th><th>Aksi</th></tr></thead><tbody id="body-keluar"></tbody></table></div>
+            <div class="card"><table id="table-out"><thead><tr><th>Tanggal</th><th>Barang</th><th>Asal Gudang</th><th>Jumlah</th><th>Aksi</th></tr></thead><tbody id="body-keluar"></tbody></table></div>
         </div>
 
         <!-- Settings -->
@@ -207,16 +204,6 @@
             if(id === 'keluar') fetchHistory('OUT');
         }
 
-        // Helper untuk format stok gabungan
-        function formatStokGabungan(total, conversion, unitBig, unitSmall) {
-            const big = Math.floor(total / conversion);
-            const small = total % conversion;
-            let result = [];
-            if (big > 0) result.push(`${big} ${unitBig}`);
-            if (small > 0 || big === 0) result.push(`${small} ${unitSmall}`);
-            return result.join(', ');
-        }
-
         // DATABASE OPERATIONS
         async function fetchGudang() {
             const { data } = await sb.from('warehouses').select('*').order('name');
@@ -231,14 +218,8 @@
             document.getElementById('body-barang').innerHTML = data?.map(b => `
                 <tr>
                     <td><strong>${b.name}</strong></td>
-                    <td>1 ${b.unit_big} = ${b.conversion} ${b.unit_small}</td>
-                    <td><span class="badge badge-dark">${b.unit_big} / ${b.unit_small}</span></td>
-                    <td>
-                        <div class="stock-format">
-                            <span class="stock-main">${formatStokGabungan(b.current_stock, b.conversion, b.unit_big, b.unit_small)}</span>
-                            <span class="stock-sub">Total: ${b.current_stock} ${b.unit_small}</span>
-                        </div>
-                    </td>
+                    <td><span class="badge badge-dark">1 ${b.unit_big} = ${b.conversion} ${b.unit_small}</span></td>
+                    <td><span class="stock-main">${b.current_stock}</span> ${b.unit_small}</td>
                     <td><button class="btn btn-sm btn-danger" onclick="deleteData('master_items','${b.id}',fetchBarang)"><i class="fas fa-trash"></i></button></td>
                 </tr>
             `).join('') || '';
@@ -252,36 +233,26 @@
             const { data } = await query;
             document.getElementById('body-stok-gudang').innerHTML = data?.map(s => {
                 const status = s.stock <= 0 ? 'badge-danger' : (s.stock <= 10 ? 'badge-warning' : 'badge-success');
-                const statusText = s.stock <= 0 ? 'Habis' : (s.stock <= 10 ? 'Stok Menipis' : 'Stok Aman');
+                const statusText = s.stock <= 0 ? 'Habis' : (s.stock <= 10 ? 'Menipis' : 'Aman');
                 
                 return `<tr>
                     <td><span class="badge badge-dark"><i class="fas fa-warehouse"></i> ${s.warehouses.name}</span></td>
                     <td><strong>${s.master_items.name}</strong></td>
-                    <td><strong>${s.stock}</strong> ${s.master_items.unit_small}</td>
-                    <td>
-                        <div class="stock-format">
-                            <span class="stock-main">${formatStokGabungan(s.stock, s.master_items.conversion, s.master_items.unit_big, s.master_items.unit_small)}</span>
-                        </div>
-                    </td>
+                    <td><span class="stock-main">${s.stock}</span> ${s.master_items.unit_small}</td>
                     <td><span class="badge ${status}">${statusText}</span></td>
                 </tr>`;
-            }).join('') || '<tr><td colspan="5">Pilih gudang atau tambah stok untuk melihat data</td></tr>';
+            }).join('') || '<tr><td colspan="4">Tidak ada data stok di lokasi ini</td></tr>';
         }
 
         async function fetchHistory(type) {
-            const { data } = await sb.from('transactions').select('*, master_items(name, unit_small, unit_big, conversion), warehouses(name)').eq('type', type).order('created_at', {ascending:false});
+            const { data } = await sb.from('transactions').select('*, master_items(name, unit_small), warehouses(name)').eq('type', type).order('created_at', {ascending:false});
             const tid = type==='IN'?'body-masuk':'body-keluar';
             document.getElementById(tid).innerHTML = data?.map(t => `
                 <tr>
                     <td>${new Date(t.created_at).toLocaleDateString()}</td>
                     <td><strong>${t.master_items?.name}</strong></td>
                     <td><span class="badge badge-dark">${t.warehouses?.name}</span></td>
-                    <td>
-                        <div class="stock-format">
-                            <span class="stock-main">${t.qty} ${t.unit}</span>
-                            <span class="stock-sub">${t.total_small_unit} ${t.master_items?.unit_small}</span>
-                        </div>
-                    </td>
+                    <td><strong>${t.total_small_unit}</strong> ${t.master_items?.unit_small}</td>
                     <td><button class="btn btn-sm btn-danger" onclick="voidTransaction('${t.id}')">Batalkan</button></td>
                 </tr>
             `).join('') || '';
@@ -295,20 +266,20 @@
 
             if(mode === 'gudang') {
                 content.innerHTML = `<h3>Tambah Gudang Baru</h3><br>
-                <div class="form-group"><label>Nama Gudang</label><input id="m-g-name" placeholder="Contoh: Gudang OST"></div>
-                <div class="form-group"><label>Lokasi / Keterangan</label><textarea id="m-g-loc" placeholder="Alamat atau deskripsi singkat"></textarea></div>
+                <div class="form-group"><label>Nama Gudang</label><input id="m-g-name" placeholder="Contoh: Gudang Timur"></div>
+                <div class="form-group"><label>Lokasi / Keterangan</label><textarea id="m-g-loc"></textarea></div>
                 <div style="display:flex; gap:10px; margin-top:20px;">
-                    <button class="btn btn-primary" style="flex:1" onclick="saveGudang()">Simpan Gudang</button> 
+                    <button class="btn btn-primary" style="flex:1" onclick="saveGudang()">Simpan</button> 
                     <button class="btn" style="flex:1" onclick="closeModal()">Batal</button>
                 </div>`;
             } else if(mode === 'barang') {
                 content.innerHTML = `<h3>Tambah Produk Baru</h3><br>
-                <div class="form-group"><label>Nama Barang</label><input id="m-b-name" placeholder="Contoh: Sabun Mandi"></div>
+                <div class="form-group"><label>Nama Barang</label><input id="m-b-name" placeholder="Contoh: Kopi Sachet"></div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <div class="form-group"><label>Satuan Besar</label><input id="m-b-big" placeholder="Dus/Box"></div>
-                    <div class="form-group"><label>Satuan Kecil</label><input id="m-b-small" placeholder="Pcs/Botol"></div>
+                    <div class="form-group"><label>Satuan Besar</label><input id="m-b-big" placeholder="Contoh: Dus"></div>
+                    <div class="form-group"><label>Satuan Kecil (Unit Terkecil)</label><input id="m-b-small" placeholder="Contoh: Pcs"></div>
                 </div>
-                <div class="form-group"><label>Isi per 1 Satuan Besar (Konversi)</label><input type="number" id="m-b-conv" value="1"></div>
+                <div class="form-group"><label>Isi Satuan Kecil dalam 1 Satuan Besar</label><input type="number" id="m-b-conv" value="1"></div>
                 <div style="display:flex; gap:10px; margin-top:20px;">
                     <button class="btn btn-primary" style="flex:1" onclick="saveBarang()">Simpan Produk</button> 
                     <button class="btn" style="flex:1" onclick="closeModal()">Batal</button>
@@ -316,17 +287,13 @@
             } else if(mode === 'transaksi') {
                 const {data:items} = await sb.from('master_items').select('*');
                 const {data:gudangs} = await sb.from('warehouses').select('*');
-                if(!items.length || !gudangs.length) {
-                    content.innerHTML = `<p>Pastikan Anda sudah menambah Produk dan Gudang terlebih dahulu.</p><br><button class="btn" onclick="closeModal()">Tutup</button>`;
-                    return;
-                }
-                content.innerHTML = `<h3>Input Barang ${extra.type==='IN'?'Masuk':'Keluar'}</h3><br>
+                content.innerHTML = `<h3>Barang ${extra.type==='IN'?'Masuk':'Keluar'}</h3><br>
                 <div class="form-group"><label>Pilih Barang</label><select id="t-item">${items.map(i=>`<option value="${i.id}">${i.name}</option>`).join('')}</select></div>
-                <div class="form-group"><label>Gudang ${extra.type==='IN'?'Tujuan':'Asal'}</label><select id="t-wh">${gudangs.map(g=>`<option value="${g.id}">${g.name}</option>`).join('')}</select></div>
-                <div class="form-group"><label>Jumlah Kuantitas</label><input type="number" id="t-qty" value="1"></div>
-                <div class="form-group"><label>Pilih Satuan Input</label><select id="t-unit"><option value="big">Satuan Besar</option><option value="small">Satuan Kecil (Eceran)</option></select></div>
+                <div class="form-group"><label>Lokasi Gudang</label><select id="t-wh">${gudangs.map(g=>`<option value="${g.id}">${g.name}</option>`).join('')}</select></div>
+                <div class="form-group"><label>Kuantitas</label><input type="number" id="t-qty" value="1"></div>
+                <div class="form-group"><label>Pilih Satuan Input</label><select id="t-unit"><option value="small">Satuan Kecil (Eceran)</option><option value="big">Satuan Besar</option></select></div>
                 <div style="display:flex; gap:10px; margin-top:20px;">
-                    <button class="btn ${extra.type==='IN'?'btn-success':'btn-danger'}" style="flex:1" onclick="processTransaction('${extra.type}')">Proses Transaksi</button> 
+                    <button class="btn ${extra.type==='IN'?'btn-success':'btn-danger'}" style="flex:1" onclick="processTransaction('${extra.type}')">Konfirmasi</button> 
                     <button class="btn" style="flex:1" onclick="closeModal()">Batal</button>
                 </div>`;
             }
@@ -338,25 +305,20 @@
             const qty = parseInt(document.getElementById('t-qty').value);
             const isBig = document.getElementById('t-unit').value === 'big';
 
-            if(qty <= 0) return toast('Jumlah harus lebih dari 0', 'error');
-
             const {data:item} = await sb.from('master_items').select('*').eq('id', itemId).single();
             const totalSmall = isBig ? (qty * item.conversion) : qty;
             const unitName = isBig ? item.unit_big : item.unit_small;
 
-            // Cek stok gudang spesifik
             const {data:stockRecord} = await sb.from('inventory_stocks').select('stock').eq('item_id', itemId).eq('warehouse_id', whId).maybeSingle();
             const currentWhStock = stockRecord ? stockRecord.stock : 0;
 
-            if(type === 'OUT' && currentWhStock < totalSmall) return toast(`Stok di gudang ini tidak cukup! (Hanya tersedia ${currentWhStock} ${item.unit_small})`, 'error');
+            if(type === 'OUT' && currentWhStock < totalSmall) return toast('Stok gudang tidak mencukupi!', 'error');
 
-            // 1. Simpan Transaksi
             await sb.from('transactions').insert([{ 
                 item_id: itemId, warehouse_id: whId, type, qty, 
                 unit: unitName, total_small_unit: totalSmall 
             }]);
 
-            // 2. Update Stok Gudang
             const newWhStock = type === 'IN' ? (currentWhStock + totalSmall) : (currentWhStock - totalSmall);
             if(stockRecord) {
                 await sb.from('inventory_stocks').update({ stock: newWhStock }).eq('item_id', itemId).eq('warehouse_id', whId);
@@ -364,17 +326,16 @@
                 await sb.from('inventory_stocks').insert([{ item_id: itemId, warehouse_id: whId, stock: newWhStock }]);
             }
 
-            // 3. Update Stok Global Master
             const newGlobalStock = type === 'IN' ? (item.current_stock + totalSmall) : (item.current_stock - totalSmall);
             await sb.from('master_items').update({ current_stock: newGlobalStock }).eq('id', itemId);
 
-            toast('Transaksi berhasil dicatat'); closeModal(); switchSection(type === 'IN' ? 'masuk' : 'keluar');
+            toast('Transaksi berhasil'); closeModal(); switchSection(type === 'IN' ? 'masuk' : 'keluar');
         }
 
         async function saveGudang() {
             const name = document.getElementById('m-g-name').value;
             const loc = document.getElementById('m-g-loc').value;
-            if(!name) return toast('Nama gudang wajib diisi', 'error');
+            if(!name) return;
             await sb.from('warehouses').insert([{ name, location: loc }]);
             closeModal(); fetchGudang();
         }
@@ -384,7 +345,6 @@
             const b = document.getElementById('m-b-big').value;
             const s = document.getElementById('m-b-small').value;
             const c = parseInt(document.getElementById('m-b-conv').value);
-            if(!n || !b || !s) return toast('Lengkapi data produk', 'error');
             await sb.from('master_items').insert([{ name:n, unit_big:b, unit_small:s, conversion:c }]);
             closeModal(); fetchBarang();
         }
@@ -406,14 +366,14 @@
 
             const { data: recent } = await sb.from('transactions').select('*, master_items(name, unit_small), warehouses(name)').order('created_at', {ascending:false}).limit(5);
             document.getElementById('table-recent').querySelector('tbody').innerHTML = recent?.map(r => `
-                <tr><td>${new Date(r.created_at).toLocaleTimeString()}</td><td><strong>${r.master_items.name}</strong></td>
-                <td><span class="badge ${r.type==='IN'?'badge-success':'badge-danger'}">${r.type === 'IN' ? 'MASUK' : 'KELUAR'}</span></td>
-                <td><span class="badge badge-dark">${r.warehouses.name}</span></td><td>${r.total_small_unit} ${r.master_items.unit_small}</td></tr>
+                <tr><td>${new Date(r.created_at).toLocaleTimeString()}</td><td><strong>${r.master_items?.name}</strong></td>
+                <td><span class="badge ${r.type==='IN'?'badge-success':'badge-danger'}">${r.type}</span></td>
+                <td>${r.warehouses?.name}</td><td>${r.total_small_unit} ${r.master_items?.unit_small}</td></tr>
             `).join('') || '<tr><td colspan="5">Belum ada aktivitas</td></tr>';
         }
 
         async function deleteData(table, id, callback) {
-            if(confirm('Hapus data ini secara permanen?')) { await sb.from(table).delete().eq('id', id); callback(); }
+            if(confirm('Hapus data ini?')) { await sb.from(table).delete().eq('id', id); callback(); }
         }
 
         function closeModal() { document.getElementById('modal-overlay').style.display='none'; }
@@ -421,7 +381,7 @@
         function saveConfig() {
             localStorage.setItem('inv_sb_url', document.getElementById('cfg-url').value);
             localStorage.setItem('inv_sb_key', document.getElementById('cfg-key').value);
-            init(); toast('Konfigurasi database berhasil disimpan');
+            init(); toast('Tersimpan');
         }
 
         function init() {
