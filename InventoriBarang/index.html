@@ -42,6 +42,7 @@
             padding: 20px 0;
             position: fixed;
             height: 100%;
+            z-index: 100;
         }
 
         .sidebar-brand {
@@ -71,6 +72,8 @@
             background: var(--primary);
             color: white;
         }
+
+        .nav-item i { width: 20px; text-align: center; }
 
         /* Main Content */
         .main-content {
@@ -107,6 +110,8 @@
 
         .stat-card h3 { font-size: 0.9rem; color: var(--gray); margin-bottom: 10px; }
         .stat-card p { font-size: 1.8rem; font-weight: bold; color: var(--dark); }
+        .stat-card.in { border-left-color: var(--success); }
+        .stat-card.out { border-left-color: var(--danger); }
 
         /* Tables & UI Components */
         .card {
@@ -215,16 +220,19 @@
             <i class="fas fa-boxes-stacked"></i> INV-APP
         </div>
         <ul class="nav-menu">
-            <li class="nav-item active" onclick="switchSection('dashboard')">
+            <li class="nav-item active" id="nav-dashboard" onclick="switchSection('dashboard')">
                 <i class="fas fa-chart-line"></i> Dashboard
             </li>
-            <li class="nav-item" onclick="switchSection('barang')">
+            <li class="nav-item" id="nav-barang" onclick="switchSection('barang')">
                 <i class="fas fa-box"></i> Master Barang
             </li>
-            <li class="nav-item" onclick="switchSection('transaksi')">
-                <i class="fas fa-exchange-alt"></i> Transaksi
+            <li class="nav-item" id="nav-masuk" onclick="switchSection('masuk')">
+                <i class="fas fa-arrow-down" style="color: var(--success)"></i> Barang Masuk
             </li>
-            <li class="nav-item" onclick="switchSection('settings')">
+            <li class="nav-item" id="nav-keluar" onclick="switchSection('keluar')">
+                <i class="fas fa-arrow-up" style="color: var(--danger)"></i> Barang Keluar
+            </li>
+            <li class="nav-item" id="nav-settings" onclick="switchSection('settings')">
                 <i class="fas fa-cog"></i> Pengaturan API
             </li>
         </ul>
@@ -234,38 +242,38 @@
         <!-- Section Dashboard -->
         <div id="section-dashboard" class="app-section">
             <header>
-                <h2>Dashboard Inventori</h2>
+                <h2>Ringkasan Inventori</h2>
                 <div id="db-status"><span class="badge badge-danger">Disconnected</span></div>
             </header>
             
             <div class="stats-grid">
                 <div class="stat-card">
-                    <h3>Total Item</h3>
+                    <h3>Total Jenis Item</h3>
                     <p id="stat-total-items">0</p>
                 </div>
-                <div class="stat-card">
-                    <h3>Barang Masuk (Hari Ini)</h3>
+                <div class="stat-card in">
+                    <h3>Akumulasi Masuk</h3>
                     <p id="stat-trans-in">0</p>
+                    <small id="stat-today-in" style="color: var(--success)">Hari ini: 0</small>
                 </div>
-                <div class="stat-card">
-                    <h3>Barang Keluar (Hari Ini)</h3>
+                <div class="stat-card out">
+                    <h3>Akumulasi Keluar</h3>
                     <p id="stat-trans-out">0</p>
+                    <small id="stat-today-out" style="color: var(--danger)">Hari ini: 0</small>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Stok Rendah</h3>
+                <h3>Monitor Stok Rendah</h3>
                 <table id="table-low-stock">
                     <thead>
                         <tr>
-                            <th>Barang</th>
-                            <th>Stok Saat Ini</th>
+                            <th>Nama Barang</th>
+                            <th>Stok Sisa</th>
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <!-- Low stock items populated here -->
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>
@@ -275,18 +283,18 @@
             <header>
                 <h2>Master Data Barang</h2>
                 <button class="btn btn-primary" onclick="openModal('barang')">
-                    <i class="fas fa-plus"></i> Tambah Barang
+                    <i class="fas fa-plus"></i> Tambah Barang Baru
                 </button>
             </header>
             <div class="card">
-                <table id="table-master-barang">
+                <table>
                     <thead>
                         <tr>
                             <th>Nama Barang</th>
                             <th>Satuan Besar</th>
                             <th>Satuan Kecil</th>
                             <th>Konversi</th>
-                            <th>Stok (Satuan Kecil)</th>
+                            <th>Stok Terkini</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -295,27 +303,50 @@
             </div>
         </div>
 
-        <!-- Section Transaksi -->
-        <div id="section-transaksi" class="app-section" style="display:none;">
+        <!-- Section Barang Masuk -->
+        <div id="section-masuk" class="app-section" style="display:none;">
             <header>
-                <h2>Riwayat Transaksi</h2>
-                <button class="btn btn-success" onclick="openModal('transaksi')">
-                    <i class="fas fa-plus"></i> Input Transaksi
+                <h2>Riwayat Barang Masuk (IN)</h2>
+                <button class="btn btn-success" onclick="openModal('transaksi', {type: 'IN'})">
+                    <i class="fas fa-plus"></i> Input Barang Masuk
                 </button>
             </header>
             <div class="card">
-                <table id="table-transaksi">
+                <table>
                     <thead>
                         <tr>
-                            <th>Waktu</th>
-                            <th>Barang</th>
-                            <th>Tipe</th>
-                            <th>Jumlah Input</th>
-                            <th>Konversi Total</th>
-                            <th>Aksi</th>
+                            <th>Waktu & Tanggal</th>
+                            <th>Nama Barang</th>
+                            <th>Jumlah</th>
+                            <th>Total (Eceran)</th>
+                            <th>Opsi</th>
                         </tr>
                     </thead>
-                    <tbody id="body-transaksi"></tbody>
+                    <tbody id="body-transaksi-masuk"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Section Barang Keluar -->
+        <div id="section-keluar" class="app-section" style="display:none;">
+            <header>
+                <h2>Riwayat Barang Keluar (OUT)</h2>
+                <button class="btn btn-danger" onclick="openModal('transaksi', {type: 'OUT'})">
+                    <i class="fas fa-minus"></i> Input Barang Keluar
+                </button>
+            </header>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Waktu & Tanggal</th>
+                            <th>Nama Barang</th>
+                            <th>Jumlah</th>
+                            <th>Total (Eceran)</th>
+                            <th>Opsi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="body-transaksi-keluar"></tbody>
                 </table>
             </div>
         </div>
@@ -324,7 +355,6 @@
         <div id="section-settings" class="app-section" style="display:none;">
             <header><h2>Konfigurasi Supabase</h2></header>
             <div class="card">
-                <p style="margin-bottom:15px">Masukkan URL dan Anon Key Supabase Anda untuk menghubungkan database.</p>
                 <div class="form-group">
                     <label>Supabase URL</label>
                     <input type="text" id="sb-url" placeholder="https://xxxx.supabase.co">
@@ -333,16 +363,14 @@
                     <label>Supabase Anon Key</label>
                     <input type="password" id="sb-key" placeholder="eyJhbGciOiJIUzI1NiI...">
                 </div>
-                <button class="btn btn-primary" onclick="saveSettings()">Hubungkan Sekarang</button>
+                <button class="btn btn-primary" onclick="saveSettings()">Simpan & Hubungkan</button>
             </div>
         </div>
     </div>
 
     <!-- Modal Container -->
     <div id="modal-overlay">
-        <div class="modal-content" id="modal-content">
-            <!-- Content dynamically generated by JS -->
-        </div>
+        <div class="modal-content" id="modal-content"></div>
     </div>
 
     <div id="toast"></div>
@@ -350,8 +378,6 @@
     <script>
         let supabaseClient = null;
         let currentEditingId = null;
-
-        // --- CORE FUNCTIONS ---
 
         function showToast(msg, type = 'success') {
             const toast = document.getElementById('toast');
@@ -366,11 +392,12 @@
             document.getElementById(`section-${sectionId}`).style.display = 'block';
             
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            document.getElementById(`nav-${sectionId}`).classList.add('active');
 
             if (supabaseClient) {
                 if (sectionId === 'barang') fetchMasterBarang();
-                if (sectionId === 'transaksi') fetchTransaksi();
+                if (sectionId === 'masuk') fetchTransaksi('IN');
+                if (sectionId === 'keluar') fetchTransaksi('OUT');
                 if (sectionId === 'dashboard') updateDashboard();
             }
         }
@@ -378,110 +405,78 @@
         function saveSettings() {
             const url = document.getElementById('sb-url').value;
             const key = document.getElementById('sb-key').value;
-            
             localStorage.setItem('sb_url', url);
             localStorage.setItem('sb_key', key);
-            
             initSupabase();
+            showToast('Konfigurasi Berhasil!');
         }
 
         function initSupabase() {
             const url = localStorage.getItem('sb_url');
             const key = localStorage.getItem('sb_key');
-
             if (url && key) {
                 supabaseClient = supabase.createClient(url, key);
                 document.getElementById('sb-url').value = url;
                 document.getElementById('sb-key').value = key;
-                document.getElementById('db-status').innerHTML = '<span class="badge badge-success">Connected</span>';
+                document.getElementById('db-status').innerHTML = '<span class="badge badge-success">Terhubung</span>';
                 updateDashboard();
             } else {
                 switchSection('settings');
             }
         }
 
-        // --- DATABASE OPERATIONS ---
-
         async function updateDashboard() {
             if (!supabaseClient) return;
+            const { count } = await supabaseClient.from('master_items').select('*', { count: 'exact', head: true });
+            document.getElementById('stat-total-items').innerText = count || 0;
 
-            // Total Items
-            const { count: totalItems } = await supabaseClient
-                .from('master_items')
-                .select('*', { count: 'exact', head: true });
-            document.getElementById('stat-total-items').innerText = totalItems || 0;
-
-            // Stats Transaksi Hari Ini
+            const { data: allTrans } = await supabaseClient.from('transactions').select('type, total_small_unit, created_at');
             const today = new Date().toISOString().split('T')[0];
-            const { data: transToday } = await supabaseClient
-                .from('transactions')
-                .select('type, total_small_unit')
-                .gte('created_at', today);
+            let tin = 0, tout = 0, din = 0, dout = 0;
 
-            let inVal = 0, outVal = 0;
-            transToday?.forEach(t => {
-                if (t.type === 'IN') inVal += t.total_small_unit;
-                else outVal += t.total_small_unit;
+            allTrans?.forEach(t => {
+                const isToday = t.created_at.startsWith(today);
+                if (t.type === 'IN') { tin += t.total_small_unit; if(isToday) din += t.total_small_unit; }
+                else { tout += t.total_small_unit; if(isToday) dout += t.total_small_unit; }
             });
-            document.getElementById('stat-trans-in').innerText = inVal;
-            document.getElementById('stat-trans-out').innerText = outVal;
 
-            // Low Stock Table
-            const { data: lowStock } = await supabaseClient
-                .from('master_items')
-                .select('*')
-                .lte('current_stock', 10);
-            
+            document.getElementById('stat-trans-in').innerText = tin;
+            document.getElementById('stat-trans-out').innerText = tout;
+            document.getElementById('stat-today-in').innerText = `Hari ini: ${din}`;
+            document.getElementById('stat-today-out').innerText = `Hari ini: ${dout}`;
+
+            const { data: low } = await supabaseClient.from('master_items').select('*').lte('current_stock', 10);
             const tbody = document.querySelector('#table-low-stock tbody');
-            tbody.innerHTML = lowStock.map(item => `
-                <tr>
-                    <td>${item.name}</td>
-                    <td>${item.current_stock} ${item.unit_small}</td>
-                    <td><span class="badge badge-danger">Kritis</span></td>
-                </tr>
-            `).join('') || '<tr><td colspan="3" style="text-align:center">Stok aman semua.</td></tr>';
+            tbody.innerHTML = low?.map(item => `
+                <tr><td>${item.name}</td><td><strong>${item.current_stock}</strong> ${item.unit_small}</td>
+                <td><span class="badge badge-danger">Segera Isi</span></td></tr>
+            `).join('') || '<tr><td colspan="3" style="text-align:center">Stok aman.</td></tr>';
         }
 
         async function fetchMasterBarang() {
-            const { data, error } = await supabaseClient.from('master_items').select('*').order('name');
-            const tbody = document.getElementById('body-master-barang');
-            tbody.innerHTML = data.map(item => `
-                <tr>
-                    <td>${item.name}</td>
-                    <td>${item.unit_big}</td>
-                    <td>${item.unit_small}</td>
-                    <td>1 : ${item.conversion}</td>
-                    <td><strong>${item.current_stock}</strong> ${item.unit_small}</td>
-                    <td>
-                        <button class="btn btn-sm btn-primary" onclick="editBarang('${item.id}')"><i class="fas fa-edit"></i></button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteBarang('${item.id}')"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
+            const { data } = await supabaseClient.from('master_items').select('*').order('name');
+            document.getElementById('body-master-barang').innerHTML = data?.map(item => `
+                <tr><td>${item.name}</td><td>${item.unit_big}</td><td>${item.unit_small}</td><td>1:${item.conversion}</td>
+                <td><strong>${item.current_stock}</strong> ${item.unit_small}</td>
+                <td><button class="btn btn-sm btn-primary" onclick="editBarang('${item.id}')"><i class="fas fa-edit"></i></button>
+                <button class="btn btn-sm btn-danger" onclick="deleteBarang('${item.id}')"><i class="fas fa-trash"></i></button></td></tr>
+            `).join('') || '';
         }
 
-        async function fetchTransaksi() {
-            const { data, error } = await supabaseClient
-                .from('transactions')
+        async function fetchTransaksi(filterType) {
+            const { data } = await supabaseClient.from('transactions')
                 .select('*, master_items(name, unit_small)')
+                .eq('type', filterType)
                 .order('created_at', { ascending: false });
             
-            const tbody = document.getElementById('body-transaksi');
-            tbody.innerHTML = data.map(t => `
-                <tr>
-                    <td>${new Date(t.created_at).toLocaleString('id-ID')}</td>
-                    <td>${t.master_items?.name || 'Item Dihapus'}</td>
-                    <td><span class="badge ${t.type === 'IN' ? 'badge-success' : 'badge-danger'}">${t.type}</span></td>
-                    <td>${t.qty} ${t.unit}</td>
-                    <td>${t.total_small_unit} ${t.master_items?.unit_small}</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger" onclick="deleteTransaksi('${t.id}', '${t.item_id}', '${t.type}', ${t.total_small_unit})"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
+            const targetId = filterType === 'IN' ? 'body-transaksi-masuk' : 'body-transaksi-keluar';
+            document.getElementById(targetId).innerHTML = data?.map(t => `
+                <tr><td>${new Date(t.created_at).toLocaleString('id-ID')}</td><td>${t.master_items?.name || 'Item Dihapus'}</td>
+                <td>${t.qty} ${t.unit}</td><td>${t.total_small_unit} ${t.master_items?.unit_small || ''}</td>
+                <td><button class="btn btn-sm btn-danger" onclick="deleteTransaksi('${t.id}', '${t.item_id}', '${t.type}', ${t.total_small_unit})">
+                <i class="fas fa-undo"></i> Batal</button></td></tr>
+            `).join('') || '';
         }
-
-        // --- FORM SUBMISSIONS ---
 
         async function submitBarang() {
             const payload = {
@@ -490,75 +485,44 @@
                 unit_small: document.getElementById('f-small').value,
                 conversion: parseInt(document.getElementById('f-conv').value),
             };
-
-            let res;
-            if (currentEditingId) {
-                res = await supabaseClient.from('master_items').update(payload).eq('id', currentEditingId);
-            } else {
-                res = await supabaseClient.from('master_items').insert([payload]);
-            }
-
+            const res = currentEditingId ? await supabaseClient.from('master_items').update(payload).eq('id', currentEditingId) : await supabaseClient.from('master_items').insert([payload]);
             if (res.error) showToast(res.error.message, 'error');
-            else {
-                showToast('Barang berhasil disimpan');
-                closeModal();
-                fetchMasterBarang();
-            }
+            else { showToast('Berhasil disimpan'); closeModal(); fetchMasterBarang(); }
         }
 
-        async function submitTransaksi() {
+        async function submitTransaksi(type) {
             const itemId = document.getElementById('f-item-id').value;
-            const type = document.getElementById('f-type').value;
             const qty = parseInt(document.getElementById('f-qty').value);
-            const unitType = document.getElementById('f-unit-type').value; // 'big' or 'small'
+            const unitType = document.getElementById('f-unit-type').value;
 
-            // Get Item Info for conversion
             const { data: item } = await supabaseClient.from('master_items').select('*').eq('id', itemId).single();
-            
-            const unitName = unitType === 'big' ? item.unit_big : item.unit_small;
             const totalSmall = unitType === 'big' ? (qty * item.conversion) : qty;
+            const unitName = unitType === 'big' ? item.unit_big : item.unit_small;
 
-            // 1. Insert Transaction
-            const { error: tError } = await supabaseClient.from('transactions').insert([{
-                item_id: itemId,
-                type: type,
-                qty: qty,
-                unit: unitName,
-                total_small_unit: totalSmall
-            }]);
+            if(type === 'OUT' && item.current_stock < totalSmall) return showToast('Stok tidak cukup!', 'error');
 
-            if (tError) return showToast(tError.message, 'error');
-
-            // 2. Update Master Stock
+            await supabaseClient.from('transactions').insert([{ item_id: itemId, type, qty, unit: unitName, total_small_unit: totalSmall }]);
             const newStock = type === 'IN' ? (item.current_stock + totalSmall) : (item.current_stock - totalSmall);
             await supabaseClient.from('master_items').update({ current_stock: newStock }).eq('id', itemId);
 
-            showToast('Transaksi berhasil dicatat');
+            showToast('Transaksi Berhasil');
             closeModal();
-            fetchTransaksi();
+            fetchTransaksi(type);
         }
 
         async function deleteBarang(id) {
-            if (!confirm('Hapus barang ini? Semua riwayat transaksi barang ini juga akan terhapus.')) return;
-            const { error } = await supabaseClient.from('master_items').delete().eq('id', id);
-            if (error) showToast(error.message, 'error');
-            else fetchMasterBarang();
+            if (confirm('Hapus barang ini?')) { await supabaseClient.from('master_items').delete().eq('id', id); fetchMasterBarang(); }
         }
 
         async function deleteTransaksi(id, itemId, type, amount) {
-            if (!confirm('Batalkan transaksi ini? Stok barang akan dikembalikan.')) return;
-
-            // Get Current Stock
+            if (!confirm('Batalkan transaksi ini?')) return;
             const { data: item } = await supabaseClient.from('master_items').select('current_stock').eq('id', itemId).single();
-            
-            // Revert Stock
-            const revertedStock = type === 'IN' ? (item.current_stock - amount) : (item.current_stock + amount);
-            
-            await supabaseClient.from('master_items').update({ current_stock: revertedStock }).eq('id', itemId);
+            if(item) {
+                const rev = type === 'IN' ? (item.current_stock - amount) : (item.current_stock + amount);
+                await supabaseClient.from('master_items').update({ current_stock: rev }).eq('id', itemId);
+            }
             await supabaseClient.from('transactions').delete().eq('id', id);
-
-            showToast('Transaksi dibatalkan');
-            fetchTransaksi();
+            fetchTransaksi(type);
         }
 
         async function editBarang(id) {
@@ -566,85 +530,34 @@
             openModal('barang', data);
         }
 
-        // --- MODAL LOGIC ---
-
         function openModal(type, data = null) {
-            const overlay = document.getElementById('modal-overlay');
             const content = document.getElementById('modal-content');
-            currentEditingId = data ? data.id : null;
-
-            overlay.style.display = 'flex';
+            currentEditingId = (type === 'barang' && data) ? data.id : null;
+            document.getElementById('modal-overlay').style.display = 'flex';
 
             if (type === 'barang') {
-                content.innerHTML = `
-                    <h3>${data ? 'Edit' : 'Tambah'} Barang</h3><br>
-                    <div class="form-group">
-                        <label>Nama Barang</label>
-                        <input type="text" id="f-name" value="${data ? data.name : ''}">
-                    </div>
-                    <div class="form-group">
-                        <label>Satuan Besar (cth: Dus)</label>
-                        <input type="text" id="f-big" value="${data ? data.unit_big : ''}">
-                    </div>
-                    <div class="form-group">
-                        <label>Satuan Kecil (cth: Pcs)</label>
-                        <input type="text" id="f-small" value="${data ? data.unit_small : ''}">
-                    </div>
-                    <div class="form-group">
-                        <label>Konversi (1 Satuan Besar = Berapa Satuan Kecil?)</label>
-                        <input type="number" id="f-conv" value="${data ? data.conversion : ''}">
-                    </div>
-                    <div style="display:flex; gap:10px; margin-top:20px">
-                        <button class="btn btn-primary" onclick="submitBarang()">Simpan</button>
-                        <button class="btn" onclick="closeModal()">Batal</button>
-                    </div>
-                `;
+                content.innerHTML = `<h3>${data ? 'Edit' : 'Tambah'} Barang</h3><br>
+                    <div class="form-group"><label>Nama</label><input type="text" id="f-name" value="${data ? data.name : ''}"></div>
+                    <div class="form-group"><label>Satuan Besar (Dus)</label><input type="text" id="f-big" value="${data ? data.unit_big : ''}"></div>
+                    <div class="form-group"><label>Satuan Kecil (Pcs)</label><input type="text" id="f-small" value="${data ? data.unit_small : ''}"></div>
+                    <div class="form-group"><label>Isi Per Satuan Besar</label><input type="number" id="f-conv" value="${data ? data.conversion : ''}"></div>
+                    <div style="display:flex; gap:10px"><button class="btn btn-primary" onclick="submitBarang()">Simpan</button><button class="btn" onclick="closeModal()">Batal</button></div>`;
             } else if (type === 'transaksi') {
-                loadTransaksiForm();
+                loadTransaksiForm(data.type);
             }
         }
 
-        async function loadTransaksiForm() {
+        async function loadTransaksiForm(type) {
             const { data: items } = await supabaseClient.from('master_items').select('id, name');
-            const content = document.getElementById('modal-content');
-            content.innerHTML = `
-                <h3>Input Transaksi Barang</h3><br>
-                <div class="form-group">
-                    <label>Pilih Barang</label>
-                    <select id="f-item-id">
-                        ${items.map(i => `<option value="${i.id}">${i.name}</option>`).join('')}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Tipe Transaksi</label>
-                    <select id="f-type">
-                        <option value="IN">BARANG MASUK (+)</option>
-                        <option value="OUT">BARANG KELUAR (-)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Jumlah</label>
-                    <input type="number" id="f-qty" value="1">
-                </div>
-                <div class="form-group">
-                    <label>Satuan yang Digunakan</label>
-                    <select id="f-unit-type">
-                        <option value="big">Satuan Besar (Konversi Otomatis)</option>
-                        <option value="small">Satuan Kecil (Eceran)</option>
-                    </select>
-                </div>
-                <div style="display:flex; gap:10px; margin-top:20px">
-                    <button class="btn btn-success" onclick="submitTransaksi()">Catat Transaksi</button>
-                    <button class="btn" onclick="closeModal()">Batal</button>
-                </div>
-            `;
+            document.getElementById('modal-content').innerHTML = `<h3>Input Barang ${type === 'IN' ? 'Masuk' : 'Keluar'}</h3><br>
+                <div class="form-group"><label>Barang</label><select id="f-item-id">${items.map(i => `<option value="${i.id}">${i.name}</option>`).join('')}</select></div>
+                <div class="form-group"><label>Jumlah</label><input type="number" id="f-qty" value="1" min="1"></div>
+                <div class="form-group"><label>Satuan</label><select id="f-unit-type"><option value="big">Satuan Besar</option><option value="small">Satuan Kecil</option></select></div>
+                <div style="display:flex; gap:10px"><button class="btn ${type === 'IN' ? 'btn-success' : 'btn-danger'}" onclick="submitTransaksi('${type}')">Proses</button>
+                <button class="btn" onclick="closeModal()">Batal</button></div>`;
         }
 
-        function closeModal() {
-            document.getElementById('modal-overlay').style.display = 'none';
-        }
-
-        // Init on Load
+        function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
         window.onload = initSupabase;
     </script>
 </body>
