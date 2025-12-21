@@ -81,6 +81,10 @@
         #toast { position: fixed; bottom: 20px; right: 20px; padding: 15px 25px; border-radius: 12px; color: white; display: none; z-index: 10000; font-weight: 500; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
         
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .db-status { font-size: 0.7rem; padding: 4px 10px; border-radius: 20px; margin-top: 10px; display: inline-block; }
+        .status-connected { background: #dcfce7; color: #166534; }
+        .status-disconnected { background: #fee2e2; color: #991b1b; }
+
         @media (max-width: 768px) { .sidebar { display: none; } .main { margin-left: 0; } .grid-3 { grid-template-columns: 1fr; } .batch-row { grid-template-columns: 1fr; gap: 5px; } }
     </style>
 </head>
@@ -102,6 +106,10 @@
             </div>
             <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 15px;" onclick="handleLogin()">Masuk Ke Sistem</button>
             <p id="login-err" style="color: var(--danger); text-align: center; margin-top: 15px; display: none; font-size: 0.85rem;"></p>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <span id="db-conn-status" class="db-status status-disconnected">Database Terputus</span>
+            </div>
         </div>
     </div>
 
@@ -113,7 +121,7 @@
             </div>
             
             <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 14px; margin-bottom: 20px;">
-                <small style="color: var(--gray); display: block; font-size: 0.7rem;">INSTANSI</small>
+                <small style="color: var(--gray); display: block; font-size: 0.7rem;">PENGGUNA</small>
                 <strong id="display-user" style="font-size: 0.9rem; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">-</strong>
                 <span id="role-badge" style="display:inline-block; font-size: 0.65rem; padding: 2px 6px; background: rgba(255,255,255,0.1); border-radius: 4px; margin-top: 5px;">Admin</span>
             </div>
@@ -121,7 +129,7 @@
             <nav id="nav-menu" style="flex: 1; overflow-y: auto;">
                 <div class="nav-link active" onclick="switchTab('dashboard', this)"><i class="fas fa-home"></i> Beranda</div>
                 
-                <div class="admin-only">
+                <div class="admin-view">
                     <div class="nav-header">Master Data</div>
                     <div class="nav-link" onclick="switchTab('warehouses', this)"><i class="fas fa-warehouse"></i> Daftar Gudang</div>
                     <div class="nav-link" onclick="switchTab('items', this)"><i class="fas fa-tag"></i> Master Barang</div>
@@ -131,9 +139,10 @@
                     <div class="nav-link" onclick="switchTab('stock-report', this)"><i class="fas fa-clipboard-list"></i> Stok Per Gudang</div>
                 </div>
 
-                <div class="super-only nav-super" style="display: none;">
+                <div class="super-view" style="display: none;">
                     <div class="nav-header">Super Panel</div>
                     <div class="nav-link" onclick="switchTab('manage-companies', this)"><i class="fas fa-building"></i> Kelola Perusahaan</div>
+                    <div class="nav-link" onclick="switchTab('config', this)" style="color: #fbbf24;"><i class="fas fa-database"></i> Pengaturan Database</div>
                 </div>
             </nav>
 
@@ -146,6 +155,7 @@
                 <div id="header-actions"></div>
             </div>
 
+            <!-- Tab Dashboard -->
             <div id="tab-dashboard" class="tab-content">
                 <div class="grid-3">
                     <div class="card">
@@ -169,42 +179,74 @@
                 </div>
             </div>
 
+            <!-- Tab Manage Companies (Superadmin) -->
             <div id="tab-manage-companies" class="tab-content" style="display: none;">
-                <div class="card"><table id="company-table"><thead><tr><th>ID</th><th>Nama Perusahaan</th><th>Password</th><th>Tgl Daftar</th><th>Aksi</th></tr></thead><tbody></tbody></table></div>
+                <div class="card">
+                    <table id="company-table">
+                        <thead><tr><th>ID</th><th>Nama Perusahaan</th><th>Password</th><th>Tgl Daftar</th><th>Aksi</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
 
+            <!-- Tab Config (Superadmin) -->
+            <div id="tab-config" class="tab-content" style="display: none;">
+                <div class="card" style="max-width: 600px; margin: 0 auto;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <i class="fas fa-database fa-3x" style="color: var(--warning);"></i>
+                        <h2 style="margin-top: 15px;">Konfigurasi Supabase</h2>
+                        <p style="color: var(--gray); font-size: 0.9rem;">Hanya Superadmin yang dapat mengubah pengaturan ini.</p>
+                    </div>
+                    <hr style="border: 0; border-top: 1px solid #f1f5f9; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label>Supabase Project URL</label>
+                        <input type="text" id="cfg-url" placeholder="https://xyz.supabase.co">
+                    </div>
+                    <div class="form-group">
+                        <label>Supabase Anon Key</label>
+                        <input type="password" id="cfg-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+                    </div>
+                    <div style="background: #fff8eb; padding: 15px; border-radius: 10px; border-left: 4px solid var(--warning); margin-bottom: 20px;">
+                        <p style="font-size: 0.8rem; color: #92400e;">
+                            <i class="fas fa-exclamation-triangle"></i> <strong>Peringatan:</strong> Mengubah pengaturan ini akan memutuskan koneksi saat ini. Pastikan URL dan Key benar agar aplikasi tetap dapat diakses.
+                        </p>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveConfig()" style="width: 100%; justify-content: center; padding: 15px;">
+                        <i class="fas fa-save"></i> Simpan & Hubungkan Kembali
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Warehouses -->
             <div id="tab-warehouses" class="tab-content" style="display: none;">
                 <div class="card"><table id="warehouse-table"><thead><tr><th>Kode</th><th>Nama Gudang</th><th>Lokasi</th><th>Aksi</th></tr></thead><tbody></tbody></table></div>
             </div>
 
+            <!-- Tab Items -->
             <div id="tab-items" class="tab-content" style="display: none;">
                 <div class="card"><table id="master-items-table"><thead><tr><th>Nama Barang</th><th>Satuan (B/K)</th><th>Konv</th><th>Total Stok</th><th>Aksi</th></tr></thead><tbody></tbody></table></div>
             </div>
 
+            <!-- Tab Transactions -->
             <div id="tab-transactions" class="tab-content" style="display: none;">
                 <div class="card"><table id="trans-table"><thead><tr><th>Waktu</th><th>Barang</th><th>Tipe</th><th>Jumlah</th><th>Gudang</th></tr></thead><tbody></tbody></table></div>
             </div>
 
+            <!-- Tab Stock Report -->
             <div id="tab-stock-report" class="tab-content" style="display: none;">
                 <div class="form-group" style="max-width: 300px;"><label>Pilih Gudang</label><select id="report-wh-filter" onchange="loadStockReport()"></select></div>
                 <div class="card"><table id="stock-report-table"><thead><tr><th>Nama Barang</th><th>Stok</th><th>Satuan</th></tr></thead><tbody></tbody></table></div>
             </div>
 
-            <div id="tab-config" class="tab-content" style="display: none;">
-                <div class="card" style="max-width: 500px; margin: auto;">
-                    <h2>Pengaturan Koneksi</h2><br>
-                    <div class="form-group"><label>Supabase URL</label><input type="text" id="cfg-url"></div>
-                    <div class="form-group"><label>Anon Key</label><input type="password" id="cfg-key"></div>
-                    <button class="btn btn-primary" onclick="saveConfig()" style="width: 100%; justify-content: center;">Simpan & Hubungkan</button>
-                </div>
-            </div>
         </div>
     </div>
 
+    <!-- Modals -->
     <div class="modal-overlay" id="modal-overlay">
         <div class="modal" id="modal-content"></div>
     </div>
 
+    <!-- Notification Toast -->
     <div id="toast"></div>
 
     <script>
@@ -213,12 +255,51 @@
         let warehouses = [];
         let items = [];
 
-        // --- AUTH & CORE ---
+        // --- DATABASE INITIALIZATION ---
+        function initDB() {
+            const url = localStorage.getItem('inv_url');
+            const key = localStorage.getItem('inv_key');
+            const statusEl = document.getElementById('db-conn-status');
+
+            if (url && key) {
+                try {
+                    sb = supabase.createClient(url, key);
+                    statusEl.innerText = "Database Terhubung";
+                    statusEl.className = "db-status status-connected";
+                    
+                    // Populate config inputs if they exist (on tab config)
+                    if(document.getElementById('cfg-url')) document.getElementById('cfg-url').value = url;
+                    if(document.getElementById('cfg-key')) document.getElementById('cfg-key').value = key;
+                } catch (e) {
+                    statusEl.innerText = "Error Koneksi";
+                    statusEl.className = "db-status status-disconnected";
+                }
+            } else {
+                statusEl.innerText = "Database Belum Dikonfigurasi";
+                statusEl.className = "db-status status-disconnected";
+            }
+        }
+
+        // --- AUTHENTICATION ---
         async function handleLogin() {
             const id = document.getElementById('login-id').value;
             const pass = document.getElementById('login-pass').value;
-            if (!sb) { alert("Database belum terhubung!"); return; }
-            const { data } = await sb.from('companies').select('*').eq('id', id).single();
+            
+            if (!sb) { 
+                // Hardcoded superadmin login for first time config if DB is not set
+                if (id === 'SUPER' && pass === 'INIT123') {
+                    const tempSuper = { id: 'SUPER', name: 'Initial Super', is_superadmin: true };
+                    currentUser = tempSuper;
+                    localStorage.setItem('session_user', JSON.stringify(tempSuper));
+                    initUI();
+                    toast("Mode Inisialisasi Superadmin");
+                    return;
+                }
+                alert("Database belum terhubung! Gunakan akun SUPER default jika pertama kali."); 
+                return; 
+            }
+
+            const { data, error } = await sb.from('companies').select('*').eq('id', id).single();
             if (data && data.password === pass) {
                 currentUser = data;
                 localStorage.setItem('session_user', JSON.stringify(data));
@@ -229,35 +310,60 @@
             }
         }
 
-        function handleLogout() { localStorage.removeItem('session_user'); location.reload(); }
+        function handleLogout() { 
+            localStorage.removeItem('session_user'); 
+            location.reload(); 
+        }
 
         function initUI() {
             const session = localStorage.getItem('session_user');
             if (!session) return;
             currentUser = JSON.parse(session);
+            
             document.getElementById('login-page').style.display = 'none';
             document.getElementById('app').style.display = 'block';
             document.getElementById('display-user').innerText = currentUser.name;
             
             if (currentUser.is_superadmin) {
-                document.querySelectorAll('.super-only').forEach(el => el.style.display = 'block');
-                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+                document.querySelector('.super-view').style.display = 'block';
+                document.querySelector('.admin-view').style.display = 'none';
                 document.getElementById('role-badge').innerText = 'SUPERADMIN';
-                switchTab('manage-companies', document.querySelector('.nav-link'));
+                switchTab('manage-companies');
             } else {
+                document.querySelector('.super-view').style.display = 'none';
+                document.querySelector('.admin-view').style.display = 'block';
                 document.getElementById('role-badge').innerText = 'ADMIN';
                 loadAppData();
-                switchTab('dashboard', document.querySelector('.nav-link'));
+                switchTab('dashboard');
             }
         }
 
+        // --- NAVIGATION ---
         function switchTab(tabId, el) {
             document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
             document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-            document.getElementById('tab-' + tabId).style.display = 'block';
+            
+            const activeTab = document.getElementById('tab-' + tabId);
+            if(activeTab) activeTab.style.display = 'block';
+            
             if(el) el.classList.add('active');
+            
+            // Set Page Title
+            const titles = {
+                'dashboard': 'Beranda Ringkasan',
+                'manage-companies': 'Kelola Tenant Perusahaan',
+                'config': 'Konfigurasi Sistem Supabase',
+                'warehouses': 'Daftar Gudang Aktif',
+                'items': 'Master Data Barang',
+                'transactions': 'Riwayat Pergerakan Barang',
+                'stock-report': 'Laporan Stok Terkini'
+            };
+            document.getElementById('tab-title').innerText = titles[tabId] || 'Sistem Inventori';
+            
             updateHeaderActions(tabId);
             
+            // Refresh Data based on Tab
+            if (!sb && tabId !== 'config') return; 
             if (tabId === 'manage-companies') loadCompanies();
             if (tabId === 'warehouses') loadWarehouses();
             if (tabId === 'items') loadItems();
@@ -265,10 +371,32 @@
             if (tabId === 'stock-report') loadStockReport();
         }
 
+        // --- SUPERADMIN CONFIG ---
+        function saveConfig() {
+            const url = document.getElementById('cfg-url').value.trim();
+            const key = document.getElementById('cfg-key').value.trim();
+            
+            if(!url || !key) {
+                toast("URL dan Key wajib diisi!", "danger");
+                return;
+            }
+            
+            localStorage.setItem('inv_url', url);
+            localStorage.setItem('inv_key', key);
+            toast("Konfigurasi tersimpan. Memuat ulang database...");
+            
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        }
+
+        // --- DATA LOADERS ---
         async function loadAppData() {
+            if (!sb) return;
             const { count: itemC } = await sb.from('master_items').select('*', {count:'exact', head:true}).eq('company_id', currentUser.id);
             const { count: whC } = await sb.from('warehouses').select('*', {count:'exact', head:true}).eq('company_id', currentUser.id);
             const { count: trC } = await sb.from('transactions').select('*', {count:'exact', head:true}).eq('company_id', currentUser.id);
+            
             document.getElementById('count-items').innerText = itemC || 0;
             document.getElementById('count-wh').innerText = whC || 0;
             document.getElementById('count-trans').innerText = trC || 0;
@@ -288,25 +416,23 @@
             const content = document.getElementById('modal-content');
             modal.style.display = 'flex';
             
-            const title = type === 'IN' ? 'Barang Masuk (Multiple)' : 'Barang Keluar (Multiple)';
+            const title = type === 'IN' ? 'Input Barang Masuk' : 'Input Barang Keluar';
             const colorClass = type === 'IN' ? 'btn-primary' : 'btn-danger';
 
             content.innerHTML = `
                 <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3>${title}</h3>
+                    <h3><i class="fas fa-list-check"></i> ${title}</h3>
                     <button class="btn btn-outline btn-sm" onclick="addBatchRow()"><i class="fas fa-plus"></i> Tambah Baris</button>
                 </div>
                 
-                <div id="batch-container">
-                    <!-- Rows injected here -->
-                </div>
+                <div id="batch-container"></div>
 
                 <div style="margin-top:20px; display:flex; gap:10px; justify-content: flex-end;">
                     <button class="btn btn-outline" onclick="closeModal()">Batal</button>
-                    <button class="btn ${colorClass}" onclick="submitBatchTransaction('${type}')">Simpan Semua Transaksi</button>
+                    <button class="btn ${colorClass}" onclick="submitBatchTransaction('${type}')">Simpan Semua</button>
                 </div>
             `;
-            addBatchRow(); // Start with 1 row
+            addBatchRow();
         }
 
         function addBatchRow() {
@@ -337,11 +463,11 @@
                 <div class="form-group">
                     <label>Satuan</label>
                     <select class="unit-select">
-                        <option value="small">Kecil</option>
-                        <option value="big">Besar</option>
+                        <option value="small">Kecil (Ecer)</option>
+                        <option value="big">Besar (Grosir)</option>
                     </select>
                 </div>
-                <button class="btn btn-outline btn-sm" style="color:red; margin-bottom:12px;" onclick="removeBatchRow('${rowId}')"><i class="fas fa-trash"></i></button>
+                <button class="btn btn-outline btn-sm" style="color:red; margin-bottom:12px; height: 45px;" onclick="removeBatchRow('${rowId}')"><i class="fas fa-trash"></i></button>
             `;
             container.appendChild(div);
         }
@@ -354,7 +480,7 @@
         async function submitBatchTransaction(type) {
             const rows = document.querySelectorAll('.batch-row');
             const batchData = [];
-            const stockUpdates = {}; // Track cumulative updates to master items
+            const stockUpdates = {}; 
 
             for (const row of rows) {
                 const itemId = row.querySelector('.item-select').value;
@@ -373,29 +499,26 @@
                     type, qty, unit: unitName, total_small_unit: totalSmall
                 });
 
-                // Calculate stock change
                 if (!stockUpdates[itemId]) stockUpdates[itemId] = item.current_stock;
                 stockUpdates[itemId] = type === 'IN' ? stockUpdates[itemId] + totalSmall : stockUpdates[itemId] - totalSmall;
             }
 
-            if (batchData.length === 0) { toast("Tidak ada data valid", "danger"); return; }
+            if (batchData.length === 0) { toast("Data tidak lengkap", "danger"); return; }
 
-            // Process Batch Insert
             const { error: insErr } = await sb.from('transactions').insert(batchData);
-            if (insErr) { toast("Gagal menyimpan transaksi", "danger"); return; }
+            if (insErr) { toast("Gagal simpan transaksi", "danger"); return; }
 
-            // Process Master Stock Updates (Sequential to avoid race conditions in this simple demo)
             for (const [id, newStock] of Object.entries(stockUpdates)) {
                 await sb.from('master_items').update({ current_stock: newStock }).eq('id', id);
             }
 
-            toast(`Berhasil menyimpan ${batchData.length} item`);
+            toast(`Berhasil menyimpan ${batchData.length} transaksi`);
             closeModal();
             loadTransactions();
             loadAppData();
         }
 
-        // --- HEADER ACTIONS ---
+        // --- UTILS ---
         function updateHeaderActions(tabId) {
             const container = document.getElementById('header-actions');
             container.innerHTML = '';
@@ -408,25 +531,25 @@
             `;
         }
 
-        // --- STANDARD CRUD HELPERS ---
         async function loadCompanies() {
+            if(!sb) return;
             const { data } = await sb.from('companies').select('*').order('created_at');
             document.getElementById('company-table').querySelector('tbody').innerHTML = (data || []).map(c => `
-                <tr><td><code>${c.id}</code></td><td><strong>${c.name}</strong></td><td><code>${c.password}</code></td><td>${new Date(c.created_at).toLocaleDateString()}</td><td>${!c.is_superadmin ? `<button onclick="deleteRecord('companies','id','${c.id}', loadCompanies)">Hapus</button>` : '-'}</td></tr>
+                <tr><td><code>${c.id}</code></td><td><strong>${c.name}</strong></td><td><code>${c.password}</code></td><td>${new Date(c.created_at).toLocaleDateString()}</td><td>${!c.is_superadmin ? `<button class="btn btn-outline btn-sm" onclick="deleteRecord('companies','id','${c.id}', loadCompanies)">Hapus</button>` : '-'}</td></tr>
             `).join('');
         }
 
         async function loadWarehouses() {
             const { data } = await sb.from('warehouses').select('*').eq('company_id', currentUser.id);
             document.getElementById('warehouse-table').querySelector('tbody').innerHTML = (data || []).map(w => `
-                <tr><td><code>${w.id.substring(0,5)}</code></td><td><strong>${w.name}</strong></td><td>${w.location || '-'}</td><td><button onclick="deleteRecord('warehouses','id','${w.id}', loadWarehouses)">Hapus</button></td></tr>
+                <tr><td><code>${w.id.substring(0,5)}</code></td><td><strong>${w.name}</strong></td><td>${w.location || '-'}</td><td><button class="btn btn-outline btn-sm" onclick="deleteRecord('warehouses','id','${w.id}', loadWarehouses)">Hapus</button></td></tr>
             `).join('');
         }
 
         async function loadItems() {
             const { data } = await sb.from('master_items').select('*').eq('company_id', currentUser.id);
             document.getElementById('master-items-table').querySelector('tbody').innerHTML = (data || []).map(i => `
-                <tr><td><strong>${i.name}</strong></td><td>${i.unit_big}/${i.unit_small}</td><td>1:${i.conversion}</td><td><span class="badge badge-in">${i.current_stock}</span></td><td><button onclick="deleteRecord('master_items','id','${i.id}', loadItems)">Hapus</button></td></tr>
+                <tr><td><strong>${i.name}</strong></td><td>${i.unit_big}/${i.unit_small}</td><td>1:${i.conversion}</td><td><span class="badge badge-in">${i.current_stock} ${i.unit_small}</span></td><td><button class="btn btn-outline btn-sm" onclick="deleteRecord('master_items','id','${i.id}', loadItems)">Hapus</button></td></tr>
             `).join('');
         }
 
@@ -456,38 +579,32 @@
             const content = document.getElementById('modal-content');
             modal.style.display = 'flex';
             if (type === 'add-company') {
-                content.innerHTML = `<h3>Registrasi Tenant</h3><br><div class="form-group"><label>ID</label><input type="text" id="m-cid"></div><div class="form-group"><label>Nama</label><input type="text" id="m-cname"></div><div class="form-group"><label>Pass</label><input type="text" id="m-cpass" value="admin123"></div><button class="btn btn-primary" onclick="saveCompany()">Simpan</button>`;
+                content.innerHTML = `<h3>Registrasi Tenant Baru</h3><br><div class="form-group"><label>ID Unik Perusahaan</label><input type="text" id="m-cid"></div><div class="form-group"><label>Nama Perusahaan</label><input type="text" id="m-cname"></div><div class="form-group"><label>Password Admin</label><input type="text" id="m-cpass" value="admin123"></div><button class="btn btn-primary" onclick="saveCompany()">Simpan Tenant</button>`;
             } else if (type === 'add-warehouse') {
-                content.innerHTML = `<h3>Gudang Baru</h3><br><div class="form-group"><label>Nama</label><input type="text" id="m-whname"></div><div class="form-group"><label>Lokasi</label><input type="text" id="m-whloc"></div><button class="btn btn-primary" onclick="saveWarehouse()">Simpan</button>`;
+                content.innerHTML = `<h3>Tambah Gudang Baru</h3><br><div class="form-group"><label>Nama Gudang</label><input type="text" id="m-whname"></div><div class="form-group"><label>Lokasi / Deskripsi</label><input type="text" id="m-whloc"></div><button class="btn btn-primary" onclick="saveWarehouse()">Simpan Gudang</button>`;
             } else if (type === 'add-item') {
-                content.innerHTML = `<h3>Master Barang</h3><br><div class="form-group"><label>Nama</label><input type="text" id="m-iname"></div><div class="form-group"><label>Sat. Besar</label><input type="text" id="m-iub"></div><div class="form-group"><label>Sat. Kecil</label><input type="text" id="m-ius"></div><div class="form-group"><label>Konversi</label><input type="number" id="m-iconv" value="1"></div><button class="btn btn-primary" onclick="saveItem()">Simpan</button>`;
+                content.innerHTML = `<h3>Tambah Master Barang</h3><br><div class="form-group"><label>Nama Barang</label><input type="text" id="m-iname"></div><div class="form-group"><label>Satuan Besar (Contoh: Dus)</label><input type="text" id="m-iub"></div><div class="form-group"><label>Satuan Kecil (Contoh: Pcs)</label><input type="text" id="m-ius"></div><div class="form-group"><label>Konversi (Berapa eceran dalam 1 grosir?)</label><input type="number" id="m-iconv" value="1"></div><button class="btn btn-primary" onclick="saveItem()">Simpan Barang</button>`;
             }
         }
 
         async function saveCompany() {
             await sb.from('companies').insert([{ id: document.getElementById('m-cid').value, name: document.getElementById('m-cname').value, password: document.getElementById('m-cpass').value }]);
-            closeModal(); loadCompanies(); toast("Tenant disimpan");
+            closeModal(); loadCompanies(); toast("Tenant berhasil ditambahkan");
         }
         async function saveWarehouse() {
             await sb.from('warehouses').insert([{ name: document.getElementById('m-whname').value, location: document.getElementById('m-whloc').value, company_id: currentUser.id }]);
-            closeModal(); loadWarehouses(); loadAppData(); toast("Gudang disimpan");
+            closeModal(); loadWarehouses(); loadAppData(); toast("Gudang berhasil ditambahkan");
         }
         async function saveItem() {
             await sb.from('master_items').insert([{ name: document.getElementById('m-iname').value, unit_big: document.getElementById('m-iub').value, unit_small: document.getElementById('m-ius').value, conversion: parseInt(document.getElementById('m-iconv').value), company_id: currentUser.id }]);
-            closeModal(); loadItems(); loadAppData(); toast("Master disimpan");
+            closeModal(); loadItems(); loadAppData(); toast("Barang berhasil ditambahkan");
         }
 
         async function deleteRecord(table, col, val, callback) {
-            if(confirm("Hapus data?")) { await sb.from(table).delete().eq(col, val); callback(); toast("Data terhapus", "danger"); }
+            if(confirm("Apakah Anda yakin ingin menghapus data ini?")) { await sb.from(table).delete().eq(col, val); callback(); toast("Data berhasil dihapus", "danger"); }
         }
 
         function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
-        
-        function saveConfig() {
-            localStorage.setItem('inv_url', document.getElementById('cfg-url').value);
-            localStorage.setItem('inv_key', document.getElementById('cfg-key').value);
-            location.reload();
-        }
 
         function toast(msg, type="primary") {
             const t = document.getElementById('toast'); t.innerText = msg;
@@ -495,13 +612,10 @@
             t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000);
         }
 
-        function initDB() {
-            const url = localStorage.getItem('inv_url'), key = localStorage.getItem('inv_key');
-            if (url && key) { sb = supabase.createClient(url, key); initUI(); } 
-            else { document.getElementById('app').style.display = 'block'; switchTab('config'); }
-        }
-
-        window.onload = initDB;
+        window.onload = () => {
+            initDB();
+            initUI();
+        };
     </script>
 </body>
 </html>
