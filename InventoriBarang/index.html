@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventori Pro - Multi Tenant</title>
+    <title>Management Data Barang</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -70,7 +70,7 @@
 
         /* Modals */
         .modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
-        .modal { background: white; padding: 30px; border-radius: 20px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+        .modal { background: white; padding: 30px; border-radius: 20px; width: 100%; max-width: 800px; max-height: 90vh; overflow-y: auto; }
         
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; margin-bottom: 6px; font-size: 0.85rem; font-weight: 600; color: var(--dark); }
@@ -117,7 +117,7 @@
     <div id="app" style="display: none;">
         <div class="sidebar">
             <div style="margin-bottom: 25px; padding: 10px;">
-                <h2 style="font-size: 1.1rem; letter-spacing: -0.5px;"><i class="fas fa-cubes-stacked" style="color: var(--primary);"></i> INV-CORE PRO</h2>
+                <h2 style="font-size: 1.1rem; letter-spacing: -0.5px;"><i class="fas fa-cubes-stacked" style="color: var(--primary);"></i> Inv GAS</h2>
             </div>
             
             <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 14px; margin-bottom: 20px;">
@@ -136,10 +136,7 @@
                     
                     <div class="nav-header">Inventori</div>
                     <div class="nav-link" onclick="switchTab('transactions', this)"><i class="fas fa-exchange-alt"></i> Transaksi Barang</div>
-                    
-                    <div class="nav-header">Laporan</div>
                     <div class="nav-link" onclick="switchTab('stock-report', this)"><i class="fas fa-clipboard-list"></i> Stok Per Gudang</div>
-                    <div class="nav-link" onclick="switchTab('item-report', this)"><i class="fas fa-file-invoice"></i> Laporan Data Barang</div>
                 </div>
 
                 <div class="super-view" style="display: none;">
@@ -158,7 +155,7 @@
                 <div id="header-actions"></div>
             </div>
 
-            <!-- Dashboard -->
+            <!-- Tab Dashboard -->
             <div id="tab-dashboard" class="tab-content">
                 <div class="grid-3">
                     <div class="card">
@@ -182,6 +179,7 @@
                 </div>
             </div>
 
+            <!-- Tab Manage Companies (Superadmin) -->
             <div id="tab-manage-companies" class="tab-content" style="display: none;">
                 <div class="card">
                     <table id="company-table">
@@ -191,53 +189,55 @@
                 </div>
             </div>
 
+            <!-- Tab Config (Superadmin) -->
             <div id="tab-config" class="tab-content" style="display: none;">
                 <div class="card" style="max-width: 600px; margin: 0 auto;">
                     <div style="text-align: center; margin-bottom: 20px;">
                         <i class="fas fa-database fa-3x" style="color: var(--warning);"></i>
                         <h2 style="margin-top: 15px;">Konfigurasi Supabase</h2>
+                        <p style="color: var(--gray); font-size: 0.9rem;">Hanya Superadmin yang dapat mengubah pengaturan ini.</p>
                     </div>
+                    <hr style="border: 0; border-top: 1px solid #f1f5f9; margin-bottom: 20px;">
                     <div class="form-group">
                         <label>Supabase Project URL</label>
                         <input type="text" id="cfg-url" placeholder="https://xyz.supabase.co">
                     </div>
                     <div class="form-group">
                         <label>Supabase Anon Key</label>
-                        <input type="password" id="cfg-key" placeholder="Key...">
+                        <input type="password" id="cfg-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
                     </div>
-                    <button class="btn btn-primary" onclick="saveConfig()" style="width: 100%; justify-content: center; padding: 15px;">Simpan & Hubungkan</button>
+                    <div style="background: #fff8eb; padding: 15px; border-radius: 10px; border-left: 4px solid var(--warning); margin-bottom: 20px;">
+                        <p style="font-size: 0.8rem; color: #92400e;">
+                            <i class="fas fa-exclamation-triangle"></i> <strong>Peringatan:</strong> Mengubah pengaturan ini akan memutuskan koneksi saat ini. Pastikan URL dan Key benar agar aplikasi tetap dapat diakses.
+                        </p>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveConfig()" style="width: 100%; justify-content: center; padding: 15px;">
+                        <i class="fas fa-save"></i> Simpan & Hubungkan Kembali
+                    </button>
                 </div>
             </div>
 
+            <!-- Tab Warehouses -->
             <div id="tab-warehouses" class="tab-content" style="display: none;">
                 <div class="card"><table id="warehouse-table"><thead><tr><th>Kode</th><th>Nama Gudang</th><th>Lokasi</th><th>Aksi</th></tr></thead><tbody></tbody></table></div>
             </div>
 
+            <!-- Tab Items -->
             <div id="tab-items" class="tab-content" style="display: none;">
                 <div class="card"><table id="master-items-table"><thead><tr><th>Nama Barang</th><th>Satuan (B/K)</th><th>Konv</th><th>Total Stok</th><th>Aksi</th></tr></thead><tbody></tbody></table></div>
             </div>
 
+            <!-- Tab Transactions -->
             <div id="tab-transactions" class="tab-content" style="display: none;">
                 <div class="card"><table id="trans-table"><thead><tr><th>Waktu</th><th>Barang</th><th>Tipe</th><th>Jumlah</th><th>Gudang</th></tr></thead><tbody></tbody></table></div>
             </div>
 
+            <!-- Tab Stock Report -->
             <div id="tab-stock-report" class="tab-content" style="display: none;">
                 <div class="form-group" style="max-width: 300px;"><label>Pilih Gudang</label><select id="report-wh-filter" onchange="loadStockReport()"></select></div>
                 <div class="card"><table id="stock-report-table"><thead><tr><th>Nama Barang</th><th>Stok</th><th>Satuan</th></tr></thead><tbody></tbody></table></div>
             </div>
 
-            <div id="tab-item-report" class="tab-content" style="display: none;">
-                <div class="card">
-                    <div class="form-group" style="max-width: 400px; margin-bottom: 20px;">
-                        <label>Cari Barang</label>
-                        <input type="text" id="item-report-search" placeholder="Ketik nama barang..." onkeyup="loadItemReport()">
-                    </div>
-                    <table id="item-report-table">
-                        <thead><tr><th>Nama Barang</th><th>Satuan B</th><th>Satuan K</th><th>Konv</th><th>Stok</th><th>Status</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -255,159 +255,367 @@
         let warehouses = [];
         let items = [];
 
+        // --- DATABASE INITIALIZATION ---
         function initDB() {
             const url = localStorage.getItem('inv_url');
             const key = localStorage.getItem('inv_key');
+            const statusEl = document.getElementById('db-conn-status');
+
             if (url && key) {
                 try {
                     sb = supabase.createClient(url, key);
-                    document.getElementById('db-conn-status').className = "db-status status-connected";
-                    document.getElementById('db-conn-status').innerText = "Database Terhubung";
-                } catch (e) { console.error(e); }
+                    statusEl.innerText = "Database Terhubung";
+                    statusEl.className = "db-status status-connected";
+                    
+                    // Populate config inputs if they exist (on tab config)
+                    if(document.getElementById('cfg-url')) document.getElementById('cfg-url').value = url;
+                    if(document.getElementById('cfg-key')) document.getElementById('cfg-key').value = key;
+                } catch (e) {
+                    statusEl.innerText = "Error Koneksi";
+                    statusEl.className = "db-status status-disconnected";
+                }
+            } else {
+                statusEl.innerText = "Database Belum Dikonfigurasi";
+                statusEl.className = "db-status status-disconnected";
             }
         }
 
+        // --- AUTHENTICATION ---
         async function handleLogin() {
             const id = document.getElementById('login-id').value;
             const pass = document.getElementById('login-pass').value;
-            if (!sb && id === 'SUPER' && pass === 'INIT123') {
-                currentUser = { id: 'SUPER', name: 'Initial Super', is_superadmin: true };
-                localStorage.setItem('session_user', JSON.stringify(currentUser));
-                initUI(); return;
+            
+            if (!sb) { 
+                // Hardcoded superadmin login for first time config if DB is not set
+                if (id === 'SUPER' && pass === 'INIT123') {
+                    const tempSuper = { id: 'SUPER', name: 'Initial Super', is_superadmin: true };
+                    currentUser = tempSuper;
+                    localStorage.setItem('session_user', JSON.stringify(tempSuper));
+                    initUI();
+                    toast("Mode Inisialisasi Superadmin");
+                    return;
+                }
+                alert("Database belum terhubung! Gunakan akun SUPER default jika pertama kali."); 
+                return; 
             }
-            if (!sb) { alert("Konfigurasi DB belum ada!"); return; }
-            const { data } = await sb.from('companies').select('*').eq('id', id).single();
+
+            const { data, error } = await sb.from('companies').select('*').eq('id', id).single();
             if (data && data.password === pass) {
                 currentUser = data;
                 localStorage.setItem('session_user', JSON.stringify(data));
                 initUI();
             } else {
-                document.getElementById('login-err').innerText = "Login gagal!";
+                document.getElementById('login-err').innerText = "Kredensial tidak valid!";
                 document.getElementById('login-err').style.display = "block";
             }
+        }
+
+        function handleLogout() { 
+            localStorage.removeItem('session_user'); 
+            location.reload(); 
         }
 
         function initUI() {
             const session = localStorage.getItem('session_user');
             if (!session) return;
             currentUser = JSON.parse(session);
+            
             document.getElementById('login-page').style.display = 'none';
             document.getElementById('app').style.display = 'block';
             document.getElementById('display-user').innerText = currentUser.name;
+            
             if (currentUser.is_superadmin) {
                 document.querySelector('.super-view').style.display = 'block';
                 document.querySelector('.admin-view').style.display = 'none';
+                document.getElementById('role-badge').innerText = 'SUPERADMIN';
                 switchTab('manage-companies');
             } else {
+                document.querySelector('.super-view').style.display = 'none';
+                document.querySelector('.admin-view').style.display = 'block';
+                document.getElementById('role-badge').innerText = 'ADMIN';
                 loadAppData();
                 switchTab('dashboard');
             }
         }
 
+        // --- NAVIGATION ---
         function switchTab(tabId, el) {
             document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
             document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-            if(document.getElementById('tab-' + tabId)) document.getElementById('tab-' + tabId).style.display = 'block';
+            
+            const activeTab = document.getElementById('tab-' + tabId);
+            if(activeTab) activeTab.style.display = 'block';
+            
             if(el) el.classList.add('active');
+            
+            // Set Page Title
+            const titles = {
+                'dashboard': 'Beranda Ringkasan',
+                'manage-companies': 'Kelola Tenant Perusahaan',
+                'config': 'Konfigurasi Sistem Supabase',
+                'warehouses': 'Daftar Gudang Aktif',
+                'items': 'Master Data Barang',
+                'transactions': 'Riwayat Pergerakan Barang',
+                'stock-report': 'Laporan Stok Terkini'
+            };
+            document.getElementById('tab-title').innerText = titles[tabId] || 'Sistem Inventori';
+            
             updateHeaderActions(tabId);
+            
+            // Refresh Data based on Tab
+            if (!sb && tabId !== 'config') return; 
             if (tabId === 'manage-companies') loadCompanies();
             if (tabId === 'warehouses') loadWarehouses();
             if (tabId === 'items') loadItems();
             if (tabId === 'transactions') loadTransactions();
-            if (tabId === 'item-report') loadItemReport();
+            if (tabId === 'stock-report') loadStockReport();
         }
 
+        // --- SUPERADMIN CONFIG ---
+        function saveConfig() {
+            const url = document.getElementById('cfg-url').value.trim();
+            const key = document.getElementById('cfg-key').value.trim();
+            
+            if(!url || !key) {
+                toast("URL dan Key wajib diisi!", "danger");
+                return;
+            }
+            
+            localStorage.setItem('inv_url', url);
+            localStorage.setItem('inv_key', key);
+            toast("Konfigurasi tersimpan. Memuat ulang database...");
+            
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        }
+
+        // --- DATA LOADERS ---
+        async function loadAppData() {
+            if (!sb) return;
+            const { count: itemC } = await sb.from('master_items').select('*', {count:'exact', head:true}).eq('company_id', currentUser.id);
+            const { count: whC } = await sb.from('warehouses').select('*', {count:'exact', head:true}).eq('company_id', currentUser.id);
+            const { count: trC } = await sb.from('transactions').select('*', {count:'exact', head:true}).eq('company_id', currentUser.id);
+            
+            document.getElementById('count-items').innerText = itemC || 0;
+            document.getElementById('count-wh').innerText = whC || 0;
+            document.getElementById('count-trans').innerText = trC || 0;
+            
+            const { data: whs } = await sb.from('warehouses').select('*').eq('company_id', currentUser.id);
+            warehouses = whs || [];
+            const { data: its } = await sb.from('master_items').select('*').eq('company_id', currentUser.id);
+            items = its || [];
+
+            const select = document.getElementById('report-wh-filter');
+            if(select) select.innerHTML = '<option value="">-- Pilih Gudang --</option>' + warehouses.map(w => `<option value="${w.id}">${w.name}</option>`).join('');
+        }
+
+        // --- BATCH TRANSACTION LOGIC ---
+        function openBatchModal(type) {
+            const modal = document.getElementById('modal-overlay');
+            const content = document.getElementById('modal-content');
+            modal.style.display = 'flex';
+            
+            const title = type === 'IN' ? 'Input Barang Masuk' : 'Input Barang Keluar';
+            const colorClass = type === 'IN' ? 'btn-primary' : 'btn-danger';
+
+            content.innerHTML = `
+                <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3><i class="fas fa-list-check"></i> ${title}</h3>
+                    <button class="btn btn-outline btn-sm" onclick="addBatchRow()"><i class="fas fa-plus"></i> Tambah Baris</button>
+                </div>
+                
+                <div id="batch-container"></div>
+
+                <div style="margin-top:20px; display:flex; gap:10px; justify-content: flex-end;">
+                    <button class="btn btn-outline" onclick="closeModal()">Batal</button>
+                    <button class="btn ${colorClass}" onclick="submitBatchTransaction('${type}')">Simpan Semua</button>
+                </div>
+            `;
+            addBatchRow();
+        }
+
+        function addBatchRow() {
+            const container = document.getElementById('batch-container');
+            const rowId = 'row-' + Date.now();
+            const div = document.createElement('div');
+            div.className = 'batch-row';
+            div.id = rowId;
+            
+            div.innerHTML = `
+                <div class="form-group">
+                    <label>Barang</label>
+                    <select class="item-select">
+                        <option value="">-- Pilih --</option>
+                        ${items.map(i => `<option value="${i.id}">${i.name}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Gudang</label>
+                    <select class="wh-select">
+                        ${warehouses.map(w => `<option value="${w.id}">${w.name}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Qty</label>
+                    <input type="number" class="qty-input" value="1" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Satuan</label>
+                    <select class="unit-select">
+                        <option value="small">Kecil (Ecer)</option>
+                        <option value="big">Besar (Grosir)</option>
+                    </select>
+                </div>
+                <button class="btn btn-outline btn-sm" style="color:red; margin-bottom:12px; height: 45px;" onclick="removeBatchRow('${rowId}')"><i class="fas fa-trash"></i></button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeBatchRow(id) {
+            const row = document.getElementById(id);
+            if(document.querySelectorAll('.batch-row').length > 1) row.remove();
+        }
+
+        async function submitBatchTransaction(type) {
+            const rows = document.querySelectorAll('.batch-row');
+            const batchData = [];
+            const stockUpdates = {}; 
+
+            for (const row of rows) {
+                const itemId = row.querySelector('.item-select').value;
+                const whId = row.querySelector('.wh-select').value;
+                const qty = parseInt(row.querySelector('.qty-input').value);
+                const unitType = row.querySelector('.unit-select').value;
+
+                if (!itemId) continue;
+
+                const item = items.find(i => i.id === itemId);
+                const totalSmall = unitType === 'big' ? qty * item.conversion : qty;
+                const unitName = unitType === 'big' ? item.unit_big : item.unit_small;
+
+                batchData.push({
+                    item_id: itemId, warehouse_id: whId, company_id: currentUser.id,
+                    type, qty, unit: unitName, total_small_unit: totalSmall
+                });
+
+                if (!stockUpdates[itemId]) stockUpdates[itemId] = item.current_stock;
+                stockUpdates[itemId] = type === 'IN' ? stockUpdates[itemId] + totalSmall : stockUpdates[itemId] - totalSmall;
+            }
+
+            if (batchData.length === 0) { toast("Data tidak lengkap", "danger"); return; }
+
+            const { error: insErr } = await sb.from('transactions').insert(batchData);
+            if (insErr) { toast("Gagal simpan transaksi", "danger"); return; }
+
+            for (const [id, newStock] of Object.entries(stockUpdates)) {
+                await sb.from('master_items').update({ current_stock: newStock }).eq('id', id);
+            }
+
+            toast(`Berhasil menyimpan ${batchData.length} transaksi`);
+            closeModal();
+            loadTransactions();
+            loadAppData();
+        }
+
+        // --- UTILS ---
         function updateHeaderActions(tabId) {
             const container = document.getElementById('header-actions');
             container.innerHTML = '';
             if (tabId === 'manage-companies') container.innerHTML = `<button class="btn btn-primary" onclick="openModal('add-company')">Tambah Tenant</button>`;
             if (tabId === 'warehouses') container.innerHTML = `<button class="btn btn-primary" onclick="openModal('add-warehouse')">Tambah Gudang</button>`;
             if (tabId === 'items') container.innerHTML = `<button class="btn btn-primary" onclick="openModal('add-item')">Master Baru</button>`;
-            if (tabId === 'transactions') container.innerHTML = `<button class="btn btn-primary" onclick="openBatchModal('IN')">Batch Masuk</button> <button class="btn btn-danger" onclick="openBatchModal('OUT')">Batch Keluar</button>`;
+            if (tabId === 'transactions') container.innerHTML = `
+                <button class="btn btn-primary" onclick="openBatchModal('IN')"><i class="fas fa-plus-circle"></i> Batch Masuk</button>
+                <button class="btn btn-danger" onclick="openBatchModal('OUT')"><i class="fas fa-minus-circle"></i> Batch Keluar</button>
+            `;
+        }
+
+        async function loadCompanies() {
+            if(!sb) return;
+            const { data } = await sb.from('companies').select('*').order('created_at');
+            document.getElementById('company-table').querySelector('tbody').innerHTML = (data || []).map(c => `
+                <tr><td><code>${c.id}</code></td><td><strong>${c.name}</strong></td><td><code>${c.password}</code></td><td>${new Date(c.created_at).toLocaleDateString()}</td><td>${!c.is_superadmin ? `<button class="btn btn-outline btn-sm" onclick="deleteRecord('companies','id','${c.id}', loadCompanies)">Hapus</button>` : '-'}</td></tr>
+            `).join('');
+        }
+
+        async function loadWarehouses() {
+            const { data } = await sb.from('warehouses').select('*').eq('company_id', currentUser.id);
+            document.getElementById('warehouse-table').querySelector('tbody').innerHTML = (data || []).map(w => `
+                <tr><td><code>${w.id.substring(0,5)}</code></td><td><strong>${w.name}</strong></td><td>${w.location || '-'}</td><td><button class="btn btn-outline btn-sm" onclick="deleteRecord('warehouses','id','${w.id}', loadWarehouses)">Hapus</button></td></tr>
+            `).join('');
+        }
+
+        async function loadItems() {
+            const { data } = await sb.from('master_items').select('*').eq('company_id', currentUser.id);
+            document.getElementById('master-items-table').querySelector('tbody').innerHTML = (data || []).map(i => `
+                <tr><td><strong>${i.name}</strong></td><td>${i.unit_big}/${i.unit_small}</td><td>1:${i.conversion}</td><td><span class="badge badge-in">${i.current_stock} ${i.unit_small}</span></td><td><button class="btn btn-outline btn-sm" onclick="deleteRecord('master_items','id','${i.id}', loadItems)">Hapus</button></td></tr>
+            `).join('');
+        }
+
+        async function loadTransactions() {
+            const { data } = await sb.from('transactions').select('*, master_items(name), warehouses(name)').eq('company_id', currentUser.id).order('created_at', {ascending: false});
+            document.getElementById('trans-table').querySelector('tbody').innerHTML = (data || []).map(t => `
+                <tr><td><small>${new Date(t.created_at).toLocaleString()}</small></td><td>${t.master_items?.name}</td><td><span class="badge ${t.type==='IN'?'badge-in':'badge-out'}">${t.type}</span></td><td>${t.qty} ${t.unit}</td><td><small>${t.warehouses?.name || '-'}</small></td></tr>
+            `).join('');
+        }
+
+        async function loadStockReport() {
+            const whId = document.getElementById('report-wh-filter').value;
+            if(!whId) return;
+            const { data: trans } = await sb.from('transactions').select('*').eq('warehouse_id', whId);
+            const reportData = items.map(item => {
+                const itemTrans = (trans || []).filter(t => t.item_id === item.id);
+                const stock = itemTrans.reduce((acc, t) => t.type === 'IN' ? acc + t.total_small_unit : acc - t.total_small_unit, 0);
+                return { name: item.name, stock, unit: item.unit_small };
+            });
+            document.getElementById('stock-report-table').querySelector('tbody').innerHTML = reportData.map(r => `
+                <tr><td>${r.name}</td><td><strong>${r.stock}</strong></td><td>${r.unit}</td></tr>
+            `).join('');
         }
 
         function openModal(type) {
             const modal = document.getElementById('modal-overlay');
             const content = document.getElementById('modal-content');
             modal.style.display = 'flex';
-            
             if (type === 'add-company') {
-                content.innerHTML = `
-                    <h3>Registrasi Tenant Baru</h3><br>
-                    <div class="form-group"><label>ID Perusahaan</label><input type="text" id="m-cid"></div>
-                    <div class="form-group"><label>Nama Perusahaan</label><input type="text" id="m-cname"></div>
-                    <div class="form-group"><label>Password</label><input type="text" id="m-cpass" value="admin123"></div>
-                    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
-                        <button class="btn btn-outline" onclick="closeModal()">Batal</button>
-                        <button class="btn btn-primary" onclick="saveCompany()">Simpan Tenant</button>
-                    </div>`;
+                content.innerHTML = `<h3>Registrasi Tenant Baru</h3><br><div class="form-group"><label>ID Unik Perusahaan</label><input type="text" id="m-cid"></div><div class="form-group"><label>Nama Perusahaan</label><input type="text" id="m-cname"></div><div class="form-group"><label>Password Admin</label><input type="text" id="m-cpass" value="admin123"></div><button class="btn btn-primary" onclick="saveCompany()">Simpan Tenant</button>`;
             } else if (type === 'add-warehouse') {
-                content.innerHTML = `
-                    <h3>Tambah Gudang Baru</h3><br>
-                    <div class="form-group"><label>Nama Gudang</label><input type="text" id="m-whname"></div>
-                    <div class="form-group"><label>Lokasi</label><input type="text" id="m-whloc"></div>
-                    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
-                        <button class="btn btn-outline" onclick="closeModal()">Batal</button>
-                        <button class="btn btn-primary" onclick="saveWarehouse()">Simpan Gudang</button>
-                    </div>`;
+                content.innerHTML = `<h3>Tambah Gudang Baru</h3><br><div class="form-group"><label>Nama Gudang</label><input type="text" id="m-whname"></div><div class="form-group"><label>Lokasi / Deskripsi</label><input type="text" id="m-whloc"></div><button class="btn btn-primary" onclick="saveWarehouse()">Simpan Gudang</button>`;
             } else if (type === 'add-item') {
-                content.innerHTML = `
-                    <h3>Tambah Master Barang</h3><br>
-                    <div class="form-group"><label>Nama Barang</label><input type="text" id="m-iname"></div>
-                    <div class="form-group"><label>Satuan Besar</label><input type="text" id="m-iub" placeholder="Dus/Box"></div>
-                    <div class="form-group"><label>Satuan Kecil</label><input type="text" id="m-ius" placeholder="Pcs/Bks"></div>
-                    <div class="form-group"><label>Konversi</label><input type="number" id="m-iconv" value="1"></div>
-                    <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
-                        <button class="btn btn-outline" onclick="closeModal()">Batal</button>
-                        <button class="btn btn-primary" onclick="saveItem()">Simpan Barang</button>
-                    </div>`;
+                content.innerHTML = `<h3>Tambah Master Barang</h3><br><div class="form-group"><label>Nama Barang</label><input type="text" id="m-iname"></div><div class="form-group"><label>Satuan Besar (Contoh: Dus)</label><input type="text" id="m-iub"></div><div class="form-group"><label>Satuan Kecil (Contoh: Pcs)</label><input type="text" id="m-ius"></div><div class="form-group"><label>Konversi (Berapa eceran dalam 1 grosir?)</label><input type="number" id="m-iconv" value="1"></div><button class="btn btn-primary" onclick="saveItem()">Simpan Barang</button>`;
             }
         }
 
-        async function saveCompany() { await sb.from('companies').insert([{ id: document.getElementById('m-cid').value, name: document.getElementById('m-cname').value, password: document.getElementById('m-cpass').value }]); closeModal(); loadCompanies(); toast("Berhasil"); }
-        async function saveWarehouse() { await sb.from('warehouses').insert([{ name: document.getElementById('m-whname').value, location: document.getElementById('m-whloc').value, company_id: currentUser.id }]); closeModal(); loadWarehouses(); loadAppData(); toast("Berhasil"); }
-        async function saveItem() { await sb.from('master_items').insert([{ name: document.getElementById('m-iname').value, unit_big: document.getElementById('m-iub').value, unit_small: document.getElementById('m-ius').value, conversion: parseInt(document.getElementById('m-iconv').value), current_stock: 0, company_id: currentUser.id }]); closeModal(); loadItems(); loadAppData(); toast("Berhasil"); }
+        async function saveCompany() {
+            await sb.from('companies').insert([{ id: document.getElementById('m-cid').value, name: document.getElementById('m-cname').value, password: document.getElementById('m-cpass').value }]);
+            closeModal(); loadCompanies(); toast("Tenant berhasil ditambahkan");
+        }
+        async function saveWarehouse() {
+            await sb.from('warehouses').insert([{ name: document.getElementById('m-whname').value, location: document.getElementById('m-whloc').value, company_id: currentUser.id }]);
+            closeModal(); loadWarehouses(); loadAppData(); toast("Gudang berhasil ditambahkan");
+        }
+        async function saveItem() {
+            await sb.from('master_items').insert([{ name: document.getElementById('m-iname').value, unit_big: document.getElementById('m-iub').value, unit_small: document.getElementById('m-ius').value, conversion: parseInt(document.getElementById('m-iconv').value), company_id: currentUser.id }]);
+            closeModal(); loadItems(); loadAppData(); toast("Barang berhasil ditambahkan");
+        }
+
+        async function deleteRecord(table, col, val, callback) {
+            if(confirm("Apakah Anda yakin ingin menghapus data ini?")) { await sb.from(table).delete().eq(col, val); callback(); toast("Data berhasil dihapus", "danger"); }
+        }
 
         function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
-        function toast(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.style.display = 'block'; setTimeout(() => t.style.display='none', 2000); }
 
-        async function loadAppData() {
-            if(!sb) return;
-            const { data: whs } = await sb.from('warehouses').select('*').eq('company_id', currentUser.id);
-            warehouses = whs || [];
-            const { data: its } = await sb.from('master_items').select('*').eq('company_id', currentUser.id);
-            items = its || [];
-            const { count: iC } = await sb.from('master_items').select('*', {count:'exact', head:true}).eq('company_id', currentUser.id);
-            document.getElementById('count-items').innerText = iC || 0;
+        function toast(msg, type="primary") {
+            const t = document.getElementById('toast'); t.innerText = msg;
+            t.style.background = type === 'danger' ? 'var(--danger)' : 'var(--dark)';
+            t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000);
         }
 
-        async function loadWarehouses() {
-            const { data } = await sb.from('warehouses').select('*').eq('company_id', currentUser.id);
-            document.getElementById('warehouse-table').querySelector('tbody').innerHTML = (data || []).map(w => `<tr><td><code>${w.id.substring(0,5)}</code></td><td>${w.name}</td><td>${w.location}</td><td><button class="btn btn-outline btn-sm" onclick="deleteRecord('warehouses','id','${w.id}', loadWarehouses)">Hapus</button></td></tr>`).join('');
-        }
-
-        async function loadItems() {
-            const { data } = await sb.from('master_items').select('*').eq('company_id', currentUser.id);
-            document.getElementById('master-items-table').querySelector('tbody').innerHTML = (data || []).map(i => `<tr><td>${i.name}</td><td>${i.unit_big}/${i.unit_small}</td><td>1:${i.conversion}</td><td>${i.current_stock}</td><td><button class="btn btn-outline btn-sm" onclick="deleteRecord('master_items','id','${i.id}', loadItems)">Hapus</button></td></tr>`).join('');
-        }
-
-        async function loadTransactions() {
-            const { data } = await sb.from('transactions').select('*, master_items(name), warehouses(name)').eq('company_id', currentUser.id).order('created_at', {ascending: false});
-            document.getElementById('trans-table').querySelector('tbody').innerHTML = (data || []).map(t => `<tr><td>${new Date(t.created_at).toLocaleString()}</td><td>${t.master_items?.name}</td><td>${t.type}</td><td>${t.qty} ${t.unit}</td><td>${t.warehouses?.name}</td></tr>`).join('');
-        }
-
-        async function loadItemReport() {
-            const q = document.getElementById('item-report-search').value.toLowerCase();
-            const { data } = await sb.from('master_items').select('*').eq('company_id', currentUser.id);
-            const filtered = (data || []).filter(i => i.name.toLowerCase().includes(q));
-            document.getElementById('item-report-table').querySelector('tbody').innerHTML = filtered.map(i => `<tr><td>${i.name}</td><td>${i.unit_big}</td><td>${i.unit_small}</td><td>${i.conversion}</td><td>${i.current_stock}</td><td>Status</td></tr>`).join('');
-        }
-
-        async function deleteRecord(t, c, v, cb) { if(confirm("Hapus?")) { await sb.from(t).delete().eq(c,v); cb(); } }
-        function handleLogout() { localStorage.removeItem('session_user'); location.reload(); }
-        function saveConfig() { localStorage.setItem('inv_url', document.getElementById('cfg-url').value); localStorage.setItem('inv_key', document.getElementById('cfg-key').value); location.reload(); }
-
-        window.onload = () => { initDB(); initUI(); };
+        window.onload = () => {
+            initDB();
+            initUI();
+        };
     </script>
 </body>
 </html>
