@@ -100,7 +100,7 @@
             <div class="card">
                 <h3>Log Aktivitas Terkini</h3>
                 <table id="table-recent">
-                    <thead><tr><th>Waktu</th><th>Barang</th><th>Tipe</th><th>Lokasi Gudang</th><th>Jumlah</th></tr></thead>
+                    <thead><tr><th>Waktu</th><th>Barang</th><th>Tipe</th><th>Lokasi Gudang</th><th>Jumlah (Unit Terkecil)</th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
@@ -128,7 +128,7 @@
             </header>
             <div class="card">
                 <table>
-                    <thead><tr><th>Nama Barang</th><th>Konversi</th><th>Total Stok Global</th><th>Aksi</th></tr></thead>
+                    <thead><tr><th>Nama Barang</th><th>Konversi Satuan</th><th>Total Stok Global</th><th>Aksi</th></tr></thead>
                     <tbody id="body-barang"></tbody>
                 </table>
             </div>
@@ -146,7 +146,7 @@
             </header>
             <div class="card">
                 <table>
-                    <thead><tr><th>Gudang</th><th>Nama Produk</th><th>Jumlah Stok (Eceran)</th><th>Status</th></tr></thead>
+                    <thead><tr><th>Gudang</th><th>Nama Produk</th><th>Jumlah Stok (Unit Terkecil)</th><th>Status</th></tr></thead>
                     <tbody id="body-stok-gudang"></tbody>
                 </table>
             </div>
@@ -155,12 +155,12 @@
         <!-- Barang Masuk/Keluar -->
         <div id="section-masuk" class="app-section" style="display:none;">
             <header><h2>Riwayat Barang Masuk</h2><button class="btn btn-success" onclick="openModal('transaksi', {type:'IN'})">Input Masuk</button></header>
-            <div class="card"><table id="table-in"><thead><tr><th>Tanggal</th><th>Barang</th><th>Tujuan Gudang</th><th>Jumlah</th><th>Aksi</th></tr></thead><tbody id="body-masuk"></tbody></table></div>
+            <div class="card"><table id="table-in"><thead><tr><th>Tanggal</th><th>Barang</th><th>Tujuan Gudang</th><th>Jumlah (Unit Terkecil)</th><th>Aksi</th></tr></thead><tbody id="body-masuk"></tbody></table></div>
         </div>
 
         <div id="section-keluar" class="app-section" style="display:none;">
             <header><h2>Riwayat Barang Keluar</h2><button class="btn btn-danger" onclick="openModal('transaksi', {type:'OUT'})">Input Keluar</button></header>
-            <div class="card"><table id="table-out"><thead><tr><th>Tanggal</th><th>Barang</th><th>Asal Gudang</th><th>Jumlah</th><th>Aksi</th></tr></thead><tbody id="body-keluar"></tbody></table></div>
+            <div class="card"><table id="table-out"><thead><tr><th>Tanggal</th><th>Barang</th><th>Asal Gudang</th><th>Jumlah (Unit Terkecil)</th><th>Aksi</th></tr></thead><tbody id="body-keluar"></tbody></table></div>
         </div>
 
         <!-- Settings -->
@@ -252,8 +252,8 @@
                     <td>${new Date(t.created_at).toLocaleDateString()}</td>
                     <td><strong>${t.master_items?.name}</strong></td>
                     <td><span class="badge badge-dark">${t.warehouses?.name}</span></td>
-                    <td><strong>${t.total_small_unit}</strong> ${t.master_items?.unit_small}</td>
-                    <td><button class="btn btn-sm btn-danger" onclick="voidTransaction('${t.id}')">Batalkan</button></td>
+                    <td><span class="stock-main">${t.total_small_unit}</span> ${t.master_items?.unit_small}</td>
+                    <td><button class="btn btn-sm btn-danger" onclick="deleteData('transactions','${t.id}',()=>fetchHistory('${type}'))">Hapus</button></td>
                 </tr>
             `).join('') || '';
         }
@@ -368,7 +368,7 @@
             document.getElementById('table-recent').querySelector('tbody').innerHTML = recent?.map(r => `
                 <tr><td>${new Date(r.created_at).toLocaleTimeString()}</td><td><strong>${r.master_items?.name}</strong></td>
                 <td><span class="badge ${r.type==='IN'?'badge-success':'badge-danger'}">${r.type}</span></td>
-                <td>${r.warehouses?.name}</td><td>${r.total_small_unit} ${r.master_items?.unit_small}</td></tr>
+                <td>${r.warehouses?.name}</td><td><span class="stock-main">${r.total_small_unit}</span> ${r.master_items?.unit_small}</td></tr>
             `).join('') || '<tr><td colspan="5">Belum ada aktivitas</td></tr>';
         }
 
