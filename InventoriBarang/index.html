@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Manajemen Inventori Multi-Gudang</title>
+    <title>Aplikasi Inventori Multi-Perusahaan</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -23,9 +23,17 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
         body { background-color: #f0f2f5; display: flex; min-height: 100vh; }
 
+        /* Login/Company Selection Overlay */
+        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--dark); z-index: 2000; display: flex; justify-content: center; align-items: center; color: white; }
+        .login-box { background: white; padding: 40px; border-radius: 15px; width: 400px; color: var(--dark); text-align: center; box-shadow: var(--shadow); }
+        .company-option { padding: 15px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .company-option:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
         /* Sidebar */
-        .sidebar { width: 260px; background: var(--dark); color: white; padding: 20px 0; position: fixed; height: 100%; z-index: 100; }
-        .sidebar-brand { padding: 0 20px 30px; font-size: 1.5rem; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        .sidebar { width: 260px; background: var(--dark); color: white; padding: 20px 0; position: fixed; height: 100%; z-index: 100; transition: 0.3s; }
+        .sidebar-brand { padding: 0 20px 10px; font-size: 1.2rem; font-weight: bold; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #3e4f5f; margin-bottom: 20px; padding-bottom: 20px; }
+        .active-company-info { padding: 0 20px 20px; font-size: 0.85rem; color: var(--success); display: flex; align-items: center; gap: 8px; }
+        
         .nav-menu { list-style: none; }
         .nav-item { padding: 12px 25px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 15px; color: #bdc3c7; }
         .nav-item:hover, .nav-item.active { background: var(--primary); color: white; }
@@ -55,6 +63,7 @@
         .btn-primary { background: var(--primary); color: white; }
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
+        .btn-outline { background: transparent; border: 1px solid var(--gray); color: var(--gray); }
         .btn-sm { padding: 6px 12px; font-size: 0.8rem; }
 
         .stock-main { font-weight: bold; font-size: 1.1rem; color: var(--dark); }
@@ -71,8 +80,25 @@
 </head>
 <body>
 
+    <!-- Login Simulation -->
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2 style="margin-bottom: 10px;">Selamat Datang</h2>
+            <p style="margin-bottom: 25px; color: var(--gray);">Silahkan pilih perusahaan Anda</p>
+            <div id="company-list">
+                <div class="company-option" onclick="loginAs('C1', 'PT. Maju Bersama')"><i class="fas fa-building"></i> PT. Maju Bersama</div>
+                <div class="company-option" onclick="loginAs('C2', 'CV. Sumber Makmur')"><i class="fas fa-building"></i> CV. Sumber Makmur</div>
+                <div class="company-option" onclick="loginAs('C3', 'Toko Berkah Jaya')"><i class="fas fa-building"></i> Toko Berkah Jaya</div>
+            </div>
+            <p id="login-msg" style="margin-top: 15px; font-size: 0.8rem; color: var(--danger);"></p>
+        </div>
+    </div>
+
     <div class="sidebar">
-        <div class="sidebar-brand"><i class="fas fa-boxes-stacked"></i> INV-GUDANG</div>
+        <div class="sidebar-brand"><i class="fas fa-boxes-stacked"></i> INV-SYSTEM</div>
+        <div class="active-company-info" id="active-company-display">
+            <i class="fas fa-check-circle"></i> Memuat...
+        </div>
         <ul class="nav-menu">
             <li class="nav-item active" id="nav-dashboard" onclick="switchSection('dashboard')"><i class="fas fa-chart-line"></i> Dashboard</li>
             <li class="nav-item" id="nav-gudang" onclick="switchSection('gudang')"><i class="fas fa-warehouse"></i> Daftar Gudang</li>
@@ -80,7 +106,8 @@
             <li class="nav-item" id="nav-stok" onclick="switchSection('stok')"><i class="fas fa-list-check"></i> Stok per Gudang</li>
             <li class="nav-item" id="nav-masuk" onclick="switchSection('masuk')"><i class="fas fa-arrow-down" style="color: var(--success)"></i> Barang Masuk</li>
             <li class="nav-item" id="nav-keluar" onclick="switchSection('keluar')"><i class="fas fa-arrow-up" style="color: var(--danger)"></i> Barang Keluar</li>
-            <li class="nav-item" id="nav-settings" onclick="switchSection('settings')"><i class="fas fa-cog"></i> Pengaturan API</li>
+            <li class="nav-item" id="nav-settings" onclick="switchSection('settings')"><i class="fas fa-cog"></i> Database</li>
+            <li class="nav-item" style="margin-top: 20px; color: var(--danger);" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Keluar / Ganti Akun</li>
         </ul>
     </div>
 
@@ -88,19 +115,19 @@
         <!-- Dashboard -->
         <div id="section-dashboard" class="app-section">
             <header>
-                <h2>Ringkasan Multi-Gudang</h2>
+                <h2>Ringkasan Inventori</h2>
                 <div id="db-status"><span class="badge badge-danger">Offline</span></div>
             </header>
             <div class="stats-grid">
-                <div class="stat-card"><h3>Gudang Aktif</h3><p id="stat-warehouses">0</p></div>
-                <div class="stat-card"><h3>Total Jenis Barang</h3><p id="stat-items">0</p></div>
-                <div class="stat-card"><h3>Masuk (Bulan Ini)</h3><p id="stat-in-month">0</p></div>
-                <div class="stat-card"><h3>Keluar (Bulan Ini)</h3><p id="stat-out-month">0</p></div>
+                <div class="stat-card"><h3>Gudang Anda</h3><p id="stat-warehouses">0</p></div>
+                <div class="stat-card"><h3>Jenis Barang</h3><p id="stat-items">0</p></div>
+                <div class="stat-card"><h3>Transaksi Masuk</h3><p id="stat-in-month">0</p></div>
+                <div class="stat-card"><h3>Transaksi Keluar</h3><p id="stat-out-month">0</p></div>
             </div>
             <div class="card">
-                <h3>Log Aktivitas Terkini</h3>
+                <h3>Aktivitas Terkini (Perusahaan Anda)</h3>
                 <table id="table-recent">
-                    <thead><tr><th>Waktu</th><th>Barang</th><th>Tipe</th><th>Lokasi Gudang</th><th>Jumlah (Unit Terkecil)</th></tr></thead>
+                    <thead><tr><th>Waktu</th><th>Barang</th><th>Tipe</th><th>Gudang</th><th>Jumlah</th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
@@ -108,68 +135,36 @@
 
         <!-- Master Gudang -->
         <div id="section-gudang" class="app-section" style="display:none;">
-            <header>
-                <h2>Manajemen Gudang</h2>
-                <button class="btn btn-primary" onclick="openModal('gudang')"><i class="fas fa-plus"></i> Gudang Baru</button>
-            </header>
-            <div class="card">
-                <table>
-                    <thead><tr><th>Nama Gudang</th><th>Lokasi/Keterangan</th><th>Aksi</th></tr></thead>
-                    <tbody id="body-gudang"></tbody>
-                </table>
-            </div>
+            <header><h2>Gudang Cabang</h2><button class="btn btn-primary" onclick="openModal('gudang')"><i class="fas fa-plus"></i> Gudang Baru</button></header>
+            <div class="card"><table><thead><tr><th>Nama Gudang</th><th>Lokasi</th><th>Aksi</th></tr></thead><tbody id="body-gudang"></tbody></table></div>
         </div>
 
         <!-- Master Barang -->
         <div id="section-barang" class="app-section" style="display:none;">
-            <header>
-                <h2>Daftar Produk</h2>
-                <button class="btn btn-primary" onclick="openModal('barang')"><i class="fas fa-plus"></i> Tambah Produk</button>
-            </header>
-            <div class="card">
-                <table>
-                    <thead><tr><th>Nama Barang</th><th>Konversi Satuan</th><th>Total Stok Global</th><th>Aksi</th></tr></thead>
-                    <tbody id="body-barang"></tbody>
-                </table>
-            </div>
+            <header><h2>Katalog Barang</h2><button class="btn btn-primary" onclick="openModal('barang')"><i class="fas fa-plus"></i> Produk Baru</button></header>
+            <div class="card"><table><thead><tr><th>Nama Barang</th><th>Konversi</th><th>Total Stok</th><th>Aksi</th></tr></thead><tbody id="body-barang"></tbody></table></div>
         </div>
 
         <!-- Stok per Gudang -->
         <div id="section-stok" class="app-section" style="display:none;">
             <header>
-                <h2>Detail Stok per Lokasi</h2>
-                <div style="display:flex; gap:10px;">
-                    <select id="filter-stok-gudang" onchange="fetchStokPerGudang()" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; min-width: 200px;">
-                        <option value="all">Semua Gudang</option>
-                    </select>
-                </div>
+                <h2>Stok per Lokasi</h2>
+                <select id="filter-stok-gudang" onchange="fetchStokPerGudang()" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; min-width: 200px;"><option value="all">Semua Gudang</option></select>
             </header>
-            <div class="card">
-                <table>
-                    <thead><tr><th>Gudang</th><th>Nama Produk</th><th>Jumlah Stok (Unit Terkecil)</th><th>Status</th></tr></thead>
-                    <tbody id="body-stok-gudang"></tbody>
-                </table>
-            </div>
+            <div class="card"><table><thead><tr><th>Gudang</th><th>Nama Produk</th><th>Jumlah (Unit Terkecil)</th><th>Status</th></tr></thead><tbody id="body-stok-gudang"></tbody></table></div>
         </div>
 
-        <!-- Barang Masuk/Keluar -->
-        <div id="section-masuk" class="app-section" style="display:none;">
-            <header><h2>Riwayat Barang Masuk</h2><button class="btn btn-success" onclick="openModal('transaksi', {type:'IN'})">Input Masuk</button></header>
-            <div class="card"><table id="table-in"><thead><tr><th>Tanggal</th><th>Barang</th><th>Tujuan Gudang</th><th>Jumlah (Unit Terkecil)</th><th>Aksi</th></tr></thead><tbody id="body-masuk"></tbody></table></div>
-        </div>
-
-        <div id="section-keluar" class="app-section" style="display:none;">
-            <header><h2>Riwayat Barang Keluar</h2><button class="btn btn-danger" onclick="openModal('transaksi', {type:'OUT'})">Input Keluar</button></header>
-            <div class="card"><table id="table-out"><thead><tr><th>Tanggal</th><th>Barang</th><th>Asal Gudang</th><th>Jumlah (Unit Terkecil)</th><th>Aksi</th></tr></thead><tbody id="body-keluar"></tbody></table></div>
-        </div>
+        <!-- Masuk/Keluar -->
+        <div id="section-masuk" class="app-section" style="display:none;"><header><h2>Barang Masuk</h2><button class="btn btn-success" onclick="openModal('transaksi', {type:'IN'})">Input Masuk</button></header><div class="card"><table><thead><tr><th>Tanggal</th><th>Barang</th><th>Gudang</th><th>Jumlah</th><th>Aksi</th></tr></thead><tbody id="body-masuk"></tbody></table></div></div>
+        <div id="section-keluar" class="app-section" style="display:none;"><header><h2>Barang Keluar</h2><button class="btn btn-danger" onclick="openModal('transaksi', {type:'OUT'})">Input Keluar</button></header><div class="card"><table><thead><tr><th>Tanggal</th><th>Barang</th><th>Gudang</th><th>Jumlah</th><th>Aksi</th></tr></thead><tbody id="body-keluar"></tbody></table></div></div>
 
         <!-- Settings -->
         <div id="section-settings" class="app-section" style="display:none;">
-            <header><h2>Pengaturan Database</h2></header>
+            <header><h2>Konfigurasi Database</h2></header>
             <div class="card">
                 <div class="form-group"><label>URL Supabase</label><input type="text" id="cfg-url"></div>
                 <div class="form-group"><label>Anon Key</label><input type="password" id="cfg-key"></div>
-                <button class="btn btn-primary" onclick="saveConfig()">Simpan Konfigurasi</button>
+                <button class="btn btn-primary" onclick="saveConfig()">Hubungkan Database</button>
             </div>
         </div>
     </div>
@@ -179,7 +174,7 @@
 
     <script>
         let sb = null;
-        let appId = typeof __app_id !== 'undefined' ? __app_id : 'inv-multi-gudang';
+        let currentCompany = { id: '', name: '' };
 
         function toast(m, t='success') {
             const el = document.getElementById('toast');
@@ -187,12 +182,39 @@
             el.style.display='block'; setTimeout(()=>el.style.display='none', 3000);
         }
 
+        // LOGIN SYSTEM
+        function loginAs(id, name) {
+            const url = localStorage.getItem('inv_sb_url');
+            const key = localStorage.getItem('inv_sb_key');
+            
+            if(!url || !key) {
+                document.getElementById('login-msg').innerText = "Mohon atur URL & Key Supabase di tab Pengaturan terlebih dahulu.";
+                switchSection('settings');
+                document.getElementById('login-overlay').style.display = 'none';
+                return;
+            }
+
+            currentCompany = { id, name };
+            localStorage.setItem('active_company_id', id);
+            localStorage.setItem('active_company_name', name);
+            
+            document.getElementById('active-company-display').innerHTML = `<i class="fas fa-check-circle"></i> ${name}`;
+            document.getElementById('login-overlay').style.display = 'none';
+            init();
+        }
+
+        function logout() {
+            localStorage.removeItem('active_company_id');
+            localStorage.removeItem('active_company_name');
+            location.reload();
+        }
+
         function switchSection(id) {
             document.querySelectorAll('.app-section').forEach(s => s.style.display = 'none');
             document.getElementById('section-'+id).style.display = 'block';
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById('nav-'+id).classList.add('active');
-            if(sb) loadDataForSection(id);
+            if(sb && currentCompany.id) loadDataForSection(id);
         }
 
         async function loadDataForSection(id) {
@@ -204,57 +226,51 @@
             if(id === 'keluar') fetchHistory('OUT');
         }
 
-        // DATABASE OPERATIONS
+        // DATABASE OPERATIONS (Filtered by company_id)
         async function fetchGudang() {
-            const { data } = await sb.from('warehouses').select('*').order('name');
+            const { data } = await sb.from('warehouses').select('*').eq('company_id', currentCompany.id).order('name');
             document.getElementById('body-gudang').innerHTML = data?.map(g => `
                 <tr><td><strong>${g.name}</strong></td><td>${g.location || '-'}</td>
                 <td><button class="btn btn-sm btn-danger" onclick="deleteData('warehouses','${g.id}',fetchGudang)"><i class="fas fa-trash"></i></button></td></tr>
-            `).join('') || '<tr><td colspan="3">Belum ada gudang</td></tr>';
+            `).join('') || '<tr><td colspan="3">Gudang kosong</td></tr>';
         }
 
         async function fetchBarang() {
-            const { data } = await sb.from('master_items').select('*').order('name');
+            const { data } = await sb.from('master_items').select('*').eq('company_id', currentCompany.id).order('name');
             document.getElementById('body-barang').innerHTML = data?.map(b => `
-                <tr>
-                    <td><strong>${b.name}</strong></td>
-                    <td><span class="badge badge-dark">1 ${b.unit_big} = ${b.conversion} ${b.unit_small}</span></td>
-                    <td><span class="stock-main">${b.current_stock}</span> ${b.unit_small}</td>
-                    <td><button class="btn btn-sm btn-danger" onclick="deleteData('master_items','${b.id}',fetchBarang)"><i class="fas fa-trash"></i></button></td>
-                </tr>
+                <tr><td><strong>${b.name}</strong></td><td><span class="badge badge-dark">1 ${b.unit_big} = ${b.conversion} ${b.unit_small}</span></td>
+                <td><span class="stock-main">${b.current_stock}</span> ${b.unit_small}</td>
+                <td><button class="btn btn-sm btn-danger" onclick="deleteData('master_items','${b.id}',fetchBarang)"><i class="fas fa-trash"></i></button></td></tr>
             `).join('') || '';
         }
 
         async function fetchStokPerGudang() {
             const gudangId = document.getElementById('filter-stok-gudang').value;
-            let query = sb.from('inventory_stocks').select('*, master_items(*), warehouses(*)');
+            // Join items and warehouses, filtered by company_id
+            let query = sb.from('inventory_stocks').select('*, master_items!inner(*), warehouses!inner(*)').eq('master_items.company_id', currentCompany.id);
             if(gudangId !== 'all') query = query.eq('warehouse_id', gudangId);
             
             const { data } = await query;
-            document.getElementById('body-stok-gudang').innerHTML = data?.map(s => {
-                const status = s.stock <= 0 ? 'badge-danger' : (s.stock <= 10 ? 'badge-warning' : 'badge-success');
-                const statusText = s.stock <= 0 ? 'Habis' : (s.stock <= 10 ? 'Menipis' : 'Aman');
-                
-                return `<tr>
-                    <td><span class="badge badge-dark"><i class="fas fa-warehouse"></i> ${s.warehouses.name}</span></td>
-                    <td><strong>${s.master_items.name}</strong></td>
-                    <td><span class="stock-main">${s.stock}</span> ${s.master_items.unit_small}</td>
-                    <td><span class="badge ${status}">${statusText}</span></td>
-                </tr>`;
-            }).join('') || '<tr><td colspan="4">Tidak ada data stok di lokasi ini</td></tr>';
+            document.getElementById('body-stok-gudang').innerHTML = data?.map(s => `
+                <tr><td><span class="badge badge-dark">${s.warehouses.name}</span></td>
+                <td><strong>${s.master_items.name}</strong></td>
+                <td><span class="stock-main">${s.stock}</span> ${s.master_items.unit_small}</td>
+                <td><span class="badge ${s.stock<=10?'badge-warning':'badge-success'}">${s.stock<=10?'Menipis':'Aman'}</span></td></tr>
+            `).join('') || '<tr><td colspan="4">Data stok tidak tersedia</td></tr>';
         }
 
         async function fetchHistory(type) {
-            const { data } = await sb.from('transactions').select('*, master_items(name, unit_small), warehouses(name)').eq('type', type).order('created_at', {ascending:false});
+            const { data } = await sb.from('transactions').select('*, master_items!inner(name, unit_small, company_id), warehouses(name)')
+                .eq('type', type)
+                .eq('master_items.company_id', currentCompany.id)
+                .order('created_at', {ascending:false});
+            
             const tid = type==='IN'?'body-masuk':'body-keluar';
             document.getElementById(tid).innerHTML = data?.map(t => `
-                <tr>
-                    <td>${new Date(t.created_at).toLocaleDateString()}</td>
-                    <td><strong>${t.master_items?.name}</strong></td>
-                    <td><span class="badge badge-dark">${t.warehouses?.name}</span></td>
-                    <td><span class="stock-main">${t.total_small_unit}</span> ${t.master_items?.unit_small}</td>
-                    <td><button class="btn btn-sm btn-danger" onclick="deleteData('transactions','${t.id}',()=>fetchHistory('${type}'))">Hapus</button></td>
-                </tr>
+                <tr><td>${new Date(t.created_at).toLocaleDateString()}</td><td><strong>${t.master_items?.name}</strong></td>
+                <td><span class="badge badge-dark">${t.warehouses?.name}</span></td>
+                <td><span class="stock-main">${t.total_small_unit}</span> ${t.master_items?.unit_small}</td>
+                <td><button class="btn btn-sm btn-danger" onclick="deleteData('transactions','${t.id}',()=>fetchHistory('${type}'))">Hapus</button></td></tr>
             `).join('') || '';
         }
 
@@ -265,37 +281,31 @@
             overlay.style.display = 'flex';
 
             if(mode === 'gudang') {
-                content.innerHTML = `<h3>Tambah Gudang Baru</h3><br>
-                <div class="form-group"><label>Nama Gudang</label><input id="m-g-name" placeholder="Contoh: Gudang Timur"></div>
-                <div class="form-group"><label>Lokasi / Keterangan</label><textarea id="m-g-loc"></textarea></div>
-                <div style="display:flex; gap:10px; margin-top:20px;">
-                    <button class="btn btn-primary" style="flex:1" onclick="saveGudang()">Simpan</button> 
-                    <button class="btn" style="flex:1" onclick="closeModal()">Batal</button>
-                </div>`;
+                content.innerHTML = `<h3>Tambah Gudang - ${currentCompany.name}</h3><br>
+                <div class="form-group"><label>Nama Gudang</label><input id="m-g-name"></div>
+                <div class="form-group"><label>Lokasi</label><textarea id="m-g-loc"></textarea></div>
+                <button class="btn btn-primary" style="width:100%" onclick="saveGudang()">Simpan Gudang</button><br><br>
+                <button class="btn btn-outline" style="width:100%" onclick="closeModal()">Batal</button>`;
             } else if(mode === 'barang') {
-                content.innerHTML = `<h3>Tambah Produk Baru</h3><br>
-                <div class="form-group"><label>Nama Barang</label><input id="m-b-name" placeholder="Contoh: Kopi Sachet"></div>
+                content.innerHTML = `<h3>Produk Baru - ${currentCompany.name}</h3><br>
+                <div class="form-group"><label>Nama Produk</label><input id="m-b-name"></div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                    <div class="form-group"><label>Satuan Besar</label><input id="m-b-big" placeholder="Contoh: Dus"></div>
-                    <div class="form-group"><label>Satuan Kecil (Unit Terkecil)</label><input id="m-b-small" placeholder="Contoh: Pcs"></div>
+                    <div class="form-group"><label>Unit Besar (Dus/Box)</label><input id="m-b-big"></div>
+                    <div class="form-group"><label>Unit Kecil (Pcs/Butir)</label><input id="m-b-small"></div>
                 </div>
-                <div class="form-group"><label>Isi Satuan Kecil dalam 1 Satuan Besar</label><input type="number" id="m-b-conv" value="1"></div>
-                <div style="display:flex; gap:10px; margin-top:20px;">
-                    <button class="btn btn-primary" style="flex:1" onclick="saveBarang()">Simpan Produk</button> 
-                    <button class="btn" style="flex:1" onclick="closeModal()">Batal</button>
-                </div>`;
+                <div class="form-group"><label>Konversi (1 Satuan Besar = Berapa Satuan Kecil?)</label><input type="number" id="m-b-conv" value="1"></div>
+                <button class="btn btn-primary" style="width:100%" onclick="saveBarang()">Simpan Produk</button><br><br>
+                <button class="btn btn-outline" style="width:100%" onclick="closeModal()">Batal</button>`;
             } else if(mode === 'transaksi') {
-                const {data:items} = await sb.from('master_items').select('*');
-                const {data:gudangs} = await sb.from('warehouses').select('*');
-                content.innerHTML = `<h3>Barang ${extra.type==='IN'?'Masuk':'Keluar'}</h3><br>
+                const {data:items} = await sb.from('master_items').select('*').eq('company_id', currentCompany.id);
+                const {data:gudangs} = await sb.from('warehouses').select('*').eq('company_id', currentCompany.id);
+                content.innerHTML = `<h3>Transaksi ${extra.type==='IN'?'Masuk':'Keluar'}</h3><br>
                 <div class="form-group"><label>Pilih Barang</label><select id="t-item">${items.map(i=>`<option value="${i.id}">${i.name}</option>`).join('')}</select></div>
-                <div class="form-group"><label>Lokasi Gudang</label><select id="t-wh">${gudangs.map(g=>`<option value="${g.id}">${g.name}</option>`).join('')}</select></div>
-                <div class="form-group"><label>Kuantitas</label><input type="number" id="t-qty" value="1"></div>
-                <div class="form-group"><label>Pilih Satuan Input</label><select id="t-unit"><option value="small">Satuan Kecil (Eceran)</option><option value="big">Satuan Besar</option></select></div>
-                <div style="display:flex; gap:10px; margin-top:20px;">
-                    <button class="btn ${extra.type==='IN'?'btn-success':'btn-danger'}" style="flex:1" onclick="processTransaction('${extra.type}')">Konfirmasi</button> 
-                    <button class="btn" style="flex:1" onclick="closeModal()">Batal</button>
-                </div>`;
+                <div class="form-group"><label>Gudang</label><select id="t-wh">${gudangs.map(g=>`<option value="${g.id}">${g.name}</option>`).join('')}</select></div>
+                <div class="form-group"><label>Jumlah</label><input type="number" id="t-qty" value="1"></div>
+                <div class="form-group"><label>Pilih Satuan</label><select id="t-unit"><option value="small">Satuan Kecil</option><option value="big">Satuan Besar</option></select></div>
+                <button class="btn ${extra.type==='IN'?'btn-success':'btn-danger'}" style="width:100%" onclick="processTransaction('${extra.type}')">Proses Transaksi</button><br><br>
+                <button class="btn btn-outline" style="width:100%" onclick="closeModal()">Batal</button>`;
             }
         }
 
@@ -304,39 +314,26 @@
             const whId = document.getElementById('t-wh').value;
             const qty = parseInt(document.getElementById('t-qty').value);
             const isBig = document.getElementById('t-unit').value === 'big';
-
             const {data:item} = await sb.from('master_items').select('*').eq('id', itemId).single();
             const totalSmall = isBig ? (qty * item.conversion) : qty;
-            const unitName = isBig ? item.unit_big : item.unit_small;
 
             const {data:stockRecord} = await sb.from('inventory_stocks').select('stock').eq('item_id', itemId).eq('warehouse_id', whId).maybeSingle();
             const currentWhStock = stockRecord ? stockRecord.stock : 0;
+            if(type === 'OUT' && currentWhStock < totalSmall) return toast('Stok tidak mencukupi!', 'error');
 
-            if(type === 'OUT' && currentWhStock < totalSmall) return toast('Stok gudang tidak mencukupi!', 'error');
-
-            await sb.from('transactions').insert([{ 
-                item_id: itemId, warehouse_id: whId, type, qty, 
-                unit: unitName, total_small_unit: totalSmall 
-            }]);
-
+            await sb.from('transactions').insert([{ item_id: itemId, warehouse_id: whId, type, qty, unit: isBig?item.unit_big:item.unit_small, total_small_unit: totalSmall }]);
             const newWhStock = type === 'IN' ? (currentWhStock + totalSmall) : (currentWhStock - totalSmall);
-            if(stockRecord) {
-                await sb.from('inventory_stocks').update({ stock: newWhStock }).eq('item_id', itemId).eq('warehouse_id', whId);
-            } else {
-                await sb.from('inventory_stocks').insert([{ item_id: itemId, warehouse_id: whId, stock: newWhStock }]);
-            }
+            if(stockRecord) await sb.from('inventory_stocks').update({ stock: newWhStock }).eq('item_id', itemId).eq('warehouse_id', whId);
+            else await sb.from('inventory_stocks').insert([{ item_id: itemId, warehouse_id: whId, stock: newWhStock }]);
+            await sb.from('master_items').update({ current_stock: type==='IN'?(item.current_stock+totalSmall):(item.current_stock-totalSmall) }).eq('id', itemId);
 
-            const newGlobalStock = type === 'IN' ? (item.current_stock + totalSmall) : (item.current_stock - totalSmall);
-            await sb.from('master_items').update({ current_stock: newGlobalStock }).eq('id', itemId);
-
-            toast('Transaksi berhasil'); closeModal(); switchSection(type === 'IN' ? 'masuk' : 'keluar');
+            toast('Berhasil diproses'); closeModal(); switchSection(type==='IN'?'masuk':'keluar');
         }
 
         async function saveGudang() {
             const name = document.getElementById('m-g-name').value;
-            const loc = document.getElementById('m-g-loc').value;
             if(!name) return;
-            await sb.from('warehouses').insert([{ name, location: loc }]);
+            await sb.from('warehouses').insert([{ name, location: document.getElementById('m-g-loc').value, company_id: currentCompany.id }]);
             closeModal(); fetchGudang();
         }
 
@@ -345,55 +342,63 @@
             const b = document.getElementById('m-b-big').value;
             const s = document.getElementById('m-b-small').value;
             const c = parseInt(document.getElementById('m-b-conv').value);
-            await sb.from('master_items').insert([{ name:n, unit_big:b, unit_small:s, conversion:c }]);
+            await sb.from('master_items').insert([{ name:n, unit_big:b, unit_small:s, conversion:c, company_id: currentCompany.id }]);
             closeModal(); fetchBarang();
         }
 
         async function syncFilterGudang() {
-            const { data } = await sb.from('warehouses').select('*');
+            const { data } = await sb.from('warehouses').select('*').eq('company_id', currentCompany.id);
             const select = document.getElementById('filter-stok-gudang');
-            const current = select.value;
-            select.innerHTML = '<option value="all">Semua Gudang</option>' + 
-                data.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
-            select.value = current;
+            select.innerHTML = '<option value="all">Semua Gudang</option>' + data.map(g => `<option value="${g.id}">${g.name}</option>`).join('');
         }
 
         async function loadDashboard() {
-            const { count: whCount } = await sb.from('warehouses').select('*', { count: 'exact', head: true });
-            const { count: itCount } = await sb.from('master_items').select('*', { count: 'exact', head: true });
+            const { count: whCount } = await sb.from('warehouses').select('*', { count: 'exact', head: true }).eq('company_id', currentCompany.id);
+            const { count: itCount } = await sb.from('master_items').select('*', { count: 'exact', head: true }).eq('company_id', currentCompany.id);
             document.getElementById('stat-warehouses').innerText = whCount || 0;
             document.getElementById('stat-items').innerText = itCount || 0;
 
-            const { data: recent } = await sb.from('transactions').select('*, master_items(name, unit_small), warehouses(name)').order('created_at', {ascending:false}).limit(5);
+            const { data: recent } = await sb.from('transactions').select('*, master_items!inner(name, unit_small, company_id), warehouses(name)')
+                .eq('master_items.company_id', currentCompany.id)
+                .order('created_at', {ascending:false}).limit(5);
+            
             document.getElementById('table-recent').querySelector('tbody').innerHTML = recent?.map(r => `
                 <tr><td>${new Date(r.created_at).toLocaleTimeString()}</td><td><strong>${r.master_items?.name}</strong></td>
                 <td><span class="badge ${r.type==='IN'?'badge-success':'badge-danger'}">${r.type}</span></td>
-                <td>${r.warehouses?.name}</td><td><span class="stock-main">${r.total_small_unit}</span> ${r.master_items?.unit_small}</td></tr>
-            `).join('') || '<tr><td colspan="5">Belum ada aktivitas</td></tr>';
+                <td>${r.warehouses?.name}</td><td>${r.total_small_unit} ${r.master_items?.unit_small}</td></tr>
+            `).join('') || '<tr><td colspan="5">Belum ada aktivitas baru</td></tr>';
         }
 
-        async function deleteData(table, id, callback) {
-            if(confirm('Hapus data ini?')) { await sb.from(table).delete().eq('id', id); callback(); }
-        }
-
+        async function deleteData(table, id, callback) { if(confirm('Hapus data ini?')) { await sb.from(table).delete().eq('id', id); callback(); } }
         function closeModal() { document.getElementById('modal-overlay').style.display='none'; }
         
         function saveConfig() {
             localStorage.setItem('inv_sb_url', document.getElementById('cfg-url').value);
             localStorage.setItem('inv_sb_key', document.getElementById('cfg-key').value);
-            init(); toast('Tersimpan');
+            location.reload();
         }
 
         function init() {
             const url = localStorage.getItem('inv_sb_url');
             const key = localStorage.getItem('inv_sb_key');
+            const savedCId = localStorage.getItem('active_company_id');
+            const savedCName = localStorage.getItem('active_company_name');
+
             if(url && key) {
                 sb = supabase.createClient(url, key);
                 document.getElementById('cfg-url').value = url;
                 document.getElementById('cfg-key').value = key;
                 document.getElementById('db-status').innerHTML = '<span class="badge badge-success">Online</span>';
-                loadDashboard();
-            } else { switchSection('settings'); }
+                
+                if(savedCId) {
+                    currentCompany = { id: savedCId, name: savedCName };
+                    document.getElementById('active-company-display').innerHTML = `<i class="fas fa-check-circle"></i> ${savedCName}`;
+                    document.getElementById('login-overlay').style.display = 'none';
+                    loadDashboard();
+                } else {
+                    document.getElementById('login-overlay').style.display = 'flex';
+                }
+            } else { switchSection('settings'); document.getElementById('login-overlay').style.display = 'none'; }
         }
 
         window.onload = init;
