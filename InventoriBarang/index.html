@@ -150,6 +150,7 @@
 
         .badge-success { background: #d4edda; color: #155724; }
         .badge-danger { background: #f8d7da; color: #721c24; }
+        .badge-warning { background: #fff3cd; color: #856404; }
 
         .btn {
             padding: 8px 16px;
@@ -226,6 +227,9 @@
             <li class="nav-item" id="nav-barang" onclick="switchSection('barang')">
                 <i class="fas fa-box"></i> Master Barang
             </li>
+            <li class="nav-item" id="nav-stok" onclick="switchSection('stok')">
+                <i class="fas fa-warehouse"></i> Stok Barang
+            </li>
             <li class="nav-item" id="nav-masuk" onclick="switchSection('masuk')">
                 <i class="fas fa-arrow-down" style="color: var(--success)"></i> Barang Masuk
             </li>
@@ -299,6 +303,29 @@
                         </tr>
                     </thead>
                     <tbody id="body-master-barang"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Section Stok Barang -->
+        <div id="section-stok" class="app-section" style="display:none;">
+            <header>
+                <h2>Laporan Stok Terkini</h2>
+                <button class="btn btn-primary" onclick="fetchStokBarang()">
+                    <i class="fas fa-sync"></i> Refresh Data
+                </button>
+            </header>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama Barang</th>
+                            <th>Stok (Eceran)</th>
+                            <th>Detail Satuan</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="body-stok-barang"></tbody>
                 </table>
             </div>
         </div>
@@ -396,6 +423,7 @@
 
             if (supabaseClient) {
                 if (sectionId === 'barang') fetchMasterBarang();
+                if (sectionId === 'stok') fetchStokBarang();
                 if (sectionId === 'masuk') fetchTransaksi('IN');
                 if (sectionId === 'keluar') fetchTransaksi('OUT');
                 if (sectionId === 'dashboard') updateDashboard();
@@ -461,6 +489,27 @@
                 <td><button class="btn btn-sm btn-primary" onclick="editBarang('${item.id}')"><i class="fas fa-edit"></i></button>
                 <button class="btn btn-sm btn-danger" onclick="deleteBarang('${item.id}')"><i class="fas fa-trash"></i></button></td></tr>
             `).join('') || '';
+        }
+
+        async function fetchStokBarang() {
+            const { data } = await supabaseClient.from('master_items').select('*').order('name');
+            document.getElementById('body-stok-barang').innerHTML = data?.map(item => {
+                const bigUnitQty = Math.floor(item.current_stock / item.conversion);
+                const smallUnitQty = item.current_stock % item.conversion;
+                
+                let statusBadge = '<span class="badge badge-success">Stok Aman</span>';
+                if (item.current_stock <= 0) statusBadge = '<span class="badge badge-danger">Habis</span>';
+                else if (item.current_stock <= 10) statusBadge = '<span class="badge badge-warning">Hampir Habis</span>';
+
+                return `
+                <tr>
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.current_stock} ${item.unit_small}</td>
+                    <td>${bigUnitQty > 0 ? `${bigUnitQty} ${item.unit_big} ` : ''}${smallUnitQty} ${item.unit_small}</td>
+                    <td>${statusBadge}</td>
+                </tr>
+                `;
+            }).join('') || '';
         }
 
         async function fetchTransaksi(filterType) {
