@@ -2468,11 +2468,10 @@
                                         <th>Jumlah</th>
                                         <th>Gudang</th>
                                         <th>User</th>
-                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr><td colspan="8" style="text-align: center; padding: 40px;">Memuat data...</td></tr>
+                                    <tr><td colspan="7" style="text-align: center; padding: 40px;">Memuat data...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -3615,9 +3614,6 @@
                             <td><span class="status-badge status-active">Aktif</span></td>
                             <td>
                                 <div class="action-buttons">
-                                    <button class="btn btn-outline btn-sm" onclick="openEditWarehouseModal('${w.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
                                     <button class="btn btn-outline btn-sm" onclick="deleteRecord('warehouses','id','${w.id}', loadWarehouses)">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -4008,22 +4004,12 @@
                             </td>
                             <td><strong>${t.warehouses?.name || '-'}</strong></td>
                             <td><code>${currentUser.id}</code></td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn btn-outline btn-sm" onclick="openEditTransactionModal('${t.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-outline btn-sm" onclick="deleteRecord('transactions','id','${t.id}', loadTransactions)">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
                         </tr>
                     `).join('');
                 } else {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="8" style="text-align: center; padding: 40px; color: var(--gray);">
+                            <td colspan="7" style="text-align: center; padding: 40px; color: var(--gray);">
                                 <i class="fas fa-exchange-alt fa-2x" style="margin-bottom: 15px; opacity: 0.5;"></i>
                                 <p>Tidak ada transaksi</p>
                             </td>
@@ -5167,254 +5153,6 @@
 
         function openCategoryStats() {
             showToast("Fitur statistik kategori akan segera hadir", "info");
-        }
-
-        // --- EDIT WAREHOUSE FUNCTION ---
-        async function openEditWarehouseModal(warehouseId) {
-            const warehouse = warehouses.find(w => w.id === warehouseId);
-            if (!warehouse) return;
-            
-            const modal = document.getElementById('modal-overlay');
-            const content = document.getElementById('modal-content');
-            modal.style.display = 'flex';
-            
-            content.innerHTML = `
-                <div class="modal-header">
-                    <h3 class="modal-title">Edit Gudang</h3>
-                    <button class="modal-close" onclick="closeModal()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Nama Gudang</label>
-                        <input type="text" id="edit-whname" class="form-control" value="${warehouse.name}">
-                    </div>
-                    <div class="form-group">
-                        <label>Lokasi / Deskripsi</label>
-                        <textarea id="edit-whloc" class="form-control" placeholder="Alamat atau deskripsi gudang" rows="3">${warehouse.location || ''}</textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-outline" onclick="closeModal()">Batal</button>
-                    <button class="btn btn-primary" onclick="updateWarehouse('${warehouseId}')">Simpan Perubahan</button>
-                </div>
-            `;
-        }
-
-        async function updateWarehouse(warehouseId) {
-            const name = document.getElementById('edit-whname').value.trim();
-            const location = document.getElementById('edit-whloc').value.trim();
-            
-            if (!name) {
-                showToast("Nama gudang harus diisi", "error");
-                return;
-            }
-            
-            try {
-                const { error } = await sb.from('warehouses')
-                    .update({ 
-                        name, 
-                        location,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', warehouseId)
-                    .eq('company_id', currentUser.id);
-                
-                if (error) throw error;
-                
-                closeModal();
-                await loadWarehouses();
-                showToast("Gudang berhasil diperbarui", "success");
-                
-            } catch (error) {
-                console.error("Error updating warehouse:", error);
-                showToast("Gagal memperbarui gudang: " + error.message, "error");
-            }
-        }
-
-        // --- EDIT TRANSACTION FUNCTION ---
-        async function openEditTransactionModal(transactionId) {
-            if (!sb) return;
-            
-            try {
-                // Load transaction details
-                const { data: transaction, error } = await sb.from('transactions')
-                    .select('*, master_items(name, item_code, unit_big, unit_small, conversion), warehouses(name)')
-                    .eq('id', transactionId)
-                    .eq('company_id', currentUser.id)
-                    .single();
-                
-                if (error || !transaction) {
-                    showToast("Transaksi tidak ditemukan", "error");
-                    return;
-                }
-                
-                const modal = document.getElementById('modal-overlay');
-                const content = document.getElementById('modal-content');
-                modal.style.display = 'flex';
-                
-                // Determine if it's big or small unit
-                const isBigUnit = transaction.unit === transaction.master_items?.unit_big;
-                const unitType = isBigUnit ? 'big' : 'small';
-                const actualQty = isBigUnit ? transaction.qty : Math.floor(transaction.qty / (transaction.master_items?.conversion || 1));
-                
-                content.innerHTML = `
-                    <div class="modal-header">
-                        <h3 class="modal-title">Edit Transaksi ${transaction.type === 'IN' ? 'Masuk' : 'Keluar'}</h3>
-                        <button class="modal-close" onclick="closeModal()">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div style="margin-bottom: 20px; padding: 15px; background: var(--light); border-radius: var(--radius);">
-                            <div style="font-weight: 600; margin-bottom: 5px;">Informasi Transaksi</div>
-                            <div style="font-size: 0.85rem; color: var(--gray);">
-                                <div>Barang: <strong>${transaction.master_items?.name || 'Barang dihapus'}</strong></div>
-                                <div>Gudang: <strong>${transaction.warehouses?.name || '-'}</strong></div>
-                                <div>Tanggal: <strong>${new Date(transaction.created_at).toLocaleString('id-ID')}</strong></div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Jumlah</label>
-                            <input type="number" id="edit-trans-qty" class="form-control" value="${actualQty}" min="1">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Satuan</label>
-                            <select id="edit-trans-unit" class="form-control">
-                                <option value="small" ${unitType === 'small' ? 'selected' : ''}>Kecil (${transaction.master_items?.unit_small || 'Ecer'})</option>
-                                <option value="big" ${unitType === 'big' ? 'selected' : ''}>Besar (${transaction.master_items?.unit_big || 'Grosir'})</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Keterangan (Opsional)</label>
-                            <textarea id="edit-trans-note" class="form-control" rows="2" placeholder="Keterangan tambahan...">${transaction.note || ''}</textarea>
-                        </div>
-                        
-                        <div style="background: rgba(239, 68, 68, 0.1); padding: 15px; border-radius: var(--radius); border-left: 4px solid var(--danger); margin-top: 20px;">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i>
-                                <div style="font-weight: 600; color: var(--danger);">Peringatan</div>
-                            </div>
-                            <div style="font-size: 0.85rem; color: var(--danger); margin-top: 5px;">
-                                Mengedit transaksi akan mempengaruhi stok barang. Pastikan data yang dimasukkan benar.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-outline" onclick="closeModal()">Batal</button>
-                        <button class="btn btn-primary" onclick="updateTransaction('${transactionId}', '${transaction.item_id}', ${transaction.total_small_unit}, '${transaction.type}')">
-                            <i class="fas fa-save"></i>
-                            <span>Simpan Perubahan</span>
-                        </button>
-                    </div>
-                `;
-                
-            } catch (error) {
-                console.error("Error loading transaction details:", error);
-                showToast("Gagal memuat detail transaksi", "error");
-            }
-        }
-
-        async function updateTransaction(transactionId, itemId, oldTotalSmall, oldType) {
-            const qty = parseInt(document.getElementById('edit-trans-qty').value);
-            const unitType = document.getElementById('edit-trans-unit').value;
-            const note = document.getElementById('edit-trans-note').value.trim();
-            
-            if (!qty || qty <= 0) {
-                showToast("Jumlah harus diisi dengan nilai positif", "error");
-                return;
-            }
-            
-            try {
-                // Get item details
-                const { data: item } = await sb.from('master_items')
-                    .select('*')
-                    .eq('id', itemId)
-                    .eq('company_id', currentUser.id)
-                    .single();
-                
-                if (!item) {
-                    showToast("Barang tidak ditemukan", "error");
-                    return;
-                }
-                
-                // Calculate new total small units
-                const totalSmall = unitType === 'big' ? qty * item.conversion : qty;
-                const unitName = unitType === 'big' ? item.unit_big : item.unit_small;
-                
-                // Get transaction type (it shouldn't change when editing)
-                const { data: trans } = await sb.from('transactions')
-                    .select('type')
-                    .eq('id', transactionId)
-                    .single();
-                
-                const type = trans?.type || oldType;
-                
-                // Calculate stock adjustment
-                const stockAdjustment = totalSmall - oldTotalSmall;
-                
-                // Update transaction
-                const { error: updateError } = await sb.from('transactions')
-                    .update({ 
-                        qty,
-                        unit: unitName,
-                        total_small_unit: totalSmall,
-                        note,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', transactionId)
-                    .eq('company_id', currentUser.id);
-                
-                if (updateError) throw updateError;
-                
-                // Update item stock
-                let newStock = item.current_stock;
-                if (type === 'IN') {
-                    // If it was IN transaction, adjust by the difference
-                    newStock += stockAdjustment;
-                } else if (type === 'OUT') {
-                    // If it was OUT transaction, adjust by the difference (negative)
-                    newStock -= stockAdjustment;
-                    
-                    // Check if stock goes negative
-                    if (newStock < 0) {
-                        // Rollback transaction update
-                        await sb.from('transactions')
-                            .update({ 
-                                qty: Math.floor(oldTotalSmall / (unitType === 'big' ? item.conversion : 1)),
-                                unit: unitName,
-                                total_small_unit: oldTotalSmall,
-                                note: transaction.note
-                            })
-                            .eq('id', transactionId);
-                        
-                        showToast(`Stok tidak mencukupi. Stok tersedia: ${item.current_stock} ${item.unit_small}`, "error");
-                        return;
-                    }
-                }
-                
-                // Update item stock
-                const { error: stockError } = await sb.from('master_items')
-                    .update({ current_stock: newStock })
-                    .eq('id', itemId)
-                    .eq('company_id', currentUser.id);
-                
-                if (stockError) throw stockError;
-                
-                closeModal();
-                await loadTransactions();
-                await loadItems();
-                await loadDashboardData();
-                showToast("Transaksi berhasil diperbarui", "success");
-                
-            } catch (error) {
-                console.error("Error updating transaction:", error);
-                showToast("Gagal memperbarui transaksi: " + error.message, "error");
-            }
         }
 
         async function loadAppData() {
