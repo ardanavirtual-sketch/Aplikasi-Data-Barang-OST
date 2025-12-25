@@ -11,46 +11,43 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #007cba;
-            --primary-light: #00a0d2;
-            --primary-dark: #006ba1;
-            --secondary: #1e8cbe;
-            --secondary-light: #31a3dd;
-            --success: #46b450;
-            --success-light: #68de7c;
-            --danger: #dc3232;
-            --danger-light: #ff7b7b;
-            --warning: #ffb900;
-            --warning-light: #ffd567;
-            --info: #00a0d2;
-            --info-light: #7ad8f0;
-            --dark: #1d2327;
-            --dark-light: #2c3338;
-            --gray: #646970;
-            --gray-light: #dcdcde;
-            --light: #f6f7f7;
+            --primary: #4f46e5;
+            --primary-light: #6366f1;
+            --primary-dark: #4338ca;
+            --secondary: #8b5cf6;
+            --secondary-light: #a78bfa;
+            --success: #10b981;
+            --success-light: #34d399;
+            --danger: #ef4444;
+            --danger-light: #f87171;
+            --warning: #f59e0b;
+            --warning-light: #fbbf24;
+            --info: #0ea5e9;
+            --info-light: #38bdf8;
+            --dark: #1e293b;
+            --dark-light: #334155;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+            --light: #f8fafc;
             --sidebar-width: 280px;
             --sidebar-collapsed: 70px;
             --header-height: 70px;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-            --shadow: 0 2px 6px rgba(0,0,0,0.1);
-            --shadow-lg: 0 4px 12px rgba(0,0,0,0.1);
-            --shadow-xl: 0 8px 24px rgba(0,0,0,0.12);
-            --radius-sm: 4px;
-            --radius: 6px;
-            --radius-lg: 8px;
-            --radius-xl: 12px;
-            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            --wp-ocean-blue: #007cba;
-            --wp-ocean-light: #f1f5f9;
-            --wp-ocean-border: #c3c4c7;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            --radius-sm: 6px;
+            --radius: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 20px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
@@ -58,95 +55,6 @@
             color: var(--dark);
             min-height: 100vh;
             overflow-x: hidden;
-        }
-
-        /* WP Ocean Style Header */
-        .wp-ocean-header {
-            background: #fff;
-            border-bottom: 1px solid var(--wp-ocean-border);
-            padding: 0 20px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        .wp-ocean-header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .wp-ocean-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .wp-ocean-logo i {
-            color: var(--wp-ocean-blue);
-            font-size: 1.5rem;
-        }
-
-        .wp-ocean-logo h1 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .wp-ocean-header-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .wp-ocean-user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 12px;
-            border-radius: var(--radius);
-            background: var(--light);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .wp-ocean-user:hover {
-            background: var(--gray-light);
-        }
-
-        .wp-ocean-user-avatar {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .wp-ocean-user-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .wp-ocean-user-name {
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        .wp-ocean-user-role {
-            font-size: 0.75rem;
-            color: var(--gray);
         }
 
         /* Loading Screen */
@@ -310,7 +218,7 @@
         .login-form input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0, 124, 186, 0.1);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
         .login-btn {
@@ -341,7 +249,7 @@
         }
 
         #login-err {
-            background: rgba(220, 50, 50, 0.1);
+            background: rgba(239, 68, 68, 0.1);
             color: var(--danger);
             padding: 12px;
             border-radius: var(--radius);
@@ -369,43 +277,199 @@
         }
 
         .status-connected {
-            background: rgba(70, 180, 80, 0.1);
+            background: rgba(16, 185, 129, 0.1);
             color: var(--success);
         }
 
         .status-disconnected {
-            background: rgba(220, 50, 50, 0.1);
+            background: rgba(239, 68, 68, 0.1);
             color: var(--danger);
         }
 
         /* Main App Layout */
         #app {
             display: none;
-            margin-top: 60px;
         }
 
-        /* WP Ocean Sidebar */
-        .wp-ocean-sidebar {
+        /* Header */
+        .app-header {
+            height: var(--header-height);
+            background: white;
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            right: 0;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        .sidebar-collapsed + .main .app-header {
+            left: var(--sidebar-collapsed);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--dark);
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .menu-toggle:hover {
+            background: var(--gray-light);
+        }
+
+        .page-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+
+        .user-profile:hover {
+            background: var(--gray-light);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .notifications {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: white;
+            font-size: 0.7rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Sidebar */
+        .sidebar {
             width: var(--sidebar-width);
             background: white;
-            height: calc(100vh - 60px);
+            height: 100vh;
             position: fixed;
             left: 0;
-            top: 60px;
-            padding: 20px 0;
-            border-right: 1px solid var(--wp-ocean-border);
+            top: 0;
+            padding: 25px 0;
+            box-shadow: var(--shadow-lg);
             transition: var(--transition);
-            z-index: 900;
+            z-index: 200;
             display: flex;
             flex-direction: column;
             overflow-y: auto;
         }
 
-        .wp-ocean-sidebar-collapsed {
+        .sidebar-collapsed {
             width: var(--sidebar-collapsed);
         }
 
-        .wp-ocean-sidebar-user {
+        .sidebar-header {
+            padding: 0 20px 25px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-collapsed .sidebar-header {
+            justify-content: center;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-logo i {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar-logo h2 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .sidebar-collapsed .sidebar-logo h2 {
+            display: none;
+        }
+
+        .sidebar-user {
             padding: 15px 20px;
             margin: 0 15px 20px;
             background: var(--light);
@@ -415,32 +479,32 @@
             gap: 12px;
         }
 
-        .wp-ocean-sidebar-collapsed .wp-ocean-sidebar-user {
+        .sidebar-collapsed .sidebar-user {
             justify-content: center;
             padding: 15px 0;
             margin: 0 7px 20px;
         }
 
-        .wp-ocean-sidebar-user .wp-ocean-user-avatar {
+        .sidebar-user .user-avatar {
             width: 36px;
             height: 36px;
             font-size: 0.9rem;
         }
 
-        .wp-ocean-sidebar-user-info {
+        .sidebar-user-info {
             flex: 1;
         }
 
-        .wp-ocean-sidebar-collapsed .wp-ocean-sidebar-user-info {
+        .sidebar-collapsed .sidebar-user-info {
             display: none;
         }
 
-        .wp-ocean-sidebar-user-info .wp-ocean-user-name {
+        .sidebar-user-info .user-name {
             font-size: 0.85rem;
             font-weight: 700;
         }
 
-        .wp-ocean-sidebar-user-info .wp-ocean-user-company {
+        .sidebar-user-info .user-company {
             font-size: 0.75rem;
             color: var(--gray);
             white-space: nowrap;
@@ -448,16 +512,16 @@
             text-overflow: ellipsis;
         }
 
-        .wp-ocean-sidebar-menu {
+        .sidebar-menu {
             flex: 1;
             padding: 0 15px;
         }
 
-        .wp-ocean-sidebar-section {
+        .sidebar-section {
             margin-bottom: 25px;
         }
 
-        .wp-ocean-sidebar-section-title {
+        .sidebar-section-title {
             font-size: 0.75rem;
             color: var(--gray);
             text-transform: uppercase;
@@ -467,15 +531,15 @@
             padding-left: 5px;
         }
 
-        .wp-ocean-sidebar-collapsed .wp-ocean-sidebar-section-title {
+        .sidebar-collapsed .sidebar-section-title {
             display: none;
         }
 
-        .wp-ocean-nav-link {
+        .nav-link {
             display: flex;
             align-items: center;
             gap: 15px;
-            padding: 12px 15px;
+            padding: 14px 15px;
             color: var(--gray);
             text-decoration: none;
             border-radius: var(--radius);
@@ -483,34 +547,41 @@
             cursor: pointer;
             transition: var(--transition);
             position: relative;
-            border: 1px solid transparent;
         }
 
-        .wp-ocean-nav-link:hover {
+        .nav-link:hover {
             background: var(--light);
             color: var(--dark);
-            border-color: var(--wp-ocean-border);
         }
 
-        .wp-ocean-nav-link.active {
-            background: var(--light);
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
             color: var(--primary);
             font-weight: 600;
-            border-color: var(--wp-ocean-border);
-            border-left: 3px solid var(--primary);
         }
 
-        .wp-ocean-nav-link i {
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+
+        .nav-link i {
             font-size: 1.1rem;
             width: 20px;
             text-align: center;
         }
 
-        .wp-ocean-sidebar-collapsed .wp-ocean-nav-link span {
+        .sidebar-collapsed .nav-link span {
             display: none;
         }
 
-        .wp-ocean-nav-badge {
+        .nav-badge {
             margin-left: auto;
             background: var(--danger);
             color: white;
@@ -520,58 +591,59 @@
             font-weight: 600;
         }
 
-        .wp-ocean-sidebar-footer {
+        .sidebar-footer {
             padding: 20px 15px 0;
             border-top: 1px solid var(--gray-light);
         }
 
-        .wp-ocean-sidebar-collapsed .wp-ocean-sidebar-footer {
+        .sidebar-collapsed .sidebar-footer {
             padding: 20px 0 0;
         }
 
         /* Main Content */
-        .wp-ocean-main {
+        .main {
             margin-left: var(--sidebar-width);
+            margin-top: var(--header-height);
             padding: 30px;
-            min-height: calc(100vh - 60px);
+            min-height: calc(100vh - var(--header-height));
             transition: var(--transition);
         }
 
-        .wp-ocean-sidebar-collapsed + .wp-ocean-main {
+        .sidebar-collapsed + .main {
             margin-left: var(--sidebar-collapsed);
         }
 
         /* Dashboard */
-        .wp-ocean-dashboard-cards {
+        .dashboard-cards {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
             margin-bottom: 30px;
         }
 
-        .wp-ocean-dashboard-card {
+        .dashboard-card {
             background: white;
             border-radius: var(--radius-lg);
             padding: 25px;
             box-shadow: var(--shadow);
             transition: var(--transition);
-            border: 1px solid var(--wp-ocean-border);
+            border: 1px solid transparent;
         }
 
-        .wp-ocean-dashboard-card:hover {
+        .dashboard-card:hover {
             transform: translateY(-5px);
             box-shadow: var(--shadow-lg);
-            border-color: var(--primary-light);
+            border-color: var(--gray-light);
         }
 
-        .wp-ocean-card-header {
+        .card-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 15px;
         }
 
-        .wp-ocean-card-icon {
+        .card-icon {
             width: 50px;
             height: 50px;
             border-radius: var(--radius);
@@ -581,27 +653,27 @@
             font-size: 1.5rem;
         }
 
-        .wp-ocean-card-icon.primary {
-            background: rgba(0, 124, 186, 0.1);
+        .card-icon.primary {
+            background: rgba(79, 70, 229, 0.1);
             color: var(--primary);
         }
 
-        .wp-ocean-card-icon.success {
-            background: rgba(70, 180, 80, 0.1);
+        .card-icon.success {
+            background: rgba(16, 185, 129, 0.1);
             color: var(--success);
         }
 
-        .wp-ocean-card-icon.warning {
-            background: rgba(255, 185, 0, 0.1);
+        .card-icon.warning {
+            background: rgba(245, 158, 11, 0.1);
             color: var(--warning);
         }
 
-        .wp-ocean-card-icon.danger {
-            background: rgba(220, 50, 50, 0.1);
+        .card-icon.danger {
+            background: rgba(239, 68, 68, 0.1);
             color: var(--danger);
         }
 
-        .wp-ocean-card-title {
+        .card-title {
             font-size: 0.85rem;
             color: var(--gray);
             font-weight: 600;
@@ -609,29 +681,29 @@
             letter-spacing: 0.5px;
         }
 
-        .wp-ocean-card-value {
+        .card-value {
             font-size: 2rem;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--dark);
             margin: 10px 0 5px;
         }
 
-        .wp-ocean-card-trend {
+        .card-trend {
             font-size: 0.85rem;
             display: flex;
             align-items: center;
             gap: 5px;
         }
 
-        .wp-ocean-card-trend.positive {
+        .card-trend.positive {
             color: var(--success);
         }
 
-        .wp-ocean-card-trend.negative {
+        .card-trend.negative {
             color: var(--danger);
         }
 
-        .wp-ocean-dashboard-charts {
+        .dashboard-charts {
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 25px;
@@ -639,56 +711,54 @@
         }
 
         @media (max-width: 1200px) {
-            .wp-ocean-dashboard-charts {
+            .dashboard-charts {
                 grid-template-columns: 1fr;
             }
         }
 
-        .wp-ocean-chart-card {
+        .chart-card {
             background: white;
             border-radius: var(--radius-lg);
             padding: 25px;
             box-shadow: var(--shadow);
-            border: 1px solid var(--wp-ocean-border);
         }
 
-        .wp-ocean-chart-header {
+        .chart-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
 
-        .wp-ocean-chart-title {
+        .chart-title {
             font-size: 1.1rem;
             font-weight: 700;
             color: var(--dark);
         }
 
-        .wp-ocean-recent-activity {
+        .recent-activity {
             background: white;
             border-radius: var(--radius-lg);
             padding: 25px;
             box-shadow: var(--shadow);
-            border: 1px solid var(--wp-ocean-border);
         }
 
-        .wp-ocean-activity-list {
+        .activity-list {
             list-style: none;
         }
 
-        .wp-ocean-activity-item {
+        .activity-item {
             display: flex;
             align-items: center;
             padding: 15px 0;
             border-bottom: 1px solid var(--gray-light);
         }
 
-        .wp-ocean-activity-item:last-child {
+        .activity-item:last-child {
             border-bottom: none;
         }
 
-        .wp-ocean-activity-icon {
+        .activity-icon {
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -699,77 +769,74 @@
             font-size: 1rem;
         }
 
-        .wp-ocean-activity-icon.in {
-            background: rgba(70, 180, 80, 0.1);
+        .activity-icon.in {
+            background: rgba(16, 185, 129, 0.1);
             color: var(--success);
         }
 
-        .wp-ocean-activity-icon.out {
-            background: rgba(220, 50, 50, 0.1);
+        .activity-icon.out {
+            background: rgba(239, 68, 68, 0.1);
             color: var(--danger);
         }
 
-        .wp-ocean-activity-details {
+        .activity-details {
             flex: 1;
         }
 
-        .wp-ocean-activity-title {
+        .activity-title {
             font-weight: 600;
             font-size: 0.95rem;
             margin-bottom: 3px;
         }
 
-        .wp-ocean-activity-time {
+        .activity-time {
             font-size: 0.8rem;
             color: var(--gray);
         }
 
-        .wp-ocean-activity-amount {
+        .activity-amount {
             font-weight: 700;
             color: var(--dark);
         }
 
-        /* WP Ocean Tables */
-        .wp-ocean-table-card {
+        /* Tables */
+        .table-card {
             background: white;
             border-radius: var(--radius-lg);
             overflow: hidden;
             box-shadow: var(--shadow);
             margin-bottom: 30px;
-            border: 1px solid var(--wp-ocean-border);
         }
 
-        .wp-ocean-table-header {
+        .table-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px 25px;
-            border-bottom: 1px solid var(--wp-ocean-border);
-            background: var(--light);
+            border-bottom: 1px solid var(--gray-light);
         }
 
-        .wp-ocean-table-title {
+        .table-title {
             font-size: 1.2rem;
             font-weight: 700;
             color: var(--dark);
         }
 
-        .wp-ocean-table-actions {
+        .table-actions {
             display: flex;
             gap: 10px;
         }
 
-        .wp-ocean-table {
+        table {
             width: 100%;
             border-collapse: collapse;
-            background: white;
         }
 
-        .wp-ocean-table thead {
+        thead {
             background: var(--light);
         }
 
-        .wp-ocean-table th {
+        th {
             padding: 15px 20px;
             text-align: left;
             font-weight: 600;
@@ -777,26 +844,25 @@
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-bottom: 1px solid var(--wp-ocean-border);
+            border-bottom: 1px solid var(--gray-light);
         }
 
-        .wp-ocean-table td {
+        td {
             padding: 15px 20px;
-            border-bottom: 1px solid var(--wp-ocean-border);
+            border-bottom: 1px solid var(--gray-light);
             color: var(--dark);
             font-size: 0.95rem;
         }
 
-        .wp-ocean-table tbody tr {
+        tbody tr {
             transition: var(--transition);
         }
 
-        .wp-ocean-table tbody tr:hover {
-            background: rgba(0, 124, 186, 0.02);
+        tbody tr:hover {
+            background: rgba(79, 70, 229, 0.02);
         }
 
-        /* Status Badges */
-        .wp-ocean-status-badge {
+        .status-badge {
             display: inline-block;
             padding: 5px 12px;
             border-radius: 20px;
@@ -804,29 +870,28 @@
             font-weight: 600;
         }
 
-        .wp-ocean-status-active {
-            background: rgba(70, 180, 80, 0.1);
+        .status-active {
+            background: rgba(16, 185, 129, 0.1);
             color: var(--success);
         }
 
-        .wp-ocean-status-inactive {
-            background: rgba(220, 50, 50, 0.1);
+        .status-inactive {
+            background: rgba(239, 68, 68, 0.1);
             color: var(--danger);
         }
 
-        .wp-ocean-status-pending {
-            background: rgba(255, 185, 0, 0.1);
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
             color: var(--warning);
         }
 
-        /* Action Buttons */
-        .wp-ocean-action-buttons {
+        .action-buttons {
             display: flex;
             gap: 8px;
         }
 
-        /* WP Ocean Buttons */
-        .wp-ocean-btn {
+        /* Buttons */
+        .btn {
             padding: 10px 18px;
             border-radius: var(--radius);
             border: none;
@@ -839,57 +904,51 @@
             transition: var(--transition);
         }
 
-        .wp-ocean-btn:active {
+        .btn:active {
             transform: scale(0.98);
         }
 
-        .wp-ocean-btn-primary {
+        .btn-primary {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
-            border: 1px solid var(--primary);
         }
 
-        .wp-ocean-btn-primary:hover {
+        .btn-primary:hover {
             box-shadow: var(--shadow);
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
         }
 
-        .wp-ocean-btn-secondary {
+        .btn-secondary {
             background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
             color: white;
-            border: 1px solid var(--secondary);
         }
 
-        .wp-ocean-btn-success {
-            background: linear-gradient(135deg, var(--success) 0%, #3aa33e 100%);
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
             color: white;
-            border: 1px solid var(--success);
         }
 
-        .wp-ocean-btn-danger {
-            background: linear-gradient(135deg, var(--danger) 0%, #c32222 100%);
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
             color: white;
-            border: 1px solid var(--danger);
         }
 
-        .wp-ocean-btn-outline {
+        .btn-outline {
             background: transparent;
-            border: 1px solid var(--wp-ocean-border);
+            border: 1.5px solid var(--gray-light);
             color: var(--gray);
         }
 
-        .wp-ocean-btn-outline:hover {
+        .btn-outline:hover {
             border-color: var(--primary);
             color: var(--primary);
-            background: var(--light);
         }
 
-        .wp-ocean-btn-sm {
+        .btn-sm {
             padding: 6px 12px;
             font-size: 0.8rem;
         }
 
-        .wp-ocean-btn-icon {
+        .btn-icon {
             padding: 10px;
             width: 40px;
             height: 40px;
@@ -897,11 +956,11 @@
         }
 
         /* Forms */
-        .wp-ocean-form-group {
+        .form-group {
             margin-bottom: 20px;
         }
 
-        .wp-ocean-form-group label {
+        .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
@@ -909,24 +968,23 @@
             font-size: 0.9rem;
         }
 
-        .wp-ocean-form-control {
+        .form-control {
             width: 100%;
             padding: 12px 15px;
-            border: 1px solid var(--wp-ocean-border);
+            border: 2px solid var(--gray-light);
             border-radius: var(--radius);
             font-size: 0.95rem;
             transition: var(--transition);
-            background: white;
         }
 
-        .wp-ocean-form-control:focus {
+        .form-control:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0, 124, 186, 0.1);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
         /* Modals */
-        .wp-ocean-modal-overlay {
+        .modal-overlay {
             position: fixed;
             inset: 0;
             background: rgba(15, 23, 42, 0.7);
@@ -938,7 +996,7 @@
             padding: 20px;
         }
 
-        .wp-ocean-modal {
+        .modal {
             background: white;
             border-radius: var(--radius-xl);
             width: 100%;
@@ -947,7 +1005,6 @@
             overflow-y: auto;
             box-shadow: var(--shadow-xl);
             animation: modalSlideIn 0.3s ease;
-            border: 1px solid var(--wp-ocean-border);
         }
 
         @keyframes modalSlideIn {
@@ -961,22 +1018,21 @@
             }
         }
 
-        .wp-ocean-modal-header {
+        .modal-header {
             padding: 25px 30px 15px;
-            border-bottom: 1px solid var(--wp-ocean-border);
+            border-bottom: 1px solid var(--gray-light);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: var(--light);
         }
 
-        .wp-ocean-modal-title {
+        .modal-title {
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--dark);
         }
 
-        .wp-ocean-modal-close {
+        .modal-close {
             background: none;
             border: none;
             font-size: 1.2rem;
@@ -991,44 +1047,43 @@
             transition: var(--transition);
         }
 
-        .wp-ocean-modal-close:hover {
+        .modal-close:hover {
             background: var(--gray-light);
             color: var(--danger);
         }
 
-        .wp-ocean-modal-body {
+        .modal-body {
             padding: 25px 30px;
         }
 
-        .wp-ocean-modal-footer {
+        .modal-footer {
             padding: 15px 30px 25px;
-            border-top: 1px solid var(--wp-ocean-border);
+            border-top: 1px solid var(--gray-light);
             display: flex;
             justify-content: flex-end;
             gap: 12px;
-            background: var(--light);
         }
 
         /* Batch Transaction */
-        .wp-ocean-batch-row {
+        .batch-row {
             display: grid;
             grid-template-columns: 2fr 1.5fr 1fr 1.5fr 60px;
             gap: 15px;
             align-items: end;
             margin-bottom: 15px;
             padding-bottom: 15px;
-            border-bottom: 1px dashed var(--wp-ocean-border);
+            border-bottom: 1px dashed var(--gray-light);
         }
 
         @media (max-width: 768px) {
-            .wp-ocean-batch-row {
+            .batch-row {
                 grid-template-columns: 1fr;
                 gap: 10px;
             }
         }
 
         /* Toast */
-        #wp-ocean-toast-container {
+        #toast-container {
             position: fixed;
             bottom: 20px;
             right: 20px;
@@ -1038,7 +1093,7 @@
             gap: 10px;
         }
 
-        .wp-ocean-toast {
+        .toast {
             padding: 15px 20px;
             border-radius: var(--radius);
             color: white;
@@ -1062,68 +1117,68 @@
             }
         }
 
-        .wp-ocean-toast-success {
-            background: linear-gradient(135deg, var(--success) 0%, #3aa33e 100%);
+        .toast-success {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
         }
 
-        .wp-ocean-toast-error {
-            background: linear-gradient(135deg, var(--danger) 0%, #c32222 100%);
+        .toast-error {
+            background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
         }
 
-        .wp-ocean-toast-warning {
-            background: linear-gradient(135deg, var(--warning) 0%, #e6a400 100%);
+        .toast-warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
         }
 
-        .wp-ocean-toast-info {
-            background: linear-gradient(135deg, var(--info) 0%, #0093b8 100%);
+        .toast-info {
+            background: linear-gradient(135deg, var(--info) 0%, #0284c7 100%);
         }
 
-        .wp-ocean-toast i {
+        .toast i {
             font-size: 1.2rem;
         }
 
         /* Responsive */
         @media (max-width: 1024px) {
-            .wp-ocean-sidebar {
+            .sidebar {
                 transform: translateX(-100%);
             }
             
-            .wp-ocean-sidebar-open {
+            .sidebar-open {
                 transform: translateX(0);
             }
             
-            .wp-ocean-main {
+            .main, .app-header {
                 margin-left: 0;
             }
             
-            .wp-ocean-menu-toggle {
+            .menu-toggle {
                 display: flex;
             }
         }
 
         @media (max-width: 768px) {
-            .wp-ocean-dashboard-cards {
+            .dashboard-cards {
                 grid-template-columns: 1fr;
             }
             
-            .wp-ocean-table-header {
+            .table-header {
                 flex-direction: column;
                 gap: 15px;
                 align-items: flex-start;
             }
             
-            .wp-ocean-table-actions {
+            .table-actions {
                 width: 100%;
                 overflow-x: auto;
             }
             
-            .wp-ocean-main {
+            .main {
                 padding: 20px;
             }
         }
         
         /* Category badge */
-        .wp-ocean-category-badge {
+        .category-badge {
             display: inline-block;
             padding: 4px 10px;
             border-radius: 12px;
@@ -1133,8 +1188,76 @@
             margin-bottom: 5px;
         }
         
+        .category-electronics {
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+        }
+        
+        .category-furniture {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .category-office {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        
+        .category-food {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+        
+        .category-other {
+            background: rgba(100, 116, 139, 0.1);
+            color: var(--gray);
+        }
+        
+        /* Category management */
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--gray-light);
+            transition: var(--transition);
+        }
+        
+        .category-item:hover {
+            background: var(--light);
+        }
+        
+        .category-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .category-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .category-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 5px;
+        }
+        
+        .category-stat {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .category-stat strong {
+            color: var(--dark);
+        }
+        
         /* Filter pills */
-        .wp-ocean-filter-pills {
+        .filter-pills {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
@@ -1144,40 +1267,40 @@
             border-radius: var(--radius);
         }
         
-        .wp-ocean-filter-pill {
+        .filter-pill {
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 0.85rem;
             cursor: pointer;
             transition: var(--transition);
-            border: 1px solid var(--wp-ocean-border);
+            border: 1px solid var(--gray-light);
             background: white;
         }
         
-        .wp-ocean-filter-pill:hover {
+        .filter-pill:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-sm);
         }
         
-        .wp-ocean-filter-pill.active {
+        .filter-pill.active {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
         }
         
         /* Quick actions */
-        .wp-ocean-quick-actions {
+        .quick-actions {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
         
-        .wp-ocean-quick-action-btn {
+        .quick-action-btn {
             padding: 8px 16px;
             border-radius: var(--radius);
             background: white;
-            border: 1px solid var(--wp-ocean-border);
+            border: 1px solid var(--gray-light);
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -1186,21 +1309,21 @@
             transition: var(--transition);
         }
         
-        .wp-ocean-quick-action-btn:hover {
+        .quick-action-btn:hover {
             border-color: var(--primary);
             color: var(--primary);
             box-shadow: var(--shadow-sm);
         }
         
         /* Color picker */
-        .wp-ocean-color-picker {
+        .color-picker {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
             margin-top: 10px;
         }
         
-        .wp-ocean-color-option {
+        .color-option {
             width: 30px;
             height: 30px;
             border-radius: 50%;
@@ -1209,17 +1332,17 @@
             transition: var(--transition);
         }
         
-        .wp-ocean-color-option:hover {
+        .color-option:hover {
             transform: scale(1.1);
         }
         
-        .wp-ocean-color-option.selected {
+        .color-option.selected {
             border-color: var(--dark);
             box-shadow: var(--shadow);
         }
         
         /* Item Code Styling */
-        .wp-ocean-item-code-badge {
+        .item-code-badge {
             display: inline-block;
             padding: 4px 10px;
             border-radius: 12px;
@@ -1231,33 +1354,33 @@
             margin-bottom: 5px;
         }
         
-        .wp-ocean-code-search-container {
+        .code-search-container {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
         }
         
-        .wp-ocean-code-search-input {
+        .code-search-input {
             flex: 1;
             padding: 12px 15px;
-            border: 1px solid var(--wp-ocean-border);
+            border: 2px solid var(--gray-light);
             border-radius: var(--radius);
             font-size: 0.95rem;
             transition: var(--transition);
         }
         
-        .wp-ocean-code-search-input:focus {
+        .code-search-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0, 124, 186, 0.1);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
         
         /* Generate Code Button */
-        .wp-ocean-generate-code-btn {
+        .generate-code-btn {
             padding: 8px 16px;
             border-radius: var(--radius);
             background: var(--light);
-            border: 1px solid var(--wp-ocean-border);
+            border: 1px solid var(--gray-light);
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -1267,18 +1390,18 @@
             color: var(--dark);
         }
         
-        .wp-ocean-generate-code-btn:hover {
+        .generate-code-btn:hover {
             background: var(--primary-light);
             color: white;
             border-color: var(--primary);
         }
         
         /* Copy Code Button */
-        .wp-ocean-copy-code-btn {
+        .copy-code-btn {
             padding: 4px 8px;
             border-radius: 6px;
             background: transparent;
-            border: 1px solid var(--wp-ocean-border);
+            border: 1px solid var(--gray-light);
             cursor: pointer;
             font-size: 0.7rem;
             transition: var(--transition);
@@ -1286,75 +1409,74 @@
             margin-left: 5px;
         }
         
-        .wp-ocean-copy-code-btn:hover {
+        .copy-code-btn:hover {
             background: var(--light);
             color: var(--primary);
             border-color: var(--primary);
         }
         
         /* Code Format Options */
-        .wp-ocean-code-format-options {
+        .code-format-options {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
             margin-top: 10px;
         }
         
-        .wp-ocean-code-format-option {
+        .code-format-option {
             padding: 8px 12px;
             border-radius: var(--radius);
             background: var(--light);
-            border: 1px solid var(--wp-ocean-border);
+            border: 1px solid var(--gray-light);
             cursor: pointer;
             font-size: 0.8rem;
             transition: var(--transition);
         }
         
-        .wp-ocean-code-format-option:hover {
+        .code-format-option:hover {
             border-color: var(--primary);
             color: var(--primary);
         }
         
-        .wp-ocean-code-format-option.active {
+        .code-format-option.active {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
         }
         
-        /* Bulk Generate Item */
-        .wp-ocean-bulk-generate-item {
+        /* Bulk Generate Modal */
+        .bulk-generate-item {
             display: flex;
             align-items: center;
             gap: 15px;
             padding: 15px;
-            border-bottom: 1px solid var(--wp-ocean-border);
+            border-bottom: 1px solid var(--gray-light);
         }
         
-        .wp-ocean-bulk-generate-item:last-child {
+        .bulk-generate-item:last-child {
             border-bottom: none;
         }
         
-        .wp-ocean-bulk-item-info {
+        .bulk-item-info {
             flex: 1;
         }
         
-        .wp-ocean-bulk-item-code {
+        .bulk-item-code {
             min-width: 120px;
             font-family: 'Monaco', 'Courier New', monospace;
             font-size: 0.9rem;
         }
         
         /* Code Statistics */
-        .wp-ocean-code-stat-card {
+        .code-stat-card {
             background: white;
             border-radius: var(--radius);
             padding: 20px;
             box-shadow: var(--shadow);
             margin-bottom: 20px;
-            border: 1px solid var(--wp-ocean-border);
         }
         
-        .wp-ocean-code-stat-title {
+        .code-stat-title {
             font-size: 0.9rem;
             color: var(--gray);
             font-weight: 600;
@@ -1363,29 +1485,28 @@
             letter-spacing: 0.5px;
         }
         
-        .wp-ocean-code-stat-value {
+        .code-stat-value {
             font-size: 1.8rem;
             font-weight: 800;
             color: var(--dark);
         }
         
         /* QR Code Container */
-        .wp-ocean-qrcode-container {
+        .qrcode-container {
             text-align: center;
             padding: 20px;
             background: white;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             margin-top: 20px;
-            border: 1px solid var(--wp-ocean-border);
         }
         
-        .wp-ocean-qrcode-image {
+        .qrcode-image {
             max-width: 200px;
             margin: 0 auto 15px;
         }
         
-        .wp-ocean-qrcode-code {
+        .qrcode-code {
             font-family: 'Monaco', 'Courier New', monospace;
             font-size: 1.2rem;
             font-weight: 600;
@@ -1393,88 +1514,16 @@
             margin-bottom: 10px;
         }
         
-        /* Category management */
-        .wp-ocean-category-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid var(--wp-ocean-border);
-            transition: var(--transition);
-        }
-        
-        .wp-ocean-category-item:hover {
-            background: var(--light);
-        }
-        
-        .wp-ocean-category-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .wp-ocean-category-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .wp-ocean-category-stats {
-            display: flex;
-            gap: 20px;
-            margin-top: 5px;
-        }
-        
-        .wp-ocean-category-stat {
-            font-size: 0.8rem;
-            color: var(--gray);
-        }
-        
-        .wp-ocean-category-stat strong {
-            color: var(--dark);
-        }
-        
-        /* Menu Toggle */
-        .wp-ocean-menu-toggle {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            color: var(--dark);
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-        
-        .wp-ocean-menu-toggle:hover {
-            background: var(--light);
-        }
-        
-        /* Notifications */
-        .wp-ocean-notifications {
-            position: relative;
-            cursor: pointer;
-        }
-        
-        .wp-ocean-notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--danger);
-            color: white;
-            font-size: 0.7rem;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* Print Styles for Barcode */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            
+            .barcode-print {
+                page-break-inside: avoid;
+                margin: 20px 0;
+            }
         }
     </style>
 </head>
@@ -1551,103 +1600,81 @@
 
     <!-- MAIN APP -->
     <div id="app" style="display: none;">
-        <!-- WP Ocean Header -->
-        <div class="wp-ocean-header">
-            <div class="wp-ocean-header-left">
-                <button class="wp-ocean-menu-toggle" id="menu-toggle">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="wp-ocean-logo">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
                     <i class="fas fa-cubes-stacked"></i>
-                    <h1>Inventory Pro</h1>
+                    <h2>Inventory Pro</h2>
                 </div>
             </div>
             
-            <div class="wp-ocean-header-right">
-                <div class="wp-ocean-notifications" onclick="showNotifications()">
-                    <i class="fas fa-bell" style="font-size: 1.2rem;"></i>
-                    <div class="wp-ocean-notification-badge" id="notification-badge">3</div>
-                </div>
-                
-                <div class="wp-ocean-user" onclick="toggleUserMenu()">
-                    <div class="wp-ocean-user-avatar" id="header-avatar">IP</div>
-                    <div class="wp-ocean-user-info">
-                        <div class="wp-ocean-user-name" id="header-user">-</div>
-                        <div class="wp-ocean-user-role" id="header-role">Admin</div>
-                    </div>
-                    <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- WP Ocean Sidebar -->
-        <div class="wp-ocean-sidebar" id="sidebar">
-            <div class="wp-ocean-sidebar-user">
-                <div class="wp-ocean-user-avatar" id="user-avatar">IP</div>
-                <div class="wp-ocean-sidebar-user-info">
-                    <div class="wp-ocean-user-name" id="display-user">-</div>
-                    <div class="wp-ocean-user-company" id="display-company">-</div>
+            <div class="sidebar-user">
+                <div class="user-avatar" id="user-avatar">IP</div>
+                <div class="sidebar-user-info">
+                    <div class="user-name" id="display-user">-</div>
+                    <div class="user-company" id="display-company">-</div>
                 </div>
             </div>
             
-            <div class="wp-ocean-sidebar-menu" id="nav-menu">
+            <div class="sidebar-menu" id="nav-menu">
                 <!-- Admin Menu -->
                 <div class="admin-view">
-                    <div class="wp-ocean-sidebar-section">
-                        <div class="wp-ocean-sidebar-section-title">Menu Utama</div>
-                        <div class="wp-ocean-nav-link active" onclick="switchTab('dashboard', this)">
+                    <div class="sidebar-section">
+                        <div class="sidebar-section-title">Menu Utama</div>
+                        <div class="nav-link active" onclick="switchTab('dashboard', this)">
                             <i class="fas fa-home"></i>
                             <span>Beranda</span>
                         </div>
                     </div>
                     
-                    <div class="wp-ocean-sidebar-section">
-                        <div class="wp-ocean-sidebar-section-title">Master Data</div>
-                        <div class="wp-ocean-nav-link" onclick="switchTab('warehouses', this)">
+                    <div class="sidebar-section">
+                        <div class="sidebar-section-title">Master Data</div>
+                        <div class="nav-link" onclick="switchTab('warehouses', this)">
                             <i class="fas fa-warehouse"></i>
                             <span>Daftar Gudang</span>
                         </div>
-                        <div class="wp-ocean-nav-link" onclick="switchTab('items', this)">
+                        <div class="nav-link" onclick="switchTab('items', this)">
                             <i class="fas fa-tag"></i>
                             <span>Master Barang</span>
                         </div>
-                        <div class="wp-ocean-nav-link" onclick="switchTab('categories', this)">
+                        <div class="nav-link" onclick="switchTab('categories', this)">
                             <i class="fas fa-folder"></i>
                             <span>Kategori Barang</span>
                         </div>
-                        <div class="wp-ocean-nav-link" onclick="switchTab('item-codes', this)">
+                        <div class="nav-link" onclick="switchTab('item-codes', this)">
                             <i class="fas fa-barcode"></i>
                             <span>Kode Barang</span>
                         </div>
                     </div>
                     
-                    <div class="wp-ocean-sidebar-section">
-                        <div class="wp-ocean-sidebar-section-title">Inventori</div>
-                        <div class="wp-ocean-nav-link" onclick="switchTab('transactions', this)">
+                    <div class="sidebar-section">
+                        <div class="sidebar-section-title">Inventori</div>
+                        <div class="nav-link" onclick="switchTab('transactions', this)">
                             <i class="fas fa-exchange-alt"></i>
                             <span>Transaksi Barang</span>
                         </div>
-                        <div class="wp-ocean-nav-link" onclick="switchTab('stock-report', this)">
+                        <div class="nav-link" onclick="switchTab('stock-report', this)">
                             <i class="fas fa-clipboard-list"></i>
                             <span>Stok Per Gudang</span>
-                            <span class="wp-ocean-nav-badge" id="low-stock-badge">3</span>
+                            <span class="nav-badge" id="low-stock-badge">3</span>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Superadmin Menu -->
                 <div class="super-view" style="display: none;">
-                    <div class="wp-ocean-sidebar-section">
-                        <div class="wp-ocean-sidebar-section-title">Super Panel</div>
-                        <div class="wp-ocean-nav-link" onclick="switchTab('manage-companies', this)">
+                    <div class="sidebar-section">
+                        <div class="sidebar-section-title">Super Panel</div>
+                        <div class="nav-link" onclick="switchTab('manage-companies', this)">
                             <i class="fas fa-building"></i>
                             <span>Kelola Perusahaan</span>
                         </div>
-                        <div class="wp-ocean-nav-link" onclick="switchTab('config', this)">
+                        <div class="nav-link" onclick="switchTab('config', this)">
                             <i class="fas fa-database"></i>
                             <span>Pengaturan Database</span>
                         </div>
-                        <div class="wp-ocean-nav-link" onclick="switchTab('system-logs', this)">
+                        <div class="nav-link" onclick="switchTab('system-logs', this)">
                             <i class="fas fa-history"></i>
                             <span>Log Sistem</span>
                         </div>
@@ -1655,8 +1682,8 @@
                 </div>
             </div>
             
-            <div class="wp-ocean-sidebar-footer">
-                <div class="wp-ocean-nav-link" onclick="handleLogout()">
+            <div class="sidebar-footer">
+                <div class="nav-link" onclick="handleLogout()">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Keluar Sesi</span>
                 </div>
@@ -1664,80 +1691,100 @@
         </div>
         
         <!-- Main Content -->
-        <div class="wp-ocean-main">
-            <!-- Page Title -->
-            <div style="margin-bottom: 30px;">
-                <h1 class="wp-ocean-table-title" id="tab-title">Beranda</h1>
-                <p style="color: var(--gray); margin-top: 5px;" id="tab-description">Dashboard sistem manajemen inventori</p>
+        <div class="main">
+            <!-- Header -->
+            <div class="app-header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title" id="tab-title">Beranda</h1>
+                </div>
+                
+                <div class="header-right">
+                    <div class="notifications" onclick="showNotifications()">
+                        <i class="fas fa-bell" style="font-size: 1.2rem;"></i>
+                        <div class="notification-badge" id="notification-badge">3</div>
+                    </div>
+                    
+                    <div class="user-profile" onclick="toggleUserMenu()">
+                        <div class="user-avatar" id="header-avatar">IP</div>
+                        <div class="user-info">
+                            <div class="user-name" id="header-user">-</div>
+                            <div class="user-role" id="header-role">Admin</div>
+                        </div>
+                        <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i>
+                    </div>
+                </div>
             </div>
             
             <!-- Tab Content -->
             <div id="tab-content">
                 <!-- Dashboard Tab -->
                 <div id="tab-dashboard" class="tab-content">
-                    <div class="wp-ocean-dashboard-cards">
-                        <div class="wp-ocean-dashboard-card">
-                            <div class="wp-ocean-card-header">
-                                <h3 class="wp-ocean-card-title">Master Barang</h3>
-                                <div class="wp-ocean-card-icon primary">
+                    <div class="dashboard-cards">
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Master Barang</h3>
+                                <div class="card-icon primary">
                                     <i class="fas fa-box"></i>
                                 </div>
                             </div>
-                            <h2 class="wp-ocean-card-value" id="count-items">0</h2>
-                            <div class="wp-ocean-card-trend positive">
+                            <h2 class="card-value" id="count-items">0</h2>
+                            <div class="card-trend positive">
                                 <i class="fas fa-arrow-up"></i>
                                 <span>12% dari bulan lalu</span>
                             </div>
                         </div>
                         
-                        <div class="wp-ocean-dashboard-card">
-                            <div class="wp-ocean-card-header">
-                                <h3 class="wp-ocean-card-title">Total Gudang</h3>
-                                <div class="wp-ocean-card-icon success">
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Total Gudang</h3>
+                                <div class="card-icon success">
                                     <i class="fas fa-warehouse"></i>
                                 </div>
                             </div>
-                            <h2 class="wp-ocean-card-value" id="count-wh">0</h2>
-                            <div class="wp-ocean-card-trend positive">
+                            <h2 class="card-value" id="count-wh">0</h2>
+                            <div class="card-trend positive">
                                 <i class="fas fa-arrow-up"></i>
                                 <span>1 gudang baru</span>
                             </div>
                         </div>
                         
-                        <div class="wp-ocean-dashboard-card">
-                            <div class="wp-ocean-card-header">
-                                <h3 class="wp-ocean-card-title">Total Transaksi</h3>
-                                <div class="wp-ocean-card-icon warning">
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Total Transaksi</h3>
+                                <div class="card-icon warning">
                                     <i class="fas fa-exchange-alt"></i>
                                 </div>
                             </div>
-                            <h2 class="wp-ocean-card-value" id="count-trans">0</h2>
-                            <div class="wp-ocean-card-trend positive">
+                            <h2 class="card-value" id="count-trans">0</h2>
+                            <div class="card-trend positive">
                                 <i class="fas fa-arrow-up"></i>
                                 <span>24 transaksi hari ini</span>
                             </div>
                         </div>
                         
-                        <div class="wp-ocean-dashboard-card">
-                            <div class="wp-ocean-card-header">
-                                <h3 class="wp-ocean-card-title">Stok Rendah</h3>
-                                <div class="wp-ocean-card-icon danger">
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h3 class="card-title">Stok Rendah</h3>
+                                <div class="card-icon danger">
                                     <i class="fas fa-exclamation-triangle"></i>
                                 </div>
                             </div>
-                            <h2 class="wp-ocean-card-value" id="count-low-stock">0</h2>
-                            <div class="wp-ocean-card-trend negative">
+                            <h2 class="card-value" id="count-low-stock">0</h2>
+                            <div class="card-trend negative">
                                 <i class="fas fa-arrow-down"></i>
                                 <span>Perlu restock</span>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="wp-ocean-dashboard-charts">
-                        <div class="wp-ocean-chart-card">
-                            <div class="wp-ocean-chart-header">
-                                <h3 class="wp-ocean-chart-title">Aktivitas Transaksi 7 Hari Terakhir</h3>
-                                <select class="wp-ocean-form-control" style="width: auto;">
+                    <div class="dashboard-charts">
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3 class="chart-title">Aktivitas Transaksi 7 Hari Terakhir</h3>
+                                <select class="form-control" style="width: auto;">
                                     <option>7 Hari Terakhir</option>
                                     <option>30 Hari Terakhir</option>
                                 </select>
@@ -1750,9 +1797,9 @@
                             </div>
                         </div>
                         
-                        <div class="wp-ocean-chart-card">
-                            <div class="wp-ocean-chart-header">
-                                <h3 class="wp-ocean-chart-title">Distribusi Stok</h3>
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3 class="chart-title">Distribusi Stok</h3>
                             </div>
                             <div id="stock-chart" style="height: 300px; display: flex; align-items: center; justify-content: center; color: var(--gray);">
                                 <div style="text-align: center;">
@@ -1763,15 +1810,15 @@
                         </div>
                     </div>
                     
-                    <div class="wp-ocean-recent-activity">
-                        <div class="wp-ocean-chart-header">
-                            <h3 class="wp-ocean-chart-title">Aktivitas Terbaru</h3>
-                            <button class="wp-ocean-btn wp-ocean-btn-outline wp-ocean-btn-sm" onclick="loadTransactions()">
+                    <div class="recent-activity">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Aktivitas Terbaru</h3>
+                            <button class="btn btn-outline btn-sm" onclick="loadTransactions()">
                                 <i class="fas fa-sync-alt"></i>
                                 <span>Refresh</span>
                             </button>
                         </div>
-                        <ul class="wp-ocean-activity-list" id="recent-activities">
+                        <ul class="activity-list" id="recent-activities">
                             <!-- Recent activities will be loaded here -->
                         </ul>
                     </div>
@@ -1779,16 +1826,19 @@
                 
                 <!-- Other tabs will be inserted here by JavaScript -->
             </div>
+            
+            <!-- Header Actions Container -->
+            <div id="header-actions-container"></div>
         </div>
     </div>
 
     <!-- Modals -->
-    <div class="wp-ocean-modal-overlay" id="modal-overlay">
-        <div class="wp-ocean-modal" id="modal-content"></div>
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="modal-content"></div>
     </div>
 
     <!-- Toast Container -->
-    <div id="wp-ocean-toast-container"></div>
+    <div id="toast-container"></div>
 
     <script>
         // Global variables
@@ -1800,7 +1850,7 @@
         let notifications = [];
         let sidebarCollapsed = false;
         let selectedCategoryFilter = 'all';
-        let itemCodeFormat = 'AUTO';
+        let itemCodeFormat = 'AUTO'; // Format: AUTO, ITEM-001, BRG-001, etc.
 
         // Default categories
         const defaultCategories = [
@@ -1826,6 +1876,7 @@
 
         // Initialize the application
         window.onload = async () => {
+            // Hide loading screen after 1.5 seconds
             setTimeout(() => {
                 document.getElementById('loading-screen').style.opacity = '0';
                 setTimeout(() => {
@@ -1836,6 +1887,7 @@
             initDB();
             initUI();
             
+            // Setup event listeners
             document.getElementById('menu-toggle').addEventListener('click', toggleSidebar);
             document.getElementById('login-pass').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') handleLogin();
@@ -1857,6 +1909,7 @@
                     `;
                     statusEl.className = "db-status status-connected";
                     
+                    // Populate config inputs if they exist
                     if(document.getElementById('cfg-url')) {
                         document.getElementById('cfg-url').value = url;
                     }
@@ -1888,6 +1941,7 @@
             
             errEl.style.display = 'none';
             
+            // Show loading state
             const loginBtn = document.querySelector('.login-btn');
             const originalText = loginBtn.innerHTML;
             loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Memeriksa...</span>';
@@ -1895,6 +1949,7 @@
             
             try {
                 if (!sb) { 
+                    // Hardcoded superadmin login for first time config
                     if (id === 'SUPER' && pass === 'INIT123') {
                         const tempSuper = { 
                             id: 'SUPER', 
@@ -1920,6 +1975,7 @@
                     currentUser = data;
                     localStorage.setItem('session_user', JSON.stringify(data));
                     
+                    // Add login log for superadmin
                     if (data.is_superadmin) {
                         await sb.from('system_logs').insert({
                             action: 'LOGIN',
@@ -1986,6 +2042,7 @@
                 switchTab('dashboard');
             }
             
+            // Load notifications
             loadNotifications();
         }
 
@@ -1995,38 +2052,51 @@
             sidebarCollapsed = !sidebarCollapsed;
             
             if (sidebarCollapsed) {
-                sidebar.classList.add('wp-ocean-sidebar-collapsed');
+                sidebar.classList.add('sidebar-collapsed');
             } else {
-                sidebar.classList.remove('wp-ocean-sidebar-collapsed');
+                sidebar.classList.remove('sidebar-collapsed');
             }
         }
 
         // --- NAVIGATION ---
         function switchTab(tabId, el) {
+            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
             
-            document.querySelectorAll('.wp-ocean-nav-link').forEach(n => n.classList.remove('active'));
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
             
+            // If el is provided, add active class to clicked nav link
             if(el) {
                 el.classList.add('active');
             } else {
-                const navLink = document.querySelector(`.wp-ocean-nav-link[onclick*="${tabId}"]`);
+                // If no el provided, find the appropriate nav link and activate it
+                const navLink = document.querySelector(`.nav-link[onclick*="${tabId}"]`);
                 if (navLink) navLink.classList.add('active');
             }
             
+            // Load tab content
             let tabContent = document.getElementById('tab-' + tabId);
             
+            // If tab doesn't exist yet, create it
             if (!tabContent) {
                 tabContent = createTabContent(tabId);
                 document.getElementById('tab-content').appendChild(tabContent);
             }
             
+            // Show the selected tab
             tabContent.style.display = 'block';
             
+            // Update page title
             updatePageTitle(tabId);
             
+            // Update header actions
+            updateHeaderActions(tabId);
+            
+            // Load data for the tab
             loadTabData(tabId);
             
+            // Update URL hash
             window.location.hash = tabId;
         }
 
@@ -2039,17 +2109,17 @@
             switch(tabId) {
                 case 'manage-companies':
                     div.innerHTML = `
-                        <div class="wp-ocean-table-card">
-                            <div class="wp-ocean-table-header">
-                                <h3 class="wp-ocean-table-title">Daftar Perusahaan</h3>
-                                <div class="wp-ocean-table-actions">
-                                    <button class="wp-ocean-btn wp-ocean-btn-primary" onclick="openModal('add-company')">
+                        <div class="table-card">
+                            <div class="table-header">
+                                <h3 class="table-title">Daftar Perusahaan</h3>
+                                <div class="table-actions">
+                                    <button class="btn btn-primary" onclick="openModal('add-company')">
                                         <i class="fas fa-plus"></i>
                                         <span>Tambah Tenant</span>
                                     </button>
                                 </div>
                             </div>
-                            <table class="wp-ocean-table" id="company-table">
+                            <table id="company-table">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -2070,9 +2140,9 @@
                     
                 case 'config':
                     div.innerHTML = `
-                        <div class="wp-ocean-table-card" style="max-width: 800px; margin: 0 auto;">
-                            <div class="wp-ocean-table-header">
-                                <h3 class="wp-ocean-table-title">Konfigurasi Sistem</h3>
+                        <div class="table-card" style="max-width: 800px; margin: 0 auto;">
+                            <div class="table-header">
+                                <h3 class="table-title">Konfigurasi Sistem</h3>
                             </div>
                             <div style="padding: 30px;">
                                 <div style="text-align: center; margin-bottom: 30px;">
@@ -2081,14 +2151,14 @@
                                     <p style="color: var(--gray);">Hanya Superadmin yang dapat mengubah pengaturan ini.</p>
                                 </div>
                                 
-                                <div class="wp-ocean-form-group">
+                                <div class="form-group">
                                     <label>Supabase Project URL</label>
-                                    <input type="text" id="cfg-url" class="wp-ocean-form-control" placeholder="https://xyz.supabase.co">
+                                    <input type="text" id="cfg-url" class="form-control" placeholder="https://xyz.supabase.co">
                                 </div>
                                 
-                                <div class="wp-ocean-form-group">
+                                <div class="form-group">
                                     <label>Supabase Anon Key</label>
-                                    <input type="password" id="cfg-key" class="wp-ocean-form-control" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+                                    <input type="password" id="cfg-key" class="form-control" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
                                 </div>
                                 
                                 <div style="background: #fff8eb; padding: 20px; border-radius: var(--radius); border-left: 4px solid var(--warning); margin-bottom: 30px;">
@@ -2098,7 +2168,7 @@
                                     </p>
                                 </div>
                                 
-                                <button class="wp-ocean-btn wp-ocean-btn-primary" onclick="saveConfig()" style="width: 100%; padding: 15px;">
+                                <button class="btn btn-primary" onclick="saveConfig()" style="width: 100%; padding: 15px;">
                                     <i class="fas fa-save"></i>
                                     <span>Simpan & Hubungkan Kembali</span>
                                 </button>
@@ -2109,11 +2179,11 @@
                     
                 case 'system-logs':
                     div.innerHTML = `
-                        <div class="wp-ocean-table-card">
-                            <div class="wp-ocean-table-header">
-                                <h3 class="wp-ocean-table-title">Log Sistem</h3>
-                                <div class="wp-ocean-table-actions">
-                                    <select class="wp-ocean-form-control" style="width: auto;" onchange="loadSystemLogs(this.value)">
+                        <div class="table-card">
+                            <div class="table-header">
+                                <h3 class="table-title">Log Sistem</h3>
+                                <div class="table-actions">
+                                    <select class="form-control" style="width: auto;" onchange="loadSystemLogs(this.value)">
                                         <option value="7">7 Hari Terakhir</option>
                                         <option value="30">30 Hari Terakhir</option>
                                         <option value="90">90 Hari Terakhir</option>
@@ -2121,7 +2191,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <table class="wp-ocean-table" id="system-logs-table">
+                            <table id="system-logs-table">
                                 <thead>
                                     <tr>
                                         <th>Waktu</th>
@@ -2141,17 +2211,17 @@
                     
                 case 'warehouses':
                     div.innerHTML = `
-                        <div class="wp-ocean-table-card">
-                            <div class="wp-ocean-table-header">
-                                <h3 class="wp-ocean-table-title">Daftar Gudang</h3>
-                                <div class="wp-ocean-table-actions">
-                                    <button class="wp-ocean-btn wp-ocean-btn-primary" onclick="openModal('add-warehouse')">
+                        <div class="table-card">
+                            <div class="table-header">
+                                <h3 class="table-title">Daftar Gudang</h3>
+                                <div class="table-actions">
+                                    <button class="btn btn-primary" onclick="openModal('add-warehouse')">
                                         <i class="fas fa-plus"></i>
                                         <span>Tambah Gudang</span>
                                     </button>
                                 </div>
                             </div>
-                            <table class="wp-ocean-table" id="warehouse-table">
+                            <table id="warehouse-table">
                                 <thead>
                                     <tr>
                                         <th>Kode</th>
@@ -2171,28 +2241,28 @@
                     
                 case 'items':
                     div.innerHTML = `
-                        <div class="wp-ocean-table-card">
-                            <div class="wp-ocean-table-header">
-                                <h3 class="wp-ocean-table-title">Master Barang</h3>
-                                <div class="wp-ocean-table-actions">
-                                    <button class="wp-ocean-btn wp-ocean-btn-primary" onclick="openModal('add-item')">
+                        <div class="table-card">
+                            <div class="table-header">
+                                <h3 class="table-title">Master Barang</h3>
+                                <div class="table-actions">
+                                    <button class="btn btn-primary" onclick="openModal('add-item')">
                                         <i class="fas fa-plus"></i>
                                         <span>Tambah Barang</span>
                                     </button>
-                                    <button class="wp-ocean-btn wp-ocean-btn-success" onclick="openBulkGenerateCodeModal()">
+                                    <button class="btn btn-success" onclick="openBulkGenerateCodeModal()">
                                         <i class="fas fa-barcode"></i>
                                         <span>Generate Kode</span>
                                     </button>
-                                    <button class="wp-ocean-btn wp-ocean-btn-outline" onclick="exportItems()">
+                                    <button class="btn btn-outline" onclick="exportItems()">
                                         <i class="fas fa-download"></i>
                                         <span>Export</span>
                                     </button>
                                 </div>
                             </div>
                             <div style="padding: 0 25px; margin-top: 15px;">
-                                <div class="wp-ocean-code-search-container">
-                                    <input type="text" id="item-code-search" class="wp-ocean-code-search-input" placeholder="Cari berdasarkan kode atau nama barang..." onkeyup="searchItemsByCode()">
-                                    <button class="wp-ocean-btn wp-ocean-btn-outline" onclick="clearCodeSearch()">
+                                <div class="code-search-container">
+                                    <input type="text" id="item-code-search" class="code-search-input" placeholder="Cari berdasarkan kode atau nama barang..." onkeyup="searchItemsByCode()">
+                                    <button class="btn btn-outline" onclick="clearCodeSearch()">
                                         <i class="fas fa-times"></i>
                                         <span>Clear</span>
                                     </button>
@@ -2201,7 +2271,7 @@
                             <div id="item-filter-container" style="padding: 15px 25px 0;">
                                 <!-- Filter by category will be loaded here -->
                             </div>
-                            <table class="wp-ocean-table" id="master-items-table">
+                            <table id="master-items-table">
                                 <thead>
                                     <tr>
                                         <th>Kode</th>
@@ -2223,29 +2293,30 @@
                     
                 case 'categories':
                     div.innerHTML = `
-                        <div class="wp-ocean-table-card">
-                            <div class="wp-ocean-table-header">
-                                <h3 class="wp-ocean-table-title">Kategori Barang</h3>
-                                <div class="wp-ocean-table-actions">
-                                    <button class="wp-ocean-btn wp-ocean-btn-primary" onclick="openModal('add-category')">
+                        <div class="table-card">
+                            <div class="table-header">
+                                <h3 class="table-title">Kategori Barang</h3>
+                                <div class="table-actions">
+                                    <button class="btn btn-primary" onclick="openModal('add-category')">
                                         <i class="fas fa-plus"></i>
                                         <span>Tambah Kategori</span>
                                     </button>
                                 </div>
                             </div>
                             <div style="padding: 20px 25px;">
-                                <div class="wp-ocean-quick-actions">
-                                    <div class="wp-ocean-quick-action-btn" onclick="initializeDefaultCategories()">
+                                <div class="quick-actions">
+                                    <div class="quick-action-btn" onclick="initializeDefaultCategories()">
                                         <i class="fas fa-magic"></i>
                                         <span>Buat Kategori Default</span>
                                     </div>
-                                    <div class="wp-ocean-quick-action-btn" onclick="openCategoryStats()">
+                                    <div class="quick-action-btn" onclick="openCategoryStats()">
                                         <i class="fas fa-chart-bar"></i>
                                         <span>Statistik Kategori</span>
                                     </div>
                                 </div>
                             </div>
                             <div id="categories-list" style="padding: 0 25px 25px;">
+                                <!-- Categories will be loaded here -->
                                 <div style="text-align: center; padding: 40px; color: var(--gray);">
                                     <i class="fas fa-folder fa-3x" style="margin-bottom: 15px; opacity: 0.5;"></i>
                                     <p>Memuat data kategori...</p>
@@ -2257,15 +2328,15 @@
                     
                 case 'item-codes':
                     div.innerHTML = `
-                        <div class="wp-ocean-table-card">
-                            <div class="wp-ocean-table-header">
-                                <h3 class="wp-ocean-table-title">Manajemen Kode Barang</h3>
-                                <div class="wp-ocean-table-actions">
-                                    <button class="wp-ocean-btn wp-ocean-btn-primary" onclick="openCodeSettingsModal()">
+                        <div class="table-card">
+                            <div class="table-header">
+                                <h3 class="table-title">Manajemen Kode Barang</h3>
+                                <div class="table-actions">
+                                    <button class="btn btn-primary" onclick="openCodeSettingsModal()">
                                         <i class="fas fa-cog"></i>
                                         <span>Pengaturan Kode</span>
                                     </button>
-                                    <button class="wp-ocean-btn wp-ocean-btn-success" onclick="openBulkGenerateCodeModal()">
+                                    <button class="btn btn-success" onclick="openBulkGenerateCodeModal()">
                                         <i class="fas fa-barcode"></i>
                                         <span>Generate Kode</span>
                                     </button>
@@ -2273,29 +2344,29 @@
                             </div>
                             <div style="padding: 25px;">
                                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
-                                    <div class="wp-ocean-code-stat-card">
-                                        <div class="wp-ocean-code-stat-title">Total Barang</div>
-                                        <div class="wp-ocean-code-stat-value" id="total-items-count">0</div>
+                                    <div class="code-stat-card">
+                                        <div class="code-stat-title">Total Barang</div>
+                                        <div class="code-stat-value" id="total-items-count">0</div>
                                     </div>
-                                    <div class="wp-ocean-code-stat-card">
-                                        <div class="wp-ocean-code-stat-title">Dengan Kode</div>
-                                        <div class="wp-ocean-code-stat-value" id="coded-items-count">0</div>
+                                    <div class="code-stat-card">
+                                        <div class="code-stat-title">Dengan Kode</div>
+                                        <div class="code-stat-value" id="coded-items-count">0</div>
                                     </div>
-                                    <div class="wp-ocean-code-stat-card">
-                                        <div class="wp-ocean-code-stat-title">Tanpa Kode</div>
-                                        <div class="wp-ocean-code-stat-value" id="uncoded-items-count">0</div>
+                                    <div class="code-stat-card">
+                                        <div class="code-stat-title">Tanpa Kode</div>
+                                        <div class="code-stat-value" id="uncoded-items-count">0</div>
                                     </div>
-                                    <div class="wp-ocean-code-stat-card">
-                                        <div class="wp-ocean-code-stat-title">Format Aktif</div>
-                                        <div class="wp-ocean-code-stat-value" style="font-size: 1.2rem;" id="active-code-format">AUTO</div>
+                                    <div class="code-stat-card">
+                                        <div class="code-stat-title">Format Aktif</div>
+                                        <div class="code-stat-value" style="font-size: 1.2rem;" id="active-code-format">AUTO</div>
                                     </div>
                                 </div>
                                 
                                 <div style="background: var(--light); padding: 20px; border-radius: var(--radius); margin-bottom: 30px;">
                                     <h4 style="margin-bottom: 15px; color: var(--dark);">Format Kode Barang</h4>
-                                    <div class="wp-ocean-code-format-options">
+                                    <div class="code-format-options">
                                         ${Object.entries(codePatterns).map(([format, label]) => `
-                                            <div class="wp-ocean-code-format-option ${format === 'AUTO' ? 'active' : ''}" 
+                                            <div class="code-format-option ${format === 'AUTO' ? 'active' : ''}" 
                                                  onclick="changeCodeFormat('${format}')">
                                                 ${label}
                                             </div>
@@ -2310,6 +2381,7 @@
                                 <div style="margin-bottom: 30px;">
                                     <h4 style="margin-bottom: 15px; color: var(--dark);">Barang Tanpa Kode</h4>
                                     <div id="uncoded-items-list">
+                                        <!-- Items without codes will be loaded here -->
                                         <div style="text-align: center; padding: 40px; color: var(--gray);">
                                             <i class="fas fa-barcode fa-3x" style="margin-bottom: 15px; opacity: 0.5;"></i>
                                             <p>Memuat data barang tanpa kode...</p>
@@ -2319,9 +2391,9 @@
                                 
                                 <div>
                                     <h4 style="margin-bottom: 15px; color: var(--dark);">Cari Berdasarkan Kode</h4>
-                                    <div class="wp-ocean-code-search-container">
-                                        <input type="text" id="barcode-search" class="wp-ocean-code-search-input" placeholder="Scan atau ketik kode barang..." onkeyup="searchByBarcode()">
-                                        <button class="wp-ocean-btn wp-ocean-btn-primary" onclick="scanBarcode()">
+                                    <div class="code-search-container">
+                                        <input type="text" id="barcode-search" class="code-search-input" placeholder="Scan atau ketik kode barang..." onkeyup="searchByBarcode()">
+                                        <button class="btn btn-primary" onclick="scanBarcode()">
                                             <i class="fas fa-camera"></i>
                                             <span>Scan</span>
                                         </button>
@@ -2337,48 +2409,48 @@
                     
                 case 'transactions':
                     div.innerHTML = `
-                        <div class="wp-ocean-table-card">
-                            <div class="wp-ocean-table-header">
-                                <h3 class="wp-ocean-table-title">Riwayat Transaksi</h3>
-                                <div class="wp-ocean-table-actions">
-                                    <button class="wp-ocean-btn wp-ocean-btn-primary" onclick="openBatchModal('IN')">
+                        <div class="table-card">
+                            <div class="table-header">
+                                <h3 class="table-title">Riwayat Transaksi</h3>
+                                <div class="table-actions">
+                                    <button class="btn btn-primary" onclick="openBatchModal('IN')">
                                         <i class="fas fa-plus-circle"></i>
                                         <span>Batch Masuk</span>
                                     </button>
-                                    <button class="wp-ocean-btn wp-ocean-btn-danger" onclick="openBatchModal('OUT')">
+                                    <button class="btn btn-danger" onclick="openBatchModal('OUT')">
                                         <i class="fas fa-minus-circle"></i>
                                         <span>Batch Keluar</span>
                                     </button>
-                                    <button class="wp-ocean-btn wp-ocean-btn-outline" onclick="exportTransactions()">
+                                    <button class="btn btn-outline" onclick="exportTransactions()">
                                         <i class="fas fa-download"></i>
                                         <span>Export</span>
                                     </button>
                                 </div>
                             </div>
                             <div style="padding: 0 25px; margin-top: 15px;">
-                                <div class="wp-ocean-form-group" style="margin-bottom: 0;">
+                                <div class="form-group" style="margin-bottom: 0;">
                                     <div style="display: flex; gap: 15px; align-items: center;">
                                         <div style="flex: 1;">
-                                            <input type="date" id="trans-date-from" class="wp-ocean-form-control" onchange="loadTransactions()">
+                                            <input type="date" id="trans-date-from" class="form-control" onchange="loadTransactions()">
                                         </div>
                                         <div style="color: var(--gray);">s/d</div>
                                         <div style="flex: 1;">
-                                            <input type="date" id="trans-date-to" class="wp-ocean-form-control" onchange="loadTransactions()">
+                                            <input type="date" id="trans-date-to" class="form-control" onchange="loadTransactions()">
                                         </div>
                                         <div style="flex: 1;">
-                                            <select id="trans-type-filter" class="wp-ocean-form-control" onchange="loadTransactions()">
+                                            <select id="trans-type-filter" class="form-control" onchange="loadTransactions()">
                                                 <option value="">Semua Tipe</option>
                                                 <option value="IN">Masuk</option>
                                                 <option value="OUT">Keluar</option>
                                             </select>
                                         </div>
                                         <div style="flex: 1;">
-                                            <input type="text" id="trans-code-search" class="wp-ocean-form-control" placeholder="Cari kode barang..." onkeyup="filterTransactionsByCode()">
+                                            <input type="text" id="trans-code-search" class="form-control" placeholder="Cari kode barang..." onkeyup="filterTransactionsByCode()">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <table class="wp-ocean-table" id="trans-table">
+                            <table id="trans-table">
                                 <thead>
                                     <tr>
                                         <th>Waktu</th>
@@ -2400,48 +2472,48 @@
                     
                 case 'stock-report':
                     div.innerHTML = `
-                        <div class="wp-ocean-table-card">
-                            <div class="wp-ocean-table-header">
-                                <h3 class="wp-ocean-table-title">Laporan Stok</h3>
-                                <div class="wp-ocean-table-actions">
-                                    <button class="wp-ocean-btn wp-ocean-btn-outline" onclick="exportStockReport()">
+                        <div class="table-card">
+                            <div class="table-header">
+                                <h3 class="table-title">Laporan Stok</h3>
+                                <div class="table-actions">
+                                    <button class="btn btn-outline" onclick="exportStockReport()">
                                         <i class="fas fa-download"></i>
                                         <span>Export Laporan</span>
                                     </button>
-                                    <button class="wp-ocean-btn wp-ocean-btn-success" onclick="printBarcodeLabels()">
+                                    <button class="btn btn-success" onclick="printBarcodeLabels()">
                                         <i class="fas fa-print"></i>
                                         <span>Print Barcode</span>
                                     </button>
                                 </div>
                             </div>
                             <div style="padding: 0 25px; margin-top: 15px;">
-                                <div class="wp-ocean-form-group" style="display: flex; gap: 15px; align-items: flex-end;">
+                                <div class="form-group" style="display: flex; gap: 15px; align-items: flex-end;">
                                     <div style="flex: 1;">
                                         <label>Pilih Gudang</label>
-                                        <select id="report-wh-filter" class="wp-ocean-form-control" onchange="loadStockReport()">
+                                        <select id="report-wh-filter" class="form-control" onchange="loadStockReport()">
                                             <option value="">-- Semua Gudang --</option>
                                         </select>
                                     </div>
                                     <div style="flex: 1;">
                                         <label>Filter Stok Rendah</label>
-                                        <select id="low-stock-filter" class="wp-ocean-form-control" onchange="loadStockReport()">
+                                        <select id="low-stock-filter" class="form-control" onchange="loadStockReport()">
                                             <option value="all">Semua Stok</option>
                                             <option value="low">Stok Rendah (< 10)</option>
                                         </select>
                                     </div>
                                     <div style="flex: 1;">
                                         <label>Filter Kategori</label>
-                                        <select id="category-filter" class="wp-ocean-form-control" onchange="loadStockReport()">
+                                        <select id="category-filter" class="form-control" onchange="loadStockReport()">
                                             <option value="">Semua Kategori</option>
                                         </select>
                                     </div>
                                     <div style="flex: 1;">
                                         <label>Cari Kode</label>
-                                        <input type="text" id="stock-code-search" class="wp-ocean-form-control" placeholder="Kode barang..." onkeyup="filterStockByCode()">
+                                        <input type="text" id="stock-code-search" class="form-control" placeholder="Kode barang..." onkeyup="filterStockByCode()">
                                     </div>
                                 </div>
                             </div>
-                            <table class="wp-ocean-table" id="stock-report-table">
+                            <table id="stock-report-table">
                                 <thead>
                                     <tr>
                                         <th>Kode</th>
@@ -2479,21 +2551,24 @@
                 'stock-report': 'Laporan Stok'
             };
             
-            const descriptions = {
-                'dashboard': 'Dashboard sistem manajemen inventori',
-                'manage-companies': 'Kelola data perusahaan dan tenant',
-                'config': 'Konfigurasi database dan sistem',
-                'system-logs': 'Riwayat aktivitas sistem',
-                'warehouses': 'Kelola data gudang dan lokasi penyimpanan',
-                'items': 'Kelola master data barang',
-                'categories': 'Kelola kategori barang',
-                'item-codes': 'Manajemen kode dan barcode barang',
-                'transactions': 'Riwayat transaksi barang masuk dan keluar',
-                'stock-report': 'Laporan stok per gudang'
-            };
-            
             document.getElementById('tab-title').innerText = titles[tabId] || 'Inventory Pro';
-            document.getElementById('tab-description').innerText = descriptions[tabId] || 'Sistem manajemen inventori';
+        }
+
+        function updateHeaderActions(tabId) {
+            const container = document.getElementById('header-actions-container');
+            container.innerHTML = '';
+            
+            // Add header actions based on current tab
+            if (tabId === 'items') {
+                container.innerHTML = `
+                    <div style="padding: 0 30px 15px;">
+                        <button class="btn btn-outline btn-sm" onclick="openCodeSettingsModal()">
+                            <i class="fas fa-barcode"></i>
+                            <span>Pengaturan Kode</span>
+                        </button>
+                    </div>
+                `;
+            }
         }
 
         // --- LOAD DATA FOR TABS ---
@@ -2532,377 +2607,12 @@
             }
         }
 
-        // --- WAREHOUSE MANAGEMENT (DENGAN TOMBOL EDIT) ---
-        async function loadWarehouses() {
-            if (!sb) return;
-            
-            try {
-                const { data, error } = await sb.from('warehouses')
-                    .select('*')
-                    .eq('company_id', currentUser.id)
-                    .order('created_at', {ascending: false});
-                
-                if (error) throw error;
-                
-                const tbody = document.getElementById('warehouse-table')?.querySelector('tbody');
-                if (!tbody) return;
-                
-                if (data && data.length > 0) {
-                    warehouses = data;
-                    tbody.innerHTML = data.map(w => `
-                        <tr>
-                            <td><code>${w.id.substring(0,8)}</code></td>
-                            <td><strong>${w.name}</strong></td>
-                            <td>${w.location || '-'}</td>
-                            <td><span class="wp-ocean-status-badge wp-ocean-status-active">Aktif</span></td>
-                            <td>
-                                <div class="wp-ocean-action-buttons">
-                                    <!-- TOMBOL EDIT -->
-                                    <button class="wp-ocean-btn wp-ocean-btn-outline wp-ocean-btn-sm" onclick="openEditWarehouseModal('${w.id}')">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="wp-ocean-btn wp-ocean-btn-outline wp-ocean-btn-sm" onclick="deleteRecord('warehouses','id','${w.id}', loadWarehouses)">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    `).join('');
-                } else {
-                    tbody.innerHTML = `
-                        <tr>
-                            <td colspan="5" style="text-align: center; padding: 40px; color: var(--gray);">
-                                <i class="fas fa-warehouse fa-2x" style="margin-bottom: 15px; opacity: 0.5;"></i>
-                                <p>Belum ada gudang</p>
-                                <button class="wp-ocean-btn wp-ocean-btn-primary wp-ocean-btn-sm" onclick="openModal('add-warehouse')" style="margin-top: 10px;">
-                                    <i class="fas fa-plus"></i>
-                                    <span>Tambah Gudang Pertama</span>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                }
-            } catch (error) {
-                console.error("Error loading warehouses:", error);
-                showToast("Gagal memuat data gudang", "error");
-            }
-        }
-
-        // --- MODAL FUNCTIONS ---
-        function openModal(type) {
-            const modal = document.getElementById('modal-overlay');
-            const content = document.getElementById('modal-content');
-            modal.style.display = 'flex';
-            
-            if (type === 'add-company') {
-                content.innerHTML = `
-                    <div class="wp-ocean-modal-header">
-                        <h3 class="wp-ocean-modal-title">Tambah Perusahaan Baru</h3>
-                        <button class="wp-ocean-modal-close" onclick="closeModal()">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="wp-ocean-modal-body">
-                        <div class="wp-ocean-form-group">
-                            <label>ID Unik Perusahaan</label>
-                            <input type="text" id="m-cid" class="wp-ocean-form-control" placeholder="Contoh: C001">
-                        </div>
-                        <div class="wp-ocean-form-group">
-                            <label>Nama Perusahaan</label>
-                            <input type="text" id="m-cname" class="wp-ocean-form-control" placeholder="Nama perusahaan">
-                        </div>
-                        <div class="wp-ocean-form-group">
-                            <label>Password Admin</label>
-                            <input type="text" id="m-cpass" class="wp-ocean-form-control" value="admin123">
-                        </div>
-                    </div>
-                    <div class="wp-ocean-modal-footer">
-                        <button class="wp-ocean-btn wp-ocean-btn-outline" onclick="closeModal()">Batal</button>
-                        <button class="wp-ocean-btn wp-ocean-btn-primary" onclick="saveCompany()">Simpan Tenant</button>
-                    </div>
-                `;
-            } else if (type === 'add-warehouse') {
-                content.innerHTML = `
-                    <div class="wp-ocean-modal-header">
-                        <h3 class="wp-ocean-modal-title">Tambah Gudang Baru</h3>
-                        <button class="wp-ocean-modal-close" onclick="closeModal()">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="wp-ocean-modal-body">
-                        <div class="wp-ocean-form-group">
-                            <label>Nama Gudang</label>
-                            <input type="text" id="m-whname" class="wp-ocean-form-control" placeholder="Nama gudang">
-                        </div>
-                        <div class="wp-ocean-form-group">
-                            <label>Lokasi / Deskripsi</label>
-                            <textarea id="m-whloc" class="wp-ocean-form-control" placeholder="Alamat atau deskripsi gudang" rows="3"></textarea>
-                        </div>
-                    </div>
-                    <div class="wp-ocean-modal-footer">
-                        <button class="wp-ocean-btn wp-ocean-btn-outline" onclick="closeModal()">Batal</button>
-                        <button class="wp-ocean-btn wp-ocean-btn-primary" onclick="saveWarehouse()">Simpan Gudang</button>
-                    </div>
-                `;
-            } else if (type === 'add-item') {
-                content.innerHTML = `
-                    <div class="wp-ocean-modal-header">
-                        <h3 class="wp-ocean-modal-title">Tambah Master Barang</h3>
-                        <button class="wp-ocean-modal-close" onclick="closeModal()">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="wp-ocean-modal-body">
-                        <div class="wp-ocean-form-group">
-                            <label>Kode Barang (Opsional)</label>
-                            <div style="display: flex; gap: 10px;">
-                                <input type="text" id="m-icode" class="wp-ocean-form-control" placeholder="Akan digenerate otomatis">
-                                <button type="button" class="wp-ocean-generate-code-btn" onclick="generateSingleCode()">
-                                    <i class="fas fa-barcode"></i>
-                                    <span>Generate</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="wp-ocean-form-group">
-                            <label>Nama Barang</label>
-                            <input type="text" id="m-iname" class="wp-ocean-form-control" placeholder="Nama barang">
-                        </div>
-                        <div class="wp-ocean-form-group">
-                            <label>Kategori</label>
-                            <select id="m-icategory" class="wp-ocean-form-control">
-                                <option value="">-- Pilih Kategori --</option>
-                                ${categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
-                            </select>
-                        </div>
-                        <div class="wp-ocean-form-group">
-                            <label>Satuan Besar (Contoh: Dus)</label>
-                            <input type="text" id="m-iub" class="wp-ocean-form-control" placeholder="Dus, Karton, dll.">
-                        </div>
-                        <div class="wp-ocean-form-group">
-                            <label>Satuan Kecil (Contoh: Pcs)</label>
-                            <input type="text" id="m-ius" class="wp-ocean-form-control" placeholder="Pcs, Unit, dll.">
-                        </div>
-                        <div class="wp-ocean-form-group">
-                            <label>Konversi (Berapa eceran dalam 1 grosir?)</label>
-                            <input type="number" id="m-iconv" class="wp-ocean-form-control" value="1" min="1">
-                        </div>
-                        <div class="wp-ocean-form-group">
-                            <label>Stok Awal</label>
-                            <input type="number" id="m-istock" class="wp-ocean-form-control" value="0" min="0">
-                        </div>
-                        <div class="wp-ocean-form-group">
-                            <label>Deskripsi (Opsional)</label>
-                            <textarea id="m-idesc" class="wp-ocean-form-control" placeholder="Deskripsi barang" rows="3"></textarea>
-                        </div>
-                    </div>
-                    <div class="wp-ocean-modal-footer">
-                        <button class="wp-ocean-btn wp-ocean-btn-outline" onclick="closeModal()">Batal</button>
-                        <button class="wp-ocean-btn wp-ocean-btn-primary" onclick="saveItem()">Simpan Barang</button>
-                    </div>
-                `;
-            } else if (type === 'add-category') {
-                const colorOptions = [
-                    '#007cba', '#46b450', '#dc3232', '#1e8cbe', '#ffb900',
-                    '#00a0d2', '#646970', '#84cc16', '#14b8a6', '#f97316'
-                ];
-                
-                const iconOptions = [
-                    'fa-box', 'fa-tag', 'fa-cube', 'fa-briefcase', 'fa-tshirt',
-                    'fa-utensils', 'fa-plug', 'fa-book', 'fa-tools', 'fa-paint-brush',
-                    'fa-industry', 'fa-car', 'fa-home', 'fa-gem', 'fa-medkit'
-                ];
-                
-                content.innerHTML = `
-                    <div class="wp-ocean-modal-header">
-                        <h3 class="wp-ocean-modal-title">Tambah Kategori Barang</h3>
-                        <button class="wp-ocean-modal-close" onclick="closeModal()">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="wp-ocean-modal-body">
-                        <div class="wp-ocean-form-group">
-                            <label>Nama Kategori</label>
-                            <input type="text" id="m-catname" class="wp-ocean-form-control" placeholder="Nama kategori">
-                        </div>
-                        
-                        <div class="wp-ocean-form-group">
-                            <label>Deskripsi (Opsional)</label>
-                            <textarea id="m-catdesc" class="wp-ocean-form-control" placeholder="Deskripsi kategori" rows="2"></textarea>
-                        </div>
-                        
-                        <div class="wp-ocean-form-group">
-                            <label>Pilih Warna</label>
-                            <div class="wp-ocean-color-picker">
-                                ${colorOptions.map(color => `
-                                    <div class="wp-ocean-color-option ${color === '#007cba' ? 'selected' : ''}" 
-                                         style="background-color: ${color};"
-                                         onclick="selectColor('${color}', this)"></div>
-                                `).join('')}
-                            </div>
-                            <input type="hidden" id="m-catcolor" value="#007cba">
-                        </div>
-                        
-                        <div class="wp-ocean-form-group">
-                            <label>Pilih Ikon (Opsional)</label>
-                            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
-                                ${iconOptions.map(icon => `
-                                    <div class="wp-ocean-color-option ${icon === 'fa-box' ? 'selected' : ''}" 
-                                         onclick="selectIcon('${icon}', this)"
-                                         style="background: var(--light); color: var(--dark); display: flex; align-items: center; justify-content: center;">
-                                        <i class="fas ${icon}"></i>
-                                    </div>
-                                `).join('')}
-                            </div>
-                            <input type="hidden" id="m-caticon" value="fa-box">
-                        </div>
-                    </div>
-                    <div class="wp-ocean-modal-footer">
-                        <button class="wp-ocean-btn wp-ocean-btn-outline" onclick="closeModal()">Batal</button>
-                        <button class="wp-ocean-btn wp-ocean-btn-primary" onclick="saveCategory()">Simpan Kategori</button>
-                    </div>
-                `;
-            }
-        }
-
-        // --- EDIT WAREHOUSE MODAL ---
-        function openEditWarehouseModal(warehouseId) {
-            const warehouse = warehouses.find(w => w.id === warehouseId);
-            if (!warehouse) return;
-            
-            const modal = document.getElementById('modal-overlay');
-            const content = document.getElementById('modal-content');
-            modal.style.display = 'flex';
-            
-            content.innerHTML = `
-                <div class="wp-ocean-modal-header">
-                    <h3 class="wp-ocean-modal-title">Edit Gudang</h3>
-                    <button class="wp-ocean-modal-close" onclick="closeModal()">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="wp-ocean-modal-body">
-                    <div class="wp-ocean-form-group">
-                        <label>Nama Gudang</label>
-                        <input type="text" id="edit-whname" class="wp-ocean-form-control" value="${warehouse.name}">
-                    </div>
-                    <div class="wp-ocean-form-group">
-                        <label>Lokasi / Deskripsi</label>
-                        <textarea id="edit-whloc" class="wp-ocean-form-control" rows="3">${warehouse.location || ''}</textarea>
-                    </div>
-                </div>
-                <div class="wp-ocean-modal-footer">
-                    <button class="wp-ocean-btn wp-ocean-btn-outline" onclick="closeModal()">Batal</button>
-                    <button class="wp-ocean-btn wp-ocean-btn-primary" onclick="updateWarehouse('${warehouseId}')">Simpan Perubahan</button>
-                </div>
-            `;
-        }
-
-        async function updateWarehouse(warehouseId) {
-            const name = document.getElementById('edit-whname').value.trim();
-            const location = document.getElementById('edit-whloc').value.trim();
-            
-            if (!name) {
-                showToast("Nama gudang harus diisi", "error");
-                return;
-            }
-            
-            try {
-                const { error } = await sb.from('warehouses')
-                    .update({ 
-                        name, 
-                        location,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', warehouseId)
-                    .eq('company_id', currentUser.id);
-                
-                if (error) throw error;
-                
-                closeModal();
-                await loadWarehouses();
-                showToast("Gudang berhasil diperbarui", "success");
-                
-            } catch (error) {
-                console.error("Error updating warehouse:", error);
-                showToast("Gagal memperbarui gudang: " + error.message, "error");
-            }
-        }
-
-        // --- UTILITY FUNCTIONS ---
-        async function deleteRecord(table, col, val, callback) {
-            if (!confirm("Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.")) {
-                return;
-            }
-            
-            try {
-                const { error } = await sb.from(table).delete().eq(col, val);
-                if (error) throw error;
-                
-                showToast("Data berhasil dihapus", "success");
-                if (callback) await callback();
-                
-            } catch (error) {
-                console.error("Error deleting record:", error);
-                showToast("Gagal menghapus data: " + error.message, "error");
-            }
-        }
-
-        function saveConfig() {
-            const url = document.getElementById('cfg-url').value.trim();
-            const key = document.getElementById('cfg-key').value.trim();
-            
-            if(!url || !key) {
-                showToast("URL dan Key wajib diisi!", "error");
-                return;
-            }
-            
-            if(!url.startsWith('https://') || !url.includes('.supabase.co')) {
-                if(!confirm("URL tidak sesuai format Supabase. Lanjutkan?")) {
-                    return;
-                }
-            }
-            
-            localStorage.setItem('inv_url', url);
-            localStorage.setItem('inv_key', key);
-            
-            showToast("Konfigurasi tersimpan. Memuat ulang sistem...", "success");
-            
-            setTimeout(() => {
-                location.reload();
-            }, 1500);
-        }
-
-        function closeModal() {
-            document.getElementById('modal-overlay').style.display = 'none';
-        }
-
-        function showToast(message, type = "success", duration = 5000) {
-            const container = document.getElementById('wp-ocean-toast-container');
-            const toast = document.createElement('div');
-            toast.className = `wp-ocean-toast wp-ocean-toast-${type}`;
-            toast.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
-                <span>${message}</span>
-            `;
-            
-            container.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translateX(100%)';
-                setTimeout(() => {
-                    if (toast.parentNode) {
-                        toast.parentNode.removeChild(toast);
-                    }
-                }, 300);
-            }, duration);
-        }
-
         // --- DASHBOARD DATA ---
         async function loadDashboardData() {
             if (!sb || currentUser.is_superadmin) return;
             
             try {
+                // Load counts
                 const { count: itemC } = await sb.from('master_items')
                     .select('*', {count:'exact', head:true})
                     .eq('company_id', currentUser.id);
@@ -2916,6 +2626,7 @@
                     .eq('company_id', currentUser.id)
                     .gte('created_at', new Date(new Date().setDate(new Date().getDate() - 30)).toISOString());
                 
+                // Count low stock items
                 const { data: lowStockItems } = await sb.from('master_items')
                     .select('*')
                     .eq('company_id', currentUser.id)
@@ -2923,11 +2634,13 @@
                 
                 const lowStockCount = lowStockItems ? lowStockItems.length : 0;
                 
+                // Update dashboard cards
                 document.getElementById('count-items').innerText = itemC || 0;
                 document.getElementById('count-wh').innerText = whC || 0;
                 document.getElementById('count-trans').innerText = trC || 0;
                 document.getElementById('count-low-stock').innerText = lowStockCount;
                 
+                // Update low stock badge
                 const badge = document.getElementById('low-stock-badge');
                 if (badge) {
                     if (lowStockCount > 0) {
@@ -2938,6 +2651,7 @@
                     }
                 }
                 
+                // Load warehouses and items for dropdowns
                 const { data: whs } = await sb.from('warehouses')
                     .select('*')
                     .eq('company_id', currentUser.id);
@@ -2950,18 +2664,22 @@
                 
                 items = its || [];
                 
+                // Load categories
                 const { data: cats } = await sb.from('categories')
                     .select('*')
                     .eq('company_id', currentUser.id);
                 
                 categories = cats || [];
                 
+                // If no categories exist, initialize defaults
                 if (categories.length === 0) {
                     await initializeDefaultCategories();
                 }
                 
+                // Load recent activities
                 await loadRecentActivities();
                 
+                // Load notifications
                 await loadNotifications();
                 
             } catch (error) {
@@ -2985,16 +2703,16 @@
                 
                 if (data && data.length > 0) {
                     activitiesList.innerHTML = data.map(t => `
-                        <li class="wp-ocean-activity-item">
-                            <div class="wp-ocean-activity-icon ${t.type === 'IN' ? 'in' : 'out'}">
+                        <li class="activity-item">
+                            <div class="activity-icon ${t.type === 'IN' ? 'in' : 'out'}">
                                 <i class="fas fa-${t.type === 'IN' ? 'arrow-down' : 'arrow-up'}"></i>
                             </div>
-                            <div class="wp-ocean-activity-details">
-                                <div class="wp-ocean-activity-title">${t.master_items?.name || 'Barang dihapus'} ${t.master_items?.item_code ? `<span class="wp-ocean-item-code-badge">${t.master_items.item_code}</span>` : ''}</div>
-                                <div class="wp-ocean-activity-time">${new Date(t.created_at).toLocaleString()} • ${t.warehouses?.name || '-'} • ${t.master_items?.categories?.name || 'Tanpa Kategori'}</div>
+                            <div class="activity-details">
+                                <div class="activity-title">${t.master_items?.name || 'Barang dihapus'} ${t.master_items?.item_code ? `<span class="item-code-badge">${t.master_items.item_code}</span>` : ''}</div>
+                                <div class="activity-time">${new Date(t.created_at).toLocaleString()} • ${t.warehouses?.name || '-'} • ${t.master_items?.categories?.name || 'Tanpa Kategori'}</div>
                             </div>
-                            <div class="wp-ocean-activity-amount">
-                                <span class="wp-ocean-status-badge ${t.type === 'IN' ? 'wp-ocean-status-active' : 'wp-ocean-status-inactive'}">
+                            <div class="activity-amount">
+                                <span class="status-badge ${t.type === 'IN' ? 'status-active' : 'status-inactive'}">
                                     ${t.type === 'IN' ? '+' : '-'}${t.qty} ${t.unit}
                                 </span>
                             </div>
@@ -3002,7 +2720,7 @@
                     `).join('');
                 } else {
                     activitiesList.innerHTML = `
-                        <li class="wp-ocean-activity-item" style="justify-content: center; padding: 40px;">
+                        <li class="activity-item" style="justify-content: center; padding: 40px;">
                             <div style="text-align: center; color: var(--gray);">
                                 <i class="fas fa-inbox fa-2x" style="margin-bottom: 10px; opacity: 0.5;"></i>
                                 <p>Tidak ada aktivitas transaksi</p>
@@ -3020,6 +2738,7 @@
             if (!sb || currentUser.is_superadmin) return;
             
             try {
+                // Get low stock items
                 const { data: lowStockItems } = await sb.from('master_items')
                     .select('*')
                     .eq('company_id', currentUser.id)
@@ -3041,6 +2760,7 @@
                     });
                 }
                 
+                // Update notification badge
                 const badge = document.getElementById('notification-badge');
                 if (badge) {
                     const unreadCount = notifications.filter(n => !n.read).length;
@@ -3063,6 +2783,7 @@
                 return;
             }
             
+            // Create notification modal
             openNotificationModal();
         }
 
@@ -3072,17 +2793,17 @@
             modal.style.display = 'flex';
             
             content.innerHTML = `
-                <div class="wp-ocean-modal-header">
-                    <h3 class="wp-ocean-modal-title">Notifikasi</h3>
-                    <button class="wp-ocean-modal-close" onclick="closeModal()">
+                <div class="modal-header">
+                    <h3 class="modal-title">Notifikasi</h3>
+                    <button class="modal-close" onclick="closeModal()">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                <div class="wp-ocean-modal-body">
+                <div class="modal-body">
                     <div style="max-height: 400px; overflow-y: auto;">
                         ${notifications.length > 0 ? notifications.map(n => `
-                            <div class="notification-item" style="padding: 15px; border-bottom: 1px solid var(--wp-ocean-border); display: flex; align-items: flex-start; gap: 15px; ${n.read ? 'opacity: 0.7;' : ''}">
-                                <div style="width: 40px; height: 40px; border-radius: 50%; background: ${n.type === 'warning' ? 'rgba(255, 185, 0, 0.1)' : 'rgba(0, 124, 186, 0.1)'}; display: flex; align-items: center; justify-content: center; color: ${n.type === 'warning' ? 'var(--warning)' : 'var(--primary)'};">
+                            <div class="notification-item" style="padding: 15px; border-bottom: 1px solid var(--gray-light); display: flex; align-items: flex-start; gap: 15px; ${n.read ? 'opacity: 0.7;' : ''}">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: ${n.type === 'warning' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(79, 70, 229, 0.1)'}; display: flex; align-items: center; justify-content: center; color: ${n.type === 'warning' ? 'var(--warning)' : 'var(--primary)'};">
                                     <i class="fas fa-${n.type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
                                 </div>
                                 <div style="flex: 1;">
@@ -3100,8 +2821,8 @@
                     </div>
                 </div>
                 ${notifications.length > 0 ? `
-                    <div class="wp-ocean-modal-footer">
-                        <button class="wp-ocean-btn wp-ocean-btn-outline" onclick="markAllNotificationsRead()">
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="markAllNotificationsRead()">
                             <i class="fas fa-check-double"></i>
                             <span>Tandai Semua Dibaca</span>
                         </button>
@@ -3109,6 +2830,7 @@
                 ` : ''}
             `;
             
+            // Mark notifications as read when opened
             notifications.forEach(n => n.read = true);
             const badge = document.getElementById('notification-badge');
             if (badge) badge.style.display = 'none';
@@ -3124,9 +2846,11 @@
 
         // --- USER MENU ---
         function toggleUserMenu() {
-            const userProfile = document.querySelector('.wp-ocean-user');
+            // Create user menu dropdown
+            const userProfile = document.querySelector('.user-profile');
             const rect = userProfile.getBoundingClientRect();
             
+            // Remove existing menu if any
             const existingMenu = document.querySelector('.user-menu-dropdown');
             if (existingMenu) {
                 existingMenu.remove();
@@ -3145,11 +2869,10 @@
                 min-width: 200px;
                 z-index: 1000;
                 overflow: hidden;
-                border: 1px solid var(--wp-ocean-border);
             `;
             
             menu.innerHTML = `
-                <div style="padding: 20px; border-bottom: 1px solid var(--wp-ocean-border);">
+                <div style="padding: 20px; border-bottom: 1px solid var(--gray-light);">
                     <div style="font-weight: 600; margin-bottom: 5px;">${currentUser.name}</div>
                     <div style="font-size: 0.85rem; color: var(--gray);">${currentUser.is_superadmin ? 'Super Administrator' : 'Administrator'}</div>
                 </div>
@@ -3171,6 +2894,7 @@
             
             document.body.appendChild(menu);
             
+            // Add hover effects
             const menuItems = menu.querySelectorAll('.menu-item');
             menuItems.forEach(item => {
                 item.addEventListener('mouseenter', () => {
@@ -3181,6 +2905,7 @@
                 });
             });
             
+            // Close menu when clicking outside
             setTimeout(() => {
                 const closeMenu = (e) => {
                     if (!menu.contains(e.target) && !userProfile.contains(e.target)) {
@@ -3207,11 +2932,7 @@
             if (menu) menu.remove();
         }
 
-
-        // Fungsi-fungsi lainnya tetap sama seperti sebelumnya...
-        // Karena kode sangat panjang, saya hanya menampilkan bagian yang dimodifikasi.
-        // Silakan copy semua fungsi dari kode sebelumnya dan ganti class CSS dengan yang baru.
-         // --- MODAL FUNCTIONS ---
+        // --- MODAL FUNCTIONS ---
         function openModal(type) {
             const modal = document.getElementById('modal-overlay');
             const content = document.getElementById('modal-content');
@@ -5695,7 +5416,6 @@
                 switchTab(tabId);
             }, 100);
         }
-                
     </script>
 </body>
 </html>
