@@ -1531,6 +1531,15 @@
           display: block;     /* Menghilangkan celah kecil di bawah gambar */
           border-radius: 8px; /* Opsional: mempercantik dengan sudut melengkung */
         }
+        .container-gambar {
+        text-align: center; /* Mengetengahkan gambar */
+        padding: 20px;
+        }
+        
+        .img-fluid {
+          width: 100px;       /* Atur lebar spesifik yang diinginkan */
+          height: auto;
+        }
     </style>
 </head>
 <body>
@@ -1610,7 +1619,9 @@
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-logo">
-                    <img src="LOGO_BU" alt="Deskripsi Gambar GA Service" class="gambar-produk">
+                    <div class="container-gambar">
+                      <img src="LOGO_BU.png" alt="Logo GA Service" class="img-fluid">
+                    </div>
                 </div>
             </div>
             
