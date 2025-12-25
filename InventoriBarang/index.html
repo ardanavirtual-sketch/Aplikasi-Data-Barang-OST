@@ -3610,6 +3610,7 @@
                 
                 if (data && data.length > 0) {
                     warehouses = data;
+                    // Cari bagian ini dalam loadWarehouses():
                     tbody.innerHTML = data.map(w => `
                         <tr>
                             <td><code>${w.id.substring(0,8)}</code></td>
@@ -3618,6 +3619,9 @@
                             <td><span class="status-badge status-active">Aktif</span></td>
                             <td>
                                 <div class="action-buttons">
+                                    <button class="btn btn-outline btn-sm" onclick="openEditWarehouseModal('${w.id}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
                                     <button class="btn btn-outline btn-sm" onclick="deleteRecord('warehouses','id','${w.id}', loadWarehouses)">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -5103,6 +5107,67 @@
                     <button class="btn btn-primary" onclick="updateItem('${itemId}')">Simpan Perubahan</button>
                 </div>
             `;
+        }
+        async function openEditWarehouseModal(warehouseId) {
+            const warehouse = warehouses.find(w => w.id === warehouseId);
+            if (!warehouse) return;
+            
+            const modal = document.getElementById('modal-overlay');
+            const content = document.getElementById('modal-content');
+            modal.style.display = 'flex';
+            
+            content.innerHTML = `
+                <div class="modal-header">
+                    <h3 class="modal-title">Edit Gudang</h3>
+                    <button class="modal-close" onclick="closeModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Nama Gudang</label>
+                        <input type="text" id="edit-whname" class="form-control" value="${warehouse.name}">
+                    </div>
+                    <div class="form-group">
+                        <label>Lokasi / Deskripsi</label>
+                        <textarea id="edit-whloc" class="form-control" rows="3">${warehouse.location || ''}</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline" onclick="closeModal()">Batal</button>
+                    <button class="btn btn-primary" onclick="updateWarehouse('${warehouseId}')">Simpan Perubahan</button>
+                </div>
+            `;
+        }
+        async function updateWarehouse(warehouseId) {
+            const name = document.getElementById('edit-whname').value.trim();
+            const location = document.getElementById('edit-whloc').value.trim();
+            
+            if (!name) {
+                showToast("Nama gudang harus diisi", "error");
+                return;
+            }
+            
+            try {
+                const { error } = await sb.from('warehouses')
+                    .update({ 
+                        name, 
+                        location,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', warehouseId)
+                    .eq('company_id', currentUser.id);
+                
+                if (error) throw error;
+                
+                closeModal();
+                await loadWarehouses();
+                showToast("Gudang berhasil diperbarui", "success");
+                
+            } catch (error) {
+                console.error("Error updating warehouse:", error);
+                showToast("Gagal memperbarui gudang: " + error.message, "error");
+            }
         }
 
         async function generateCodeForEditItem(itemId) {
