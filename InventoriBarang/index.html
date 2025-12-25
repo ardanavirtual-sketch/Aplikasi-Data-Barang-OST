@@ -1525,6 +1525,12 @@
                 margin: 20px 0;
             }
         }
+        .gambar-produk {
+          max-width: 100%;    /* Gambar tidak akan lebih lebar dari wadahnya */
+          height: auto;       /* Menjaga proporsi agar tidak gepeng */
+          display: block;     /* Menghilangkan celah kecil di bawah gambar */
+          border-radius: 8px; /* Opsional: mempercantik dengan sudut melengkung */
+        }
     </style>
 </head>
 <body>
@@ -1604,7 +1610,7 @@
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-logo">
-                    <img src="LOGO_BU.png" alt="Logo GA Service" class="img-fluid">
+                    <img src="LOGO_BU" alt="Deskripsi Gambar GA Service" class="gambar-produk">
                     <h2>GA Service</h2>
                 </div>
             </div>
